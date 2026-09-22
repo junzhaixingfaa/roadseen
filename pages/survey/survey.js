@@ -2,6 +2,8 @@ const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
 const storage = require('../../services/storage');
 
+const ROLE_TEXT = { user: '普通用户', volunteer: '志愿者', maintainer: '维护者', admin: '管理员' };
+
 Page({
   data: {
     tasks: [],
@@ -15,7 +17,7 @@ Page({
     const tasks = await placeService.getPendingTasks();
     const myInsp = storage.get('lj_inspections', []);
     this.setData({
-      roleText: u ? u.role : '',
+      roleText: u ? (ROLE_TEXT[u.role] || u.role) : '',
       isCollector: !!u && (u.role === 'volunteer' || u.role === 'user' || u.role === 'maintainer' || u.role === 'admin'),
       tasks: tasks.map(p => ({
         id: p.id, name: p.name, category: p.category,

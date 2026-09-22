@@ -26,18 +26,9 @@ Page({
       const si = wx.getSystemInfoSync();
       this.setData({ mapH: si.windowHeight - 100 });
     } catch (e) { /* ignore */ }
-    this.locate();
   },
 
   onShow() { this.load(); },
-
-  locate() {
-    wx.getLocation({
-      type: 'gcj02',
-      success: (r) => this.setData({ lat: r.latitude, lng: r.longitude }),
-      fail: () => { /* 用默认校园中心 */ }
-    });
-  },
 
   async load() {
     this.setData({ loading: true });
