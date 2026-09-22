@@ -1,0 +1,4 @@
+.fi { display: flex; padding: 12rpx 0; border-bottom: 1rpx solid #f2f3f5; font-size: 26rpx; }
+.fi-label { width: 200rpx; color: #909399; flex-shrink: 0; }
+.fi-value { flex: 1; color: #303133; }
+.fi-value.unk { color: #b8bcc4; }

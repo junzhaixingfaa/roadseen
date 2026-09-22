@@ -1,0 +1,2 @@
+.reasons { font-size: 26rpx; }
+.reason { color: #606266; padding: 4rpx 0; }

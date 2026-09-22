@@ -1,0 +1,4 @@
+<view class="fi">
+  <text class="fi-label">{{label}}</text>
+  <text class="fi-value {{unknown ? 'unk' : ''}}">{{value}}</text>
+</view>

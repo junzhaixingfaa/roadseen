@@ -1,0 +1,20 @@
+<view class="search-page">
+  <view class="search-bar">
+    <input class="ipt" placeholder="搜索名称 / 类别 / 地址" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
+  </view>
+  <view class="filters">
+    <view class="chip {{f.hasElevator ? 'on' : ''}}" data-k="hasElevator" bindtap="onChip">有电梯</view>
+    <view class="chip {{f.hasToilet ? 'on' : ''}}" data-k="hasToilet" bindtap="onChip">有无障碍厕所</view>
+    <view class="chip {{f.onlyPass ? 'on' : ''}}" data-k="onlyPass" bindtap="onChip">仅可独立通过</view>
+  </view>
+
+  <view class="empty" wx:if="{{list.length === 0}}">没有符合条件的地点</view>
+  <view class="result-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view class="row-between">
+      <text class="r-name">{{item.name}}</text>
+      <status-tag code="{{item.result}}" />
+    </view>
+    <view class="muted">{{item.category}} · {{item.address}}</view>
+    <view class="r-sum">{{item.summary}}</view>
+  </view>
+</view>

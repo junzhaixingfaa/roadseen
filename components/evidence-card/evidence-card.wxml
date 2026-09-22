@@ -1,0 +1,6 @@
+<view class="ec">
+  <image class="ec-img" src="{{ev.imageUrl}}" mode="aspectFill" />
+  <view class="ec-type">{{ev.typeText}}</view>
+  <view class="ec-tags" wx:if="{{ev.aiTagsText}}">AI：{{ev.aiTagsText}}</view>
+  <view class="ec-meta">{{ev.collectedAt}} · {{ev.confirmStatusText}}</view>
+</view>

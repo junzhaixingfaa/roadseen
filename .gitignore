@@ -9,3 +9,7 @@ project.private.config.json
 .DS_Store
 *.log
 Thumbs.db
+
+# 团队内部资料：初始构思与开发规划（不入库）
+初始思考/
+雏形开发规划.md

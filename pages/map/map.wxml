@@ -1,1 +1,47 @@
-<view class="card">地图（本阶段占位，后续实现）</view>
+<view class="map-page">
+  <view class="topbar">
+    <view class="searchbox" bindtap="goSearch">搜索教学楼 / 食堂 / 图书馆…</view>
+    <view class="filter-btn {{showFilter ? 'on' : ''}}" bindtap="toggleFilter">筛选</view>
+  </view>
+
+  <view class="filters" wx:if="{{showFilter}}">
+    <view class="chip {{f.hasElevator ? 'on' : ''}}" data-k="hasElevator" bindtap="onChip">有电梯</view>
+    <view class="chip {{f.hasToilet ? 'on' : ''}}" data-k="hasToilet" bindtap="onChip">有无障碍厕所</view>
+    <view class="chip {{f.onlyPass ? 'on' : ''}}" data-k="onlyPass" bindtap="onChip">仅可独立通过</view>
+  </view>
+
+  <map
+    id="m"
+    class="map"
+    longitude="{{lng}}"
+    latitude="{{lat}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    show-location="{{true}}"
+    bindmarkertap="onMarkerTap"
+    bindcallouttap="onMarkerTap"
+    style="height: {{mapH}}px"
+  ></map>
+
+  <view class="legend">
+    <view class="lg"><view class="dot" style="background:#2BA245"></view>可独立通过</view>
+    <view class="lg"><view class="dot" style="background:#E6A23C"></view>需协助</view>
+    <view class="lg"><view class="dot" style="background:#D93026"></view>暂不可通过</view>
+    <view class="lg"><view class="dot" style="background:#909399"></view>信息不足</view>
+  </view>
+
+  <view class="mask" wx:if="{{sel}}" bindtap="closeSheet"></view>
+  <view class="sheet" wx:if="{{sel}}">
+    <view class="row-between">
+      <text class="s-name">{{sel.name}}</text>
+      <status-tag code="{{sel.result}}" />
+    </view>
+    <view class="muted s-sum">{{sel.summary}}</view>
+    <view class="muted s-tip" wx:if="{{!hasProfile}}">未建立通行档案，按通用条件显示；到「我的-通行档案」设置后更准确</view>
+    <view class="btn btn-block" bindtap="viewDetail">查看通行卡</view>
+    <view class="s-btns">
+      <view class="btn btn-ghost half" bindtap="navTo">导航到入口</view>
+      <view class="btn btn-ghost half" bindtap="addFav">收藏</view>
+    </view>
+  </view>
+</view>

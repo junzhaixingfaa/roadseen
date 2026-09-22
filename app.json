@@ -3,7 +3,9 @@
     "pages/map/map",
     "pages/survey/survey",
     "pages/messages/messages",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/place-detail/place-detail",
+    "pages/search/search"
   ],
   "window": {
     "backgroundTextStyle": "light",
