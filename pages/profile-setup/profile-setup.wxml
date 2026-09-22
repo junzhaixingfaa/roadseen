@@ -1,0 +1,23 @@
+<view class="ps">
+  <view class="intro">你的通行条件仅用于「能不能过」的判断，保存在本机、默认不公开，可随时修改。</view>
+
+  <view class="card">
+    <view class="field">
+      <text class="lab">辅助器具</text>
+      <picker mode="selector" range="{{deviceOptions}}" value="{{deviceIndex}}" bindchange="onDevice">
+        <view class="pk">{{device || '请选择'}} ›</view>
+      </picker>
+    </view>
+    <view class="field">
+      <text class="lab">设备宽度 (cm)</text>
+      <input class="ipt" type="digit" value="{{deviceWidth}}" placeholder="可留空" bindinput="onWidth" />
+    </view>
+    <view class="field sw"><text class="lab">通常有人陪同</text><switch checked="{{accompanied}}" data-k="accompanied" bindchange="onSwitch" /></view>
+    <view class="field sw"><text class="lab">必须使用电梯</text><switch checked="{{mustUseElevator}}" data-k="mustUseElevator" bindchange="onSwitch" /></view>
+    <view class="field sw"><text class="lab">可接受低门槛</text><switch checked="{{acceptLowThreshold}}" data-k="acceptLowThreshold" bindchange="onSwitch" /></view>
+    <view class="field sw"><text class="lab">接受他人开门 / 坡道等协助</text><switch checked="{{acceptAssist}}" data-k="acceptAssist" bindchange="onSwitch" /></view>
+  </view>
+
+  <view class="btn btn-block save" bindtap="save">保存档案</view>
+  <view class="link" wx:if="{{hasProfile}}" bindtap="skip">不建立档案 / 清除</view>
+</view>

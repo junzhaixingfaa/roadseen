@@ -1,1 +1,34 @@
-<view class="card">我的（本阶段占位，后续实现）</view>
+<view class="mine">
+  <view class="profile-hd">
+    <view class="avatar">{{avatar || '?'}}</view>
+    <view class="p-info">
+      <view class="p-name">{{user.nickname}}</view>
+      <view class="p-role">{{roleText}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row-between" bindtap="goProfile">
+      <text>通行档案</text>
+      <text class="val {{hasProfile ? '' : 'muted'}}">{{hasProfile ? profileSummary : '未建立 ›'}}</text>
+    </view>
+  </view>
+
+  <view class="card list">
+    <view class="li" bindtap="goFavorites"><text>我的收藏</text><text class="val">{{favCount}} 个 ›</text></view>
+    <view class="li" bindtap="goSurvey"><text>我的贡献 / 勘察任务</text><text class="val">›</text></view>
+    <view class="li" bindtap="goHistory"><text>历史记录</text><text class="val">›</text></view>
+    <view class="li" bindtap="goSettings"><text>设置</text><text class="val">›</text></view>
+    <view class="li" wx:if="{{roleText === '管理员'}}" bindtap="goAdmin"><text>管理端</text><text class="val">›</text></view>
+  </view>
+
+  <view class="switch-card">
+    <view class="sc-title muted">演示：切换身份（对应不同角色与档案）</view>
+    <view class="u-item {{user.id === item.id ? 'on' : ''}}" wx:for="{{users}}" wx:key="id" data-id="{{item.id}}" bindtap="onUserTap">
+      <view class="row-between">
+        <text>{{item.nickname}}</text>
+        <text class="muted">{{item.roleText}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,29 @@
+<view class="capture">
+  <view class="cap-hd">
+    <view class="cap-title">引导式勘察采集</view>
+    <view class="muted">{{placeName ? ('目标地点：' + placeName) : '未选择地点（可自由采集新地点）'}}</view>
+    <view class="prog">必填项完成度：{{filledRequired}} / {{requiredTotal}}</view>
+  </view>
+
+  <view class="step-card" wx:for="{{steps}}" wx:key="key">
+    <view class="row-between">
+      <text class="st-title">{{index + 1}}. {{item.title}}</text>
+      <text class="req" wx:if="{{item.required}}">必填</text>
+    </view>
+    <view class="st-hint">{{item.hint}}</view>
+
+    <view class="shot" wx:if="{{!item.photo}}" data-idx="{{index}}" bindtap="choose">
+      <text class="plus">＋</text>
+      <text class="shot-t">拍照 / 选图</text>
+    </view>
+    <view class="shot-wrap" wx:else>
+      <image class="shot-img" src="{{item.photo}}" mode="aspectFill" data-url="{{item.photo}}" bindtap="preview" />
+      <view class="retake" data-idx="{{index}}" bindtap="retake">重拍</view>
+    </view>
+  </view>
+
+  <view style="height: 140rpx;"></view>
+  <view class="cap-bar">
+    <view class="btn btn-block" bindtap="toAi">提交给 AI 识别</view>
+  </view>
+</view>

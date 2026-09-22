@@ -5,7 +5,10 @@
     "pages/messages/messages",
     "pages/mine/mine",
     "pages/place-detail/place-detail",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/profile-setup/profile-setup",
+    "pages/capture/capture",
+    "pages/ai-confirm/ai-confirm"
   ],
   "window": {
     "backgroundTextStyle": "light",

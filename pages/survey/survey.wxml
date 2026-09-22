@@ -1,1 +1,19 @@
-<view class="card">勘察（本阶段占位，后续实现）</view>
+<view class="survey">
+  <view class="contrib">
+    <view class="c-item"><text class="c-num">{{contributions.submitted}}</text><text class="c-lab">提交记录</text></view>
+    <view class="c-item"><text class="c-num">{{contributions.places}}</text><text class="c-lab">贡献地点</text></view>
+    <view class="c-item"><text class="c-num">{{roleText || '—'}}</text><text class="c-lab">当前身份</text></view>
+  </view>
+
+  <view class="btn btn-block" bindtap="newCapture">＋ 新建勘察采集</view>
+
+  <view class="section-title" style="padding:0 24rpx;">待勘察任务</view>
+  <view class="empty" wx:if="{{tasks.length === 0}}">当前没有待补充的地点</view>
+  <view class="task" wx:for="{{tasks}}" wx:key="id" data-id="{{item.id}}" bindtap="pickTask">
+    <view class="row-between">
+      <text class="t-name">{{item.name}}</text>
+      <text class="t-reason">{{item.reason}}</text>
+    </view>
+    <view class="t-cat">{{item.category}} · 点击查看采集要求并拍摄</view>
+  </view>
+</view>

@@ -1,0 +1,61 @@
+.detail { min-height: 100vh; background: #f5f6f8; }
+
+.hd { padding: 28rpx 24rpx 8rpx; background: #ffffff; }
+.hd-name { font-size: 40rpx; font-weight: 700; }
+.hd-cat { font-size: 24rpx; color: #2f6fb0; background: #eaf1f9; padding: 4rpx 16rpx; border-radius: 16rpx; }
+.hd-meta { font-size: 24rpx; color: #909399; margin-top: 8rpx; }
+
+.result-card { margin: 20rpx; }
+.res-text { font-size: 40rpx; font-weight: 700; }
+.res-sum { margin-top: 8rpx; font-size: 28rpx; opacity: 0.95; }
+.res-disc { margin-top: 12rpx; font-size: 20rpx; opacity: 0.8; }
+
+.profile-tip {
+  margin: 0 20rpx;
+  padding: 16rpx 20rpx;
+  background: #fff8e6;
+  color: #a06a10;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+}
+
+.card { margin: 20rpx; }
+.section-title { margin-bottom: 8rpx; }
+
+.alts { margin-top: 14rpx; font-size: 24rpx; }
+.alt { color: #2f6fb0; margin-right: 12rpx; }
+
+.rec-line { font-size: 26rpx; color: #303133; padding: 8rpx 0; }
+.rec-line .k { display: inline-block; width: 120rpx; color: #909399; }
+.nav-btn { margin-top: 12rpx; }
+
+.step { display: flex; font-size: 26rpx; color: #606266; padding: 8rpx 0; }
+.step-no {
+  width: 36rpx; height: 36rpx; line-height: 36rpx; text-align: center;
+  border-radius: 50%; background: #2f6fb0; color: #ffffff; font-size: 22rpx; margin-right: 14rpx; flex-shrink: 0;
+}
+
+.ev-scroll { white-space: nowrap; padding: 8rpx 0; }
+.ev-scroll .ec { display: inline-block; }
+
+.incident { background: #fef0ef; border-radius: 12rpx; padding: 16rpx; margin-top: 12rpx; }
+.inc-title { font-size: 28rpx; font-weight: 600; color: #D93026; }
+.inc-desc { font-size: 24rpx; color: #606266; margin-top: 6rpx; }
+.inc-meta { font-size: 22rpx; color: #b0b3b8; margin-top: 6rpx; }
+.inc-his { padding: 4rpx 0; }
+.test-tag { font-size: 20rpx; color: #a06a10; background: #fdf6e3; border-radius: 10rpx; padding: 2rpx 12rpx; }
+
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center;
+  background: #ffffff; border-top: 1rpx solid #eee;
+  padding: 12rpx 8rpx; z-index: 20;
+}
+.ab-item { flex: 1; text-align: center; font-size: 30rpx; color: #606266; line-height: 1.2; }
+.ab-item.on { color: #E6A23C; }
+.ab-t { font-size: 20rpx; color: #909399; }
+.ab-btn { background: transparent; border: none; padding: 0; margin: 0; line-height: 1.2; }
+.ab-btn::after { border: none; }
+.ab-cta { width: 180rpx; text-align: center; background: #2f6fb0; color: #ffffff; border-radius: 30rpx; padding: 14rpx 0; font-size: 26rpx; margin-left: 8rpx; }
+
+.loading { text-align: center; color: #909399; padding-top: 160rpx; }

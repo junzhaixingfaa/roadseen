@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "地点通行卡",
+  "usingComponents": {
+    "status-tag": "/components/status-tag/status-tag",
+    "reason-list": "/components/reason-list/reason-list",
+    "facility-item": "/components/facility-item/facility-item",
+    "evidence-card": "/components/evidence-card/evidence-card"
+  }
+}

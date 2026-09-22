@@ -1,0 +1,96 @@
+<view class="detail" wx:if="{{place}}">
+  <!-- 头部 -->
+  <view class="hd">
+    <view class="row-between">
+      <text class="hd-name">{{place.name}}</text>
+      <text class="hd-cat">{{place.category}}</text>
+    </view>
+    <view class="hd-meta">{{place.address}}</view>
+    <view class="hd-meta" wx:if="{{place.openTime}}">开放时间：{{place.openTime}}</view>
+  </view>
+
+  <!-- 通行结果大卡 -->
+  <view class="result-card result-{{status.cls}}">
+    <view class="res-text">{{status.text}}</view>
+    <view class="res-sum">{{summary}}</view>
+    <view class="res-disc">{{disclaimer}}</view>
+  </view>
+  <view class="profile-tip" wx:if="{{profileTip}}">{{profileTip}}</view>
+
+  <!-- 判断依据 -->
+  <view class="card">
+    <view class="section-title">判断依据</view>
+    <reason-list reasons="{{reasons}}" />
+    <view class="alts" wx:if="{{alternatives.length}}">
+      <text class="muted">备选入口：</text>
+      <text class="alt" wx:for="{{alternatives}}" wx:key="id">{{item.name}}{{item.direction ? '（' + item.direction + '）' : ''}}</text>
+    </view>
+  </view>
+
+  <!-- 推荐入口 + 通行步骤 -->
+  <view class="card" wx:if="{{rec}}">
+    <view class="section-title">推荐入口</view>
+    <view class="rec-line"><text class="k">入口</text>{{rec.name}}</view>
+    <view class="rec-line"><text class="k">方向</text>{{rec.direction}}</view>
+    <view class="btn btn-ghost nav-btn" bindtap="navTo">导航到该入口附近</view>
+    <view class="divider" wx:if="{{steps.length}}"></view>
+    <view class="section-title" wx:if="{{steps.length}}">通行步骤</view>
+    <view class="step" wx:for="{{steps}}" wx:key="*this"><text class="step-no">{{index + 1}}</text>{{item}}</view>
+  </view>
+
+  <!-- 设施信息 -->
+  <view class="card">
+    <view class="section-title">设施信息</view>
+    <facility-item wx:for="{{facilities}}" wx:key="label" label="{{item.label}}" value="{{item.value}}" unknown="{{item.unknown}}" />
+  </view>
+
+  <!-- 现场证据 -->
+  <view class="card">
+    <view class="section-title">现场证据</view>
+    <scroll-view scroll-x="{{true}}" class="ev-scroll" wx:if="{{evidences.length}}">
+      <evidence-card wx:for="{{evidences}}" wx:key="index" ev="{{item}}" />
+    </scroll-view>
+    <view class="muted" wx:else>暂无现场照片，等待志愿者勘察</view>
+  </view>
+
+  <!-- 动态事件 -->
+  <view class="card" wx:if="{{incidents.length}}">
+    <view class="section-title">当前动态</view>
+    <view class="incident" wx:for="{{incidents}}" wx:key="id">
+      <view class="row-between">
+        <text class="inc-title">⚠ {{item.type}}</text>
+        <text class="test-tag" wx:if="{{item.isTestData}}">测试数据</text>
+      </view>
+      <view class="inc-desc">{{item.description}}</view>
+      <view class="inc-meta">影响：{{item.facilityText}} · 发生 {{item.occurredAt}}{{item.expectedEndAt ? ' · 预计恢复 ' + item.expectedEndAt : ''}}</view>
+    </view>
+  </view>
+
+  <!-- 已恢复事件（历史） -->
+  <view class="card" wx:if="{{resolved.length}}">
+    <view class="section-title muted">历史事件（已恢复）</view>
+    <view class="muted inc-his" wx:for="{{resolved}}" wx:key="id">{{item.type}} · {{item.resolvedAt || item.occurredAt}}</view>
+  </view>
+
+  <!-- 核验信息 -->
+  <view class="card">
+    <view class="section-title">信息来源</view>
+    <view class="rec-line"><text class="k">最近核验</text>{{place.lastVerifiedAt || '未知'}}</view>
+    <view class="rec-line"><text class="k">采集人</text>{{place.collectedBy || '未知'}}</view>
+    <view class="rec-line"><text class="k">来源</text>志愿者现场采集 + AI 辅助识别</view>
+  </view>
+
+  <view style="height: 140rpx;"></view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="ab-item {{isFav ? 'on' : ''}}" bindtap="toggleFav">{{isFav ? '★' : '☆'}}<view class="ab-t">收藏</view></view>
+    <view class="ab-item" bindtap="goRelay">⇄<view class="ab-t">接力卡</view></view>
+    <view class="ab-item" bindtap="doCorrect">✎<view class="ab-t">纠错</view></view>
+    <view class="ab-item" bindtap="subscribe">🔔<view class="ab-t">订阅</view></view>
+    <button class="ab-item ab-btn" open-type="share">➤<view class="ab-t">分享</view></button>
+    <view class="ab-cta" bindtap="goIncident">上报动态</view>
+  </view>
+</view>
+
+<view class="loading" wx:elif="{{loading}}">加载中…</view>
