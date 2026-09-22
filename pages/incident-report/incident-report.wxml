@@ -1,0 +1,57 @@
+<view class="form">
+  <view class="card">
+    <view class="section-title">上报地点</view>
+    <picker mode="selector" range="{{places}}" range-key="name" value="{{placeIndex}}" bindchange="onPlace">
+      <view class="picker-row">
+        <text class="label">地点</text>
+        <text class="value">{{places[placeIndex].name || '请选择'}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="card">
+    <view class="section-title">事件类型</view>
+    <picker mode="selector" range="{{types}}" range-key="label" value="{{typeIndex}}" bindchange="onType">
+      <view class="picker-row">
+        <text class="label">类型</text>
+        <text class="value">{{types[typeIndex].label}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="card">
+    <view class="section-title">补充说明</view>
+    <textarea class="desc" placeholder="请描述现场情况，例如电梯停运、通道被占用等" value="{{description}}" bindinput="onDesc" maxlength="200"></textarea>
+  </view>
+
+  <view class="card">
+    <view class="section-title">时间</view>
+    <picker mode="date" value="{{occurredAt}}" bindchange="onOccurred">
+      <view class="picker-row">
+        <text class="label">发生时间</text>
+        <text class="value">{{occurredAt}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+    <picker mode="date" value="{{expectedEndAt}}" bindchange="onEnd">
+      <view class="picker-row">
+        <text class="label">预计结束</text>
+        <text class="value">{{expectedEndAt || '选填'}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="card">
+    <view class="section-title">现场照片</view>
+    <view wx:if="{{photo}}" class="photo-box">
+      <image class="photo" src="{{photo}}" mode="aspectFill"></image>
+    </view>
+    <view wx:else class="photo-empty" bindtap="choosePhoto">＋ 选择照片</view>
+  </view>
+
+  <button class="btn btn-block" bindtap="submit">提交上报</button>
+  <view class="muted tip">上报后将触发该地点通行结果重新计算。演示数据会标记为测试数据。</view>
+</view>

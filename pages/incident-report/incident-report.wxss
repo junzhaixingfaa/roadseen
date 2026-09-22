@@ -1,0 +1,13 @@
+.form { min-height: 100vh; background: #f5f6f8; padding: 20rpx 0 40rpx; }
+.form .card { margin: 0 24rpx 20rpx; }
+.picker-row { display: flex; align-items: center; justify-content: space-between; padding: 22rpx 0; border-bottom: 1rpx solid #f2f3f5; }
+.picker-row:last-child { border-bottom: none; }
+.label { font-size: 28rpx; color: #303133; }
+.value { font-size: 28rpx; color: #2f6fb0; flex: 1; text-align: right; margin-right: 12rpx; }
+.arrow { color: #c0c4cc; font-size: 34rpx; }
+.desc { width: 100%; box-sizing: border-box; min-height: 140rpx; font-size: 28rpx; padding: 12rpx 0; }
+.photo-box { padding: 8rpx 0; }
+.photo { width: 260rpx; height: 200rpx; border-radius: 12rpx; }
+.photo-empty { width: 260rpx; height: 200rpx; border: 2rpx dashed #c8ccd4; border-radius: 12rpx; display: flex; align-items: center; justify-content: center; color: #909399; font-size: 26rpx; }
+.btn-block { margin: 8rpx 24rpx 0; }
+.tip { text-align: center; padding: 24rpx 40rpx; font-size: 24rpx; }
