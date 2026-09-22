@@ -2,7 +2,7 @@
 const { STATUS } = require('../utils/status');
 
 module.exports = {
-  center: { latitude: 30.5150, longitude: 114.4000 }, // 执行者可换成真实校园中心坐标
+  center: { latitude: 39.7835, longitude: 116.5075 }, // 北京·亦庄（示例校园中心，可换成真实坐标）
   defaultZoom: 16,
   categories: ['教学楼', '图书馆', '食堂', '卫生间', '商店', '体育馆', '实验楼', '宿舍'],
   evidenceValidDays: 180,

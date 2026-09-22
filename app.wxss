@@ -79,7 +79,8 @@ view, text, scroll-view {
 }
 .btn-block {
   display: block;
-  width: 100%;
+  box-sizing: border-box;
+  width: auto;
 }
 
 /* 四色结果大卡 */
