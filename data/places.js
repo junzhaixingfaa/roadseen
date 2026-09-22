@@ -1,15 +1,15 @@
 // 5 个测试地点，覆盖四色状态 + 动态演示
-// 坐标示例落在北京·亦庄一带（相对布局保持），可按需整体替换
+// 坐标示例落在北京大学·海淀燕园（相对布局保持），可按需整体替换
 module.exports = [
   {
     id: 'p001', name: '图书馆', category: '图书馆',
     address: '校园中心广场南侧', openTime: '08:00-22:00',
-    location: { latitude: 39.7830, longitude: 116.5070 },
+    location: { latitude: 39.9915, longitude: 116.3105 },
     needElevatorToTarget: false, needAccessibleToilet: false,
     entrances: [
       {
         id: 'e001', name: '南侧无障碍入口', direction: '面向广场，玻璃门西侧约 5 米',
-        location: { latitude: 39.78292, longitude: 116.50708 }, isRecommended: true,
+        location: { latitude: 39.99142, longitude: 116.31058 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
         hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false
       }
@@ -25,12 +25,12 @@ module.exports = [
   {
     id: 'p002', name: '老教学楼', category: '教学楼',
     address: '北区道路东侧', openTime: '07:30-21:00',
-    location: { latitude: 39.7847, longitude: 116.5087 },
+    location: { latitude: 39.9932, longitude: 116.3122 },
     needElevatorToTarget: false, needAccessibleToilet: false,
     entrances: [
       {
         id: 'e002', name: '正门台阶入口', direction: '正对道路，门前有连续台阶',
-        location: { latitude: 39.78468, longitude: 116.50872 }, isRecommended: true,
+        location: { latitude: 39.99318, longitude: 116.31222 }, isRecommended: true,
         hasSteps: true, stepCount: 4, hasRamp: false, rampCondition: '无',
         hasThreshold: false, thresholdHeight: 0, doorType: '平开门', needAssistToOpen: false
       }
@@ -46,12 +46,12 @@ module.exports = [
   {
     id: 'p003', name: '第一食堂', category: '食堂',
     address: '生活区中心', openTime: '06:30-20:30',
-    location: { latitude: 39.7823, longitude: 116.5083 },
+    location: { latitude: 39.9908, longitude: 116.3118 },
     needElevatorToTarget: false, needAccessibleToilet: false,
     entrances: [
       {
         id: 'e003', name: '西侧门厅入口', direction: '西侧门厅，经坡道后为较重的平开门',
-        location: { latitude: 39.78226, longitude: 116.50836 }, isRecommended: true,
+        location: { latitude: 39.99076, longitude: 116.31186 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
         hasThreshold: true, thresholdHeight: 3, doorType: '平开门', needAssistToOpen: true
       }
@@ -67,7 +67,7 @@ module.exports = [
   {
     id: 'p004', name: '体育馆', category: '体育馆',
     address: '东区运动场旁', openTime: '',
-    location: { latitude: 39.7813, longitude: 116.5097 },
+    location: { latitude: 39.9898, longitude: 116.3132 },
     needElevatorToTarget: false, needAccessibleToilet: false,
     entrances: [],
     facilities: {
@@ -81,18 +81,18 @@ module.exports = [
   {
     id: 'p005', name: '实验楼', category: '实验楼',
     address: '中区教学科研楼', openTime: '08:00-21:00',
-    location: { latitude: 39.7840, longitude: 116.5060 },
+    location: { latitude: 39.9925, longitude: 116.3095 },
     needElevatorToTarget: true, needAccessibleToilet: false, // 主要实验室在 3 楼，需上楼
     entrances: [
       {
         id: 'e005', name: '北门无障碍入口', direction: '北侧广场，平坡进入',
-        location: { latitude: 39.78406, longitude: 116.50594 }, isRecommended: true,
+        location: { latitude: 39.99256, longitude: 116.30944 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
         hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false
       },
       {
         id: 'e005b', name: '东门次入口', direction: '东侧，有一级 2cm 门槛',
-        location: { latitude: 39.78398, longitude: 116.50612 }, isRecommended: false,
+        location: { latitude: 39.99248, longitude: 116.30962 }, isRecommended: false,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
         hasThreshold: true, thresholdHeight: 2, doorType: '推拉门', needAssistToOpen: false
       }
