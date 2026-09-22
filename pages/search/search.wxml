@@ -8,6 +8,8 @@
     <view class="chip {{f.onlyPass ? 'on' : ''}}" data-k="onlyPass" bindtap="onChip">仅可独立通过</view>
   </view>
 
+  <view class="result-meta">找到 {{list.length}} 个地点</view>
+
   <view class="empty" wx:if="{{list.length === 0}}">没有符合条件的地点</view>
   <view class="result-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
     <view class="row-between">

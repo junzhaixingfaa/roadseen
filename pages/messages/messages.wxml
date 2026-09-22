@@ -1,4 +1,8 @@
 <view class="msg">
+  <view class="msg-head">
+    <view class="msg-title">状态消息</view>
+    <view class="msg-copy">收藏地点的故障、恢复和复核结果会集中显示在这里。</view>
+  </view>
   <view wx:for="{{messages}}" wx:key="id" class="card mitem" data-id="{{item.placeId}}" bindtap="open">
     <view class="row-between">
       <text class="mtype mtype-{{item.type}}">{{item.typeText}}</text>

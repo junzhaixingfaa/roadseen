@@ -1,15 +1,33 @@
 <view class="survey">
+  <view class="survey-head">
+    <view class="survey-kicker">COMMUNITY SURVEY</view>
+    <view class="survey-title">把看不见的信息，带回地图</view>
+    <view class="survey-copy">按照指引拍摄入口与设施，AI预填后由你确认。</view>
+  </view>
   <view class="contrib">
     <view class="c-item"><text class="c-num">{{contributions.submitted}}</text><text class="c-lab">提交记录</text></view>
     <view class="c-item"><text class="c-num">{{contributions.places}}</text><text class="c-lab">贡献地点</text></view>
     <view class="c-item"><text class="c-num">{{roleText || '—'}}</text><text class="c-lab">当前身份</text></view>
   </view>
 
-  <view class="btn btn-block" bindtap="newCapture">＋ 新建勘察采集</view>
+  <view class="quick-check-card" bindtap="quickCheck">
+    <view class="qc-icon">AI</view>
+    <view class="qc-copy">
+      <view class="qc-title">只是想现场拍一下看看？</view>
+      <view class="qc-sub">无需完成整套勘察，拍一张快速检查</view>
+    </view>
+    <view class="qc-arrow">›</view>
+  </view>
 
-  <view class="section-title" style="padding:0 24rpx;">待勘察任务</view>
-  <view class="empty" wx:if="{{tasks.length === 0}}">当前没有待补充的地点</view>
-  <view class="task" wx:for="{{tasks}}" wx:key="id" data-id="{{item.id}}" bindtap="pickTask">
+  <view class="btn btn-block" wx:if="{{isCollector}}" bindtap="newCapture">＋ 新建勘察采集</view>
+  <view class="visitor-note" wx:else>
+    <view class="visitor-title">完整勘察由志愿者和维护者完成</view>
+    <view>普通用户可以使用 AI 拍照检查，或在地图页上报临时障碍。</view>
+  </view>
+
+  <view class="section-title" wx:if="{{isCollector}}" style="padding:0 24rpx;">待勘察任务</view>
+  <view class="empty" wx:if="{{isCollector && tasks.length === 0}}">当前没有待补充的地点</view>
+  <view class="task" wx:if="{{isCollector}}" wx:for="{{tasks}}" wx:key="id" data-id="{{item.id}}" bindtap="pickTask">
     <view class="row-between">
       <text class="t-name">{{item.name}}</text>
       <text class="t-reason">{{item.reason}}</text>

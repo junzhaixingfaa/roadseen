@@ -6,7 +6,7 @@
   color: #ffffff;
   line-height: 1.7;
 }
-.tag-pass { background: #2BA245; }
-.tag-assist { background: #E6A23C; }
-.tag-blocked { background: #D93026; }
-.tag-unknown { background: #909399; }
+.tag-pass { background: #248A5A; }
+.tag-assist { background: #D88921; }
+.tag-blocked { background: #C84B4B; }
+.tag-unknown { background: #77838F; }

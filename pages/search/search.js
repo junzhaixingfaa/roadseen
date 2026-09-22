@@ -16,8 +16,7 @@ Page({
 
   onChip(e) {
     const k = e.currentTarget.dataset.k;
-    const f = this.data.f;
-    f[k] = !f[k];
+    const f = Object.assign({}, this.data.f, { [k]: !this.data.f[k] });
     this.setData({ f }, () => this.load());
   },
 

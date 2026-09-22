@@ -3,9 +3,11 @@ const incidentService = require('../../services/incidentService');
 const evidenceService = require('../../services/evidenceService');
 const userService = require('../../services/userService');
 const ruleEngine = require('../../services/ruleEngine');
+const reviewService = require('../../services/reviewService');
+const storage = require('../../services/storage');
 const { getStatus } = require('../../utils/status');
 
-const TYPE_MAP = { entrance: '入口', ramp: '坡道', elevator: '电梯', toilet: '厕所', sign: '标识', notice: '通知', path: '通道' };
+const TYPE_MAP = { entrance: '入口', ramp: '坡道', step: '台阶/坡道', door: '门', elevator: '电梯', toilet: '厕所', sign: '标识', notice: '通知', path: '通道', other: '其他障碍' };
 const CONFIRM_MAP = { confirmed: '已确认', pending: '待确认', unknown: '未知' };
 const FAC_MAP = { elevator: '电梯', ramp: '坡道', path: '通道', toilet: '厕所', door: '门', openTime: '开放时间', other: '其他' };
 
@@ -38,13 +40,13 @@ Page({
 
   async load() {
     const id = this.data.id;
-    if (!id) { wx.showToast({ title: '缺少地点', icon: 'none' }); return; }
+    if (!id) { wx.showToast({ title: '缺少地点', icon: 'none' }); this.setData({ loading: false }); return; }
     this.setData({ loading: true });
     try {
       const user = await userService.ensureCurrent();
       const profile = user && user.profile;
       const place = await placeService.get(id);
-      if (!place) { wx.showToast({ title: '地点不存在', icon: 'none' }); return; }
+      if (!place) { wx.showToast({ title: '地点不存在', icon: 'none' }); this.setData({ loading: false }); return; }
       const [activeInc, resolvedInc, evs] = await Promise.all([
         incidentService.listActiveForPlace(id),
         incidentService.listResolvedForPlace(id),
@@ -120,15 +122,34 @@ Page({
   },
 
   goIncident() {
-    wx.navigateTo({ url: '/pages/incident-report/incident-report?id=' + this.data.id });
+    storage.set('lj_incident_target', this.data.id);
+    wx.switchTab({ url: '/pages/incident-report/incident-report' });
   },
 
   doCorrect() {
     wx.showActionSheet({
       itemList: ['仍然准确', '已经变化（上传新证据）', '不确定'],
-      success: (r) => {
-        const map = ['已反馈：仍然准确', '感谢反馈，该信息将进入复核', '已标记为不确定，将请求复核'];
-        wx.showToast({ title: map[r.tapIndex], icon: 'none' });
+      success: async r => {
+        const kinds = ['accurate', 'changed', 'uncertain'];
+        const labels = ['仍然准确', '已经变化', '不确定'];
+        const user = userService.current();
+        await reviewService.submit({
+          placeId: this.data.id,
+          placeName: this.data.place ? this.data.place.name : '',
+          kind: kinds[r.tapIndex],
+          kindText: labels[r.tapIndex],
+          submittedBy: user ? user.nickname : '匿名'
+        });
+        if (r.tapIndex === 1) {
+          wx.showModal({
+            title: '补充现场证据',
+            content: '接下来进入引导拍摄，补拍完成后会连同纠错记录交给管理员审核。',
+            showCancel: false,
+            success: () => wx.navigateTo({ url: '/pages/capture/capture?id=' + this.data.id })
+          });
+        } else {
+          wx.showToast({ title: r.tapIndex === 0 ? '已记录，等待复核' : '已请求管理员复核', icon: 'none' });
+        }
       }
     });
   },

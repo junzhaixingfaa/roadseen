@@ -52,6 +52,14 @@ function judgeAccess(place, profile, activeIncidents) {
     } else if (inc.facility === 'toilet') {
       if (place.needAccessibleToilet) { reasons.push(desc); result = 'blocked'; }
       else { reasons.push(desc); }
+    } else if (inc.facility === 'door') {
+      if (prof.acceptAssist && prof.accompanied) {
+        reasons.push(desc + '（有人陪同，可尝试协助开门）');
+        if (!result) result = 'assist';
+      } else {
+        reasons.push(desc + '，当前条件下无法确认可安全进入');
+        result = 'blocked';
+      }
     } else {
       reasons.push(desc);
     }

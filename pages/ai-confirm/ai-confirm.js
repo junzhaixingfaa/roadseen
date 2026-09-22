@@ -30,7 +30,7 @@ Page({
     let placeName = '';
     if (placeId) { const p = await placeService.get(placeId); placeName = p ? p.name : ''; }
     const draft = storage.get('lj_capture_draft', {});
-    const photos = draft.photos || {};
+    const photos = draft.placeId === placeId ? (draft.photos || {}) : {};
     const keys = Object.keys(photos).filter(k => photos[k]);
     const items = (keys.length ? keys : ['entrance']).map(k => ({
       key: k, title: STEP_TITLES[k] || k, photo: photos[k] || '',
@@ -94,6 +94,16 @@ Page({
   },
 
   submit() {
+    if (this.data.submitting) return;
+    if (this.data.items.some(it => it.loading)) {
+      wx.showToast({ title: '请等待识别完成', icon: 'none' });
+      return;
+    }
+    if (!this.data.placeId) {
+      wx.showToast({ title: '缺少勘察地点，请返回重选', icon: 'none' });
+      return;
+    }
+    this.setData({ submitting: true });
     const user = userService.current();
     const inspection = {
       id: 'insp' + Date.now(),
@@ -105,7 +115,10 @@ Page({
       isTestData: true,
       items: this.data.items.map(it => ({
         key: it.key, title: it.title, choice: it.choice,
+        photo: it.photo,
         aiDetected: it.detected, ocrText: it.ocrText,
+        basis: it.basis, confidence: it.confidence,
+        unknownFields: it.unknownFields, suggestRetake: it.suggestRetake,
         stepCount: it.stepCount, doorType: it.doorType, elevatorStatus: it.elevatorStatus
       }))
     };
@@ -117,7 +130,7 @@ Page({
       title: '已提交审核',
       content: 'AI 结果与人工修正已记录，等待管理员审核发布。',
       showCancel: false,
-      success: () => wx.switchTab({ url: '/pages/survey/survey' })
+      success: () => wx.redirectTo({ url: '/pages/survey/survey' })
     });
   }
 });

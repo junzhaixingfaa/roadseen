@@ -59,3 +59,19 @@
 .ab-cta { width: 180rpx; text-align: center; background: #2f6fb0; color: #ffffff; border-radius: 30rpx; padding: 14rpx 0; font-size: 26rpx; margin-left: 8rpx; }
 
 .loading { text-align: center; color: #909399; padding-top: 160rpx; }
+
+.detail { background: #F3F6F6; }
+.hd { margin: 18rpx 20rpx 0; padding: 28rpx; border: 1rpx solid #E1E8E8; border-radius: 24rpx; background: #FFFFFF; }
+.hd-name { color: #1D2B32; font-size: 38rpx; }
+.hd-cat { color: #176B70; background: #E7F2F2; }
+.hd-meta { color: #718089; }
+.profile-tip { border: 1rpx solid #F0D9A9; border-radius: 16rpx; background: #FFF6E5; }
+.alt { color: #176B70; }
+.rec-line { color: #26373E; }
+.rec-line .k { color: #718089; }
+.step { color: #53646B; }
+.step-no { color: #FFFFFF; background: #176B70; }
+.incident { border: 1rpx solid #F0D0D0; border-radius: 16rpx; background: #FFF1F1; }
+.inc-title { color: #C84B4B; }
+.action-bar { padding: 14rpx 10rpx 20rpx; border-color: #E1E8E8; box-shadow: 0 -8rpx 24rpx rgba(27,61,68,.08); }
+.ab-cta { border-radius: 16rpx; background: #176B70; box-shadow: 0 6rpx 14rpx rgba(23,107,112,.2); }

@@ -7,7 +7,7 @@ App({
 
   onLaunch() {
     try {
-      this.globalData.systemInfo = wx.getSystemInfoSync();
+      this.globalData.systemInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : wx.getSystemInfoSync();
     } catch (e) {
       // ignore
     }

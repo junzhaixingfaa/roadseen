@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="intro">
+    <view class="eyebrow">QUICK ACCESS CHECK</view>
+    <view class="title">拍一张，先判断这里能不能过</view>
+    <view class="copy">面向普通用户的现场快速检查。照片只用于本次体验，正式版将由服务端安全分析。</view>
+    <view class="demo-tag">当前：演示识别 · 尚未接入真实视觉 API</view>
+  </view>
+
+  <view class="flow-card">
+    <view class="step-head"><text class="step-no">1</text><text>拍摄入口或眼前障碍</text></view>
+    <view class="photo-empty" wx:if="{{!photo}}" bindtap="choosePhoto">
+      <view class="camera">◎</view>
+      <view class="photo-title">现场拍照 / 从相册选择</view>
+      <view class="photo-hint">建议同时拍到入口、地面与两侧通道</view>
+    </view>
+    <view class="photo-wrap" wx:else>
+      <image class="photo" src="{{photo}}" mode="aspectFill" bindtap="preview" />
+      <view class="photo-actions"><view bindtap="preview">查看大图</view><view bindtap="retake">重新拍摄</view></view>
+    </view>
+    <view class="location-row" bindtap="locate">
+      <text class="location-icon">⌖</text>
+      <view class="location-copy"><text class="location-title">{{locationText}}</text><text class="location-hint">点击记录现场坐标（可选）</text></view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <view class="flow-card" wx:if="{{photo}}">
+    <view class="step-head"><text class="step-no">2</text><text>获取通行建议</text></view>
+    <view class="analyze-btn {{state === 'analyzing' ? 'disabled' : ''}}" bindtap="analyze">{{state === 'analyzing' ? '正在检查画面…' : (state === 'done' ? '重新检查' : '开始 AI 检查')}}</view>
+    <view class="loading" wx:if="{{state === 'analyzing'}}"><view class="loading-line"></view><view>正在识别入口、台阶、坡道与门体</view></view>
+  </view>
+
+  <view class="result-card" wx:if="{{state === 'done' && result}}">
+    <view class="result-top">
+      <view><view class="result-kicker">演示检查结果</view><view class="result-title">{{result.title}}</view></view>
+      <view class="confidence">置信提示：{{result.confidence}}</view>
+    </view>
+    <view class="summary">{{result.summary}}</view>
+    <view class="result-section"><view class="section-title">画面观察</view><view class="bullet" wx:for="{{result.observations}}" wx:key="*this"><text>✓</text>{{item}}</view></view>
+    <view class="result-section warning"><view class="section-title">仍需注意</view><view class="bullet" wx:for="{{result.risks}}" wx:key="*this"><text>!</text>{{item}}</view></view>
+    <view class="disclaimer">{{result.disclaimer}}</view>
+    <view class="result-actions">
+      <view class="secondary" bindtap="report">上报现场问题</view>
+      <view class="primary" wx:if="{{canSurvey}}" bindtap="fullSurvey">进行完整勘察</view>
+      <view class="primary" wx:else bindtap="backMap">回到地图查看</view>
+    </view>
+  </view>
+
+  <view class="safe-note"><view class="safe-title">使用提示</view><view>快速结果只作现场参考，不能代替实地确认。遇到高台阶、陡坡、施工或视线盲区时，请优先选择安全路线。</view></view>
+</view>

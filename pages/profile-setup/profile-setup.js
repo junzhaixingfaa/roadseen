@@ -10,11 +10,14 @@ Page({
     mustUseElevator: false,
     acceptLowThreshold: false,
     acceptAssist: false,
-    hasProfile: false
+    hasProfile: false,
+    onboarding: false
   },
 
-  async onLoad() {
+  async onLoad(options) {
+    this.setData({ onboarding: options && options.onboarding === '1' });
     const u = await userService.ensureCurrent();
+    if (!u) { wx.reLaunch({ url: '/pages/login/login' }); return; }
     const p = u && u.profile;
     if (p) {
       let idx = this.data.deviceOptions.indexOf(p.device);
@@ -44,7 +47,15 @@ Page({
 
   async save() {
     const d = this.data;
+    if (!d.device) {
+      wx.showToast({ title: '请选择辅助器具', icon: 'none' });
+      return;
+    }
     const width = d.deviceWidth === '' ? null : Number(d.deviceWidth);
+    if (width != null && (width < 30 || width > 120)) {
+      wx.showToast({ title: '设备宽度请填写30-120cm', icon: 'none' });
+      return;
+    }
     await userService.saveProfile({
       device: d.device || '未设置',
       deviceWidth: width,
@@ -54,10 +65,14 @@ Page({
       acceptAssist: d.acceptAssist
     });
     wx.showToast({ title: '已保存，通行判断已更新', icon: 'none' });
-    setTimeout(() => wx.navigateBack(), 800);
+    setTimeout(() => d.onboarding ? wx.switchTab({ url: '/pages/map/map' }) : wx.navigateBack(), 800);
   },
 
   async skip() {
+    if (this.data.onboarding) {
+      wx.showToast({ title: '首次使用请完成基本情况', icon: 'none' });
+      return;
+    }
     await userService.saveProfile(null);
     wx.showToast({ title: '已清除档案，按通用条件显示', icon: 'none' });
     setTimeout(() => wx.navigateBack(), 700);

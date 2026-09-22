@@ -58,6 +58,6 @@
 
   <view style="height: 140rpx;"></view>
   <view class="aic-bar">
-    <view class="btn btn-block" bindtap="submit">确认无误，提交审核</view>
+    <view class="btn btn-block {{submitting ? 'disabled' : ''}}" bindtap="submit">{{submitting ? '正在提交…' : '确认无误，提交审核'}}</view>
   </view>
 </view>

@@ -2,6 +2,8 @@
 
 .cap-hd { background: #ffffff; padding: 24rpx; }
 .cap-title { font-size: 32rpx; font-weight: 600; }
+.place-picker { margin-top: 14rpx; padding: 16rpx 20rpx; border-radius: 12rpx; background: #eef4fb; color: #2f6fb0; font-size: 26rpx; }
+.place-picker.placeholder { color: #b8541f; background: #fdf1e7; }
 .prog { margin-top: 8rpx; font-size: 24rpx; color: #2f6fb0; }
 
 .step-card { background: #ffffff; border-radius: 14rpx; margin: 16rpx 20rpx; padding: 22rpx; }
@@ -29,3 +31,19 @@
   background: #ffffff; border-top: 1rpx solid #eee; padding: 16rpx 24rpx;
 }
 .cap-bar .btn-block { margin: 0; }
+
+.capture { background: #F3F6F6; padding-bottom: 140rpx; }
+.cap-hd { margin: 18rpx 20rpx 0; padding: 28rpx; border-radius: 26rpx; color: #FFFFFF; background: #103F4A; }
+.cap-title { font-size: 34rpx; font-weight: 700; }
+.cap-hd .muted { color: #D5E7E4; }
+.place-picker { border: 1rpx solid rgba(255,255,255,.16); border-radius: 14rpx; color: #FFFFFF; background: rgba(255,255,255,.1); }
+.place-picker.placeholder { color: #FFE0B6; background: rgba(216,137,33,.15); }
+.prog { color: #A9D1CC; }
+.step-card { margin: 14rpx 20rpx; padding: 26rpx; border: 1rpx solid #E1E8E8; border-radius: 22rpx; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.04); }
+.st-title { color: #1D2B32; }
+.req { color: #A83E44; background: #FBEAEB; }
+.st-hint { color: #718089; }
+.shot { border-color: #AFCAC8; border-radius: 18rpx; color: #176B70; background: #F0F7F6; }
+.plus { color: #176B70; }
+.shot-img { border-radius: 18rpx; }
+.cap-bar { padding: 16rpx 20rpx 24rpx; border-color: #E1E8E8; box-shadow: 0 -8rpx 24rpx rgba(27,61,68,.07); }

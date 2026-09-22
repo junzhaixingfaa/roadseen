@@ -7,37 +7,44 @@ Page({
     user: null,
     avatar: '',
     roleText: '',
-    users: [],
+    account: '',
     hasProfile: false,
     profileSummary: '',
-    favCount: 0
+    favCount: 0,
+    canCollect: false
   },
 
   async onShow() {
-    const users = await userService.listUsers();
     const u = await userService.ensureCurrent();
+    if (!u) { wx.reLaunch({ url: '/pages/login/login' }); return; }
     const favs = userService.favorites();
     const p = u && u.profile;
     this.setData({
       user: u,
       avatar: u ? (u.nickname || '?').slice(0, 1) : '',
-      users: users.map(x => ({ id: x.id, nickname: x.nickname, roleText: ROLE_TEXT[x.role] || x.role })),
+      account: u.account || '',
       roleText: u ? (ROLE_TEXT[u.role] || u.role) : '',
+      canCollect: !!u && (u.role === 'volunteer' || u.role === 'maintainer' || u.role === 'admin'),
       hasProfile: !!p,
       profileSummary: p ? (p.device + ' · ' + (p.accompanied ? '有人陪同' : '独立出行') + ' · ' + (p.acceptAssist ? '接受协助' : '不接受协助')) : '未建立',
       favCount: favs.length
     });
   },
 
-  onUserTap(e) {
-    const id = e.currentTarget.dataset.id;
-    userService.setCurrent(id).then(() => this.onShow());
+  logout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '退出后，本机保存的通行档案和收藏不会删除。',
+      success: async r => {
+        if (!r.confirm) return;
+        await userService.logout();
+        wx.reLaunch({ url: '/pages/login/login' });
+      }
+    });
   },
 
   goProfile() { wx.navigateTo({ url: '/pages/profile-setup/profile-setup' }); },
   goFavorites() { wx.navigateTo({ url: '/pages/favorites/favorites' }); },
-  goSurvey() { wx.switchTab({ url: '/pages/survey/survey' }); },
-  goAdmin() { wx.navigateTo({ url: '/pages/admin/admin' }); },
-  goHistory() { wx.showToast({ title: '历史记录（雏形略）', icon: 'none' }); },
-  goSettings() { wx.showToast({ title: '设置（雏形略）', icon: 'none' }); }
+  goSurvey() { wx.navigateTo({ url: '/pages/survey/survey' }); },
+  goAdmin() { wx.navigateTo({ url: '/pages/admin/admin' }); }
 });

@@ -1,0 +1,53 @@
+.login-page { min-height: 100vh; padding-bottom: 50rpx; background: #f2f6fa; }
+.login-hero { padding: 54rpx 42rpx 70rpx; color: #fff; background: linear-gradient(145deg, #164f87 0%, #2f79b2 68%, #54a8b2 100%); }
+.brand { font-size: 54rpx; font-weight: 800; letter-spacing: 10rpx; }
+.slogan { margin-top: 18rpx; font-size: 34rpx; font-weight: 600; }
+.hero-copy { margin-top: 10rpx; font-size: 23rpx; opacity: 0.8; }
+.login-card, .session-card { margin: -36rpx 24rpx 0; padding: 30rpx; border-radius: 24rpx; background: #fff; box-shadow: 0 12rpx 40rpx rgba(25, 72, 112, 0.14); position: relative; }
+.mode-tabs { display: flex; margin-bottom: 30rpx; border-bottom: 1rpx solid #edf0f4; }
+.mode { flex: 1; padding: 18rpx 0; text-align: center; color: #909399; font-size: 29rpx; }
+.mode.on { color: #236aa5; font-weight: 700; border-bottom: 4rpx solid #236aa5; }
+.field { margin-bottom: 24rpx; }
+.label { color: #4a5561; font-size: 25rpx; font-weight: 600; }
+.input { margin-top: 10rpx; padding: 19rpx 22rpx; border: 1rpx solid #dce4ec; border-radius: 12rpx; background: #f9fbfc; font-size: 28rpx; }
+.show-pass { color: #2f6fb0; font-size: 23rpx; }
+.error { margin: -6rpx 0 16rpx; padding: 12rpx 16rpx; border-radius: 8rpx; color: #c7352b; background: #fff0ef; font-size: 23rpx; }
+.submit, .primary-small { border: none; background: #236aa5; color: #fff; font-weight: 600; }
+.submit { margin-top: 8rpx; border-radius: 13rpx; font-size: 29rpx; }
+.submit::after, .primary-small::after, .text-small::after { border: none; }
+.demo-box { margin-top: 28rpx; padding: 18rpx; border-radius: 12rpx; background: #eef5fb; }
+.demo-title { color: #285f8f; font-size: 24rpx; font-weight: 600; }
+.demo-copy { margin-top: 6rpx; color: #657b8d; font-size: 21rpx; }
+.demo-actions { display: flex; gap: 28rpx; margin-top: 12rpx; color: #236aa5; font-size: 23rpx; }
+.safe-tip { margin-top: 20rpx; color: #a0a6ad; text-align: center; font-size: 20rpx; }
+.feature-row { display: flex; margin: 36rpx 36rpx 0; color: #6d7d89; }
+.feature { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx; font-size: 22rpx; }
+.feature-icon { width: 58rpx; height: 58rpx; border-radius: 50%; background: #dceaf5; color: #236aa5; font-size: 30rpx; line-height: 58rpx; text-align: center; }
+.session-title { font-size: 32rpx; font-weight: 700; }
+.session-account { margin-top: 8rpx; color: #7c8791; font-size: 24rpx; }
+.session-actions { display: flex; gap: 16rpx; margin-top: 26rpx; }
+.primary-small, .text-small { flex: 1; margin: 0; border-radius: 11rpx; font-size: 25rpx; }
+.text-small { color: #236aa5; background: #eaf3fa; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* 统一视觉升级 */
+.login-page { background: #F3F6F6; }
+.login-hero { padding: 46rpx 38rpx 76rpx; background: #103F4A; border-radius: 0 0 44rpx 44rpx; }
+.brand-row { display: flex; align-items: center; gap: 16rpx; }
+.logo-mark { width: 64rpx; height: 64rpx; border-radius: 18rpx; color: #103F4A; background: #D9EEEA; font-size: 34rpx; font-weight: 800; line-height: 64rpx; text-align: center; }
+.brand { font-size: 44rpx; letter-spacing: 5rpx; }
+.eyebrow { margin-top: 16rpx; color: #A9D1CC; font-size: 18rpx; letter-spacing: 4rpx; }
+.slogan { margin-top: 20rpx; font-size: 36rpx; line-height: 1.35; }
+.hero-copy { color: #D4E5E3; }
+.login-card, .session-card { margin: 16rpx 28rpx 0; padding: 34rpx 30rpx; border: 1rpx solid #E0E8E8; border-radius: 28rpx; box-shadow: 0 18rpx 48rpx rgba(16, 63, 74, 0.12); }
+.mode-tabs { padding: 6rpx; border: none; border-radius: 14rpx; background: #F0F4F4; }
+.mode { padding: 15rpx 0; border-radius: 11rpx; font-size: 27rpx; }
+.mode.on { color: #176B70; border: none; background: #FFFFFF; box-shadow: 0 4rpx 12rpx rgba(16,63,74,.08); }
+.label { color: #33454C; }
+.input { padding: 20rpx 22rpx; border-color: #DCE5E5; border-radius: 14rpx; background: #F8FAFA; }
+.show-pass, .demo-actions { color: #176B70; }
+.submit, .primary-small { min-height: 88rpx; border-radius: 16rpx; background: #176B70; box-shadow: 0 10rpx 22rpx rgba(23,107,112,.2); }
+.demo-box { border: 1rpx solid #D8E8E6; border-radius: 16rpx; background: #F0F7F6; }
+.demo-title { color: #176B70; }
+.feature-icon { color: #176B70; background: #E2F0EE; }
+.text-small { color: #176B70; background: #E7F2F2; }

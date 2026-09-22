@@ -19,8 +19,20 @@
           <text class="pill pill-{{item.status}}">{{item.statusText}}</text>
         </view>
         <view class="muted it-sub">{{item.itemCount}} 个环节 · 提交人 {{item.submittedBy}} · {{item.timeText}}</view>
+        <view class="review-note" wx:if="{{item.reviewNote}}">审核记录：{{item.reviewNote}}</view>
+        <scroll-view scroll-x="{{true}}" class="inspection-scroll" wx:if="{{item.items.length}}">
+          <view class="inspection-fields">
+            <view class="inspection-field" wx:for="{{item.items}}" wx:for-item="field" wx:key="key">
+              <image class="inspection-photo" wx:if="{{field.photo}}" src="{{field.photo}}" mode="aspectFill" />
+              <view class="field-title">{{field.title}} · {{field.choiceText}}</view>
+              <view class="muted field-line">{{field.detectedText}}</view>
+              <view class="muted field-line" wx:if="{{field.detailText}}">{{field.detailText}}</view>
+              <view class="ocr" wx:if="{{field.ocrText}}">OCR：{{field.ocrText}}</view>
+            </view>
+          </view>
+        </scroll-view>
         <view wx:if="{{item.status === 'pending'}}" class="it-acts">
-          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="approve">通过</button>
+          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="approve">通过并发布</button>
           <button class="mini mini-no" data-id="{{item.id}}" bindtap="reject">驳回</button>
         </view>
       </view>
@@ -37,6 +49,23 @@
         <view wx:if="{{item.isTestData}}" class="test-flag">演示数据</view>
         <view wx:if="{{item.status === 'active'}}" class="it-acts">
           <button class="mini mini-ok" data-id="{{item.id}}" bindtap="resolveIncident">标记已恢复</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 纠错复核 -->
+    <view wx:elif="{{tab === 'review'}}" class="body">
+      <view wx:if="{{!reviews.length}}" class="empty muted">暂无用户纠错或复核记录。</view>
+      <view wx:for="{{reviews}}" wx:key="id" class="card item">
+        <view class="row-between">
+          <text class="it-name">{{item.placeName}}</text>
+          <text class="pill {{item.status === 'pending' ? 'pill-pending' : 'st-done'}}">{{item.statusText}}</text>
+        </view>
+        <view class="review-kind">用户反馈：{{item.kindText}}</view>
+        <view class="muted it-sub">提交人 {{item.submittedBy}} · {{item.timeText}}</view>
+        <view class="review-note" wx:if="{{item.reviewNote}}">处理记录：{{item.reviewNote}}</view>
+        <view wx:if="{{item.status === 'pending'}}" class="it-acts">
+          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="reviewFeedback">处理反馈</button>
         </view>
       </view>
     </view>

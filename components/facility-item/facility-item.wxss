@@ -1,4 +1,4 @@
-.fi { display: flex; padding: 12rpx 0; border-bottom: 1rpx solid #f2f3f5; font-size: 26rpx; }
-.fi-label { width: 200rpx; color: #909399; flex-shrink: 0; }
-.fi-value { flex: 1; color: #303133; }
-.fi-value.unk { color: #b8bcc4; }
+.fi { display: flex; padding: 15rpx 0; border-bottom: 1rpx solid #E8EDED; font-size: 26rpx; }
+.fi-label { width: 200rpx; color: #718089; flex-shrink: 0; }
+.fi-value { flex: 1; color: #26373E; font-weight: 500; }
+.fi-value.unk { color: #A7B1B6; }

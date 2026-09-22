@@ -10,3 +10,17 @@
 .mdesc { margin-top: 8rpx; font-size: 27rpx; color: #606266; line-height: 1.5; }
 .empty { text-align: center; padding: 100rpx 60rpx; }
 .empty .btn { margin-top: 40rpx; }
+
+.msg { background: #F3F6F6; }
+.msg-head { margin: 0 20rpx 22rpx; padding: 28rpx; border-radius: 24rpx; color: #FFFFFF; background: #103F4A; }
+.msg-title { font-size: 34rpx; font-weight: 700; }
+.msg-copy { margin-top: 8rpx; color: #D5E7E4; font-size: 23rpx; }
+.msg .card { margin: 0 20rpx 14rpx; padding: 26rpx; }
+.mitem { border-left: 6rpx solid #D5E2E2; }
+.mitem:active { background: #F7FAFA; }
+.mtype { padding: 5rpx 14rpx; font-size: 20rpx; font-weight: 600; }
+.mtype-incident { background: #C84B4B; }
+.mtype-recover { background: #248A5A; }
+.mtype-system { background: #176B70; }
+.mtitle { color: #1D2B32; font-size: 30rpx; }
+.mdesc { color: #617078; font-size: 25rpx; }

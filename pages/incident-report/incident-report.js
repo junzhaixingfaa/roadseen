@@ -1,8 +1,9 @@
 const incidentService = require('../../services/incidentService');
 const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
-const campus = require('../../data/campus');
+const storage = require('../../services/storage');
 const util = require('../../utils/util');
+const campus = placeService.getCampusConfig();
 
 Page({
   data: {
@@ -18,19 +19,34 @@ Page({
     photo: ''
   },
 
-  async onLoad(options) {
-    const places = await placeService.list();
-    let idx = 0;
-    if (options.id) {
-      const found = places.findIndex(p => p.id === options.id);
-      if (found >= 0) idx = found;
-    }
-    this.setData({
-      placeId: options.id || places[0].id,
-      places: places.map(p => ({ id: p.id, name: p.name })),
-      placeIndex: idx,
-      facility: this.data.types[idx >= 0 ? 0 : 0].facility
-    });
+  onLoad() {
+    this.ensurePlaces();
+  },
+
+  async onShow() {
+    await this.ensurePlaces();
+    const targetId = storage.get('lj_incident_target', '');
+    if (!targetId) return;
+    storage.remove('lj_incident_target');
+    const idx = this.data.places.findIndex(p => p.id === targetId);
+    if (idx >= 0) this.setData({ placeId: targetId, placeIndex: idx });
+  },
+
+  ensurePlaces() {
+    if (this._placesPromise) return this._placesPromise;
+    this._placesPromise = placeService.list().then(places => {
+      if (!places.length) {
+        wx.showModal({ title: '暂无地点', content: '请先添加地点后再上报动态。', showCancel: false });
+        return;
+      }
+      this.setData({
+        placeId: this.data.placeId || places[0].id,
+        places: places.map(p => ({ id: p.id, name: p.name })),
+        placeIndex: this.data.placeIndex || 0,
+        facility: this.data.types[0].facility
+      });
+    }).finally(() => { this._placesPromise = null; });
+    return this._placesPromise;
   },
 
   onPlace(e) {
@@ -63,6 +79,7 @@ Page({
       reportBy: user ? user.id : 'user'
     });
     wx.showToast({ title: '已上报，将重算通行结果', icon: 'none' });
-    setTimeout(() => wx.navigateBack(), 800);
+    this.setData({ description: '', expectedEndAt: '', photo: '' });
+    setTimeout(() => wx.switchTab({ url: '/pages/map/map' }), 800);
   }
 });

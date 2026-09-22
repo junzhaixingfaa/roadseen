@@ -1,7 +1,11 @@
 <view class="capture">
   <view class="cap-hd">
     <view class="cap-title">引导式勘察采集</view>
-    <view class="muted">{{placeName ? ('目标地点：' + placeName) : '未选择地点（可自由采集新地点）'}}</view>
+    <picker mode="selector" range="{{places}}" range-key="name" value="{{placeIndex}}" bindchange="onPlace">
+      <view class="place-picker {{placeName ? '' : 'placeholder'}}">
+        {{placeName ? ('目标地点：' + placeName) : '请选择勘察地点'}} ›
+      </view>
+    </picker>
     <view class="prog">必填项完成度：{{filledRequired}} / {{requiredTotal}}</view>
   </view>
 

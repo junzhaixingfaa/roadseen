@@ -1,6 +1,14 @@
 <view class="map-page">
+  <view class="map-head">
+    <view>
+      <view class="map-title">无障碍地图</view>
+      <view class="map-sub">{{userHint}}</view>
+    </view>
+    <view class="report-link" bindtap="reportIncident">上报障碍</view>
+  </view>
+
   <view class="topbar">
-    <view class="searchbox" bindtap="goSearch">搜索教学楼 / 食堂 / 图书馆…</view>
+    <view class="searchbox" bindtap="goSearch">搜索教学楼、食堂、图书馆</view>
     <view class="filter-btn {{showFilter ? 'on' : ''}}" bindtap="toggleFilter">筛选</view>
   </view>
 
@@ -11,37 +19,75 @@
   </view>
 
   <map
-    id="m"
-    class="map"
-    longitude="{{lng}}"
-    latitude="{{lat}}"
-    scale="{{scale}}"
-    markers="{{markers}}"
-    show-location="{{true}}"
-    bindmarkertap="onMarkerTap"
-    bindcallouttap="onMarkerTap"
-    style="height: {{mapH}}px"
+      wx:if="{{!mapSlow && !mapError}}"
+      id="m"
+      class="map"
+      style="height: {{mapH}}px;"
+      longitude="{{lng}}"
+      latitude="{{lat}}"
+      scale="{{scale}}"
+      markers="{{markers}}"
+      show-location="{{true}}"
+      bindupdated="onMapReady"
+      binderror="onMapError"
+      bindmarkertap="onMarkerTap"
+      bindcallouttap="onMarkerTap"
   ></map>
 
-  <view class="legend">
-    <view class="lg"><view class="dot" style="background:#2BA245"></view>可独立通过</view>
-    <view class="lg"><view class="dot" style="background:#E6A23C"></view>需协助</view>
-    <view class="lg"><view class="dot" style="background:#D93026"></view>暂不可通过</view>
-    <view class="lg"><view class="dot" style="background:#909399"></view>信息不足</view>
+  <view class="fallback-map" wx:else>
+    <view class="fallback-grid grid-a"></view>
+    <view class="fallback-grid grid-b"></view>
+    <view class="fallback-title">校园地点示意</view>
+    <view class="fallback-sub">开发者工具地图服务未响应，真机仍使用真实地图</view>
+    <view class="fallback-pin pin-{{item.result}}" wx:for="{{filteredRows}}" wx:key="id" style="left:{{item.mapX}}%;top:{{item.mapY}}%;" data-id="{{item.id}}" bindtap="openPlace">
+      <view class="pin-dot"></view><text>{{item.name}}</text>
+    </view>
+    <view class="retry-map" bindtap="retryMap">重试真实地图</view>
   </view>
 
-  <view class="mask" wx:if="{{sel}}" bindtap="closeSheet"></view>
-  <view class="sheet" wx:if="{{sel}}">
-    <view class="row-between">
-      <text class="s-name">{{sel.name}}</text>
-      <status-tag code="{{sel.result}}" />
+  <view class="map-load-note" wx:if="{{!mapLoaded && !mapSlow && !mapError}}">
+    正在加载真实地图…
+  </view>
+
+  <view class="map-controls">
+    <view class="control-btn primary" bindtap="locateMe">◎ 定位到我</view>
+    <view class="control-btn" bindtap="chooseRealPlace">选择地点</view>
+    <view class="control-btn" bindtap="toggleList">地点列表</view>
+  </view>
+
+  <view class="legend-row">
+    <view class="lg"><view class="dot pass"></view>可通过</view>
+    <view class="lg"><view class="dot assist"></view>需协助</view>
+    <view class="lg"><view class="dot blocked"></view>不可通过</view>
+    <view class="lg"><view class="dot unknown"></view>信息不足</view>
+  </view>
+
+  <view class="status-card">
+    <view class="status-head">
+      <view><view class="status-title">当前地点状态</view><view class="status-note">点击地图标记查看通行卡和现场依据</view></view>
+      <view class="all-list" bindtap="toggleList">全部地点 ›</view>
     </view>
-    <view class="muted s-sum">{{sel.summary}}</view>
-    <view class="muted s-tip" wx:if="{{!hasProfile}}">未建立通行档案，按通用条件显示；到「我的-通行档案」设置后更准确</view>
-    <view class="btn btn-block" bindtap="viewDetail">查看通行卡</view>
-    <view class="s-btns">
-      <view class="btn btn-ghost half" bindtap="navTo">导航到入口</view>
-      <view class="btn btn-ghost half" bindtap="addFav">收藏</view>
+    <view class="stat-row">
+      <view class="stat pass-text"><text class="stat-num">{{stats.pass}}</text><text>可通过</text></view>
+      <view class="stat assist-text"><text class="stat-num">{{stats.assist}}</text><text>需协助</text></view>
+      <view class="stat blocked-text"><text class="stat-num">{{stats.blocked}}</text><text>不可通过</text></view>
+      <view class="stat unknown-text"><text class="stat-num">{{stats.unknown}}</text><text>待勘察</text></view>
+    </view>
+  </view>
+
+  <view class="map-actions">
+    <view class="map-action" bindtap="goQuickCheck"><view class="action-icon ai">AI</view><view><view class="action-title">现场拍照检查</view><view class="action-sub">不确定时拍一张快速判断</view></view></view>
+    <view class="map-action" bindtap="reportIncident"><view class="action-icon warn">!</view><view><view class="action-title">发现临时障碍</view><view class="action-sub">上报施工、停运或占用</view></view></view>
+  </view>
+
+  <view class="place-list" wx:if="{{showList}}">
+    <view class="list-head row-between"><text class="list-title">地点通行状态</text><text class="muted" bindtap="toggleList">关闭</text></view>
+    <view class="list-scroll">
+      <view class="place-row" wx:for="{{filteredRows}}" wx:key="id" data-id="{{item.id}}" bindtap="pickFromList">
+        <view class="place-copy"><view class="place-name">{{item.name}}</view><view class="muted one-line">{{item.category}} · {{item.summary}}</view></view>
+        <status-tag code="{{item.result}}" />
+      </view>
+      <view class="empty-list" wx:if="{{filteredRows.length === 0}}">当前筛选下没有地点</view>
     </view>
   </view>
 </view>

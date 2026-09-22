@@ -1,12 +1,21 @@
 .admin { min-height: 100vh; background: #f5f6f8; padding-bottom: 40rpx; }
 .tabs { display: flex; background: #ffffff; border-bottom: 1rpx solid #ebedf0; position: sticky; top: 0; z-index: 5; }
-.tab { flex: 1; text-align: center; padding: 26rpx 0; font-size: 28rpx; color: #606266; }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 24rpx; color: #606266; }
 .tab.on { color: #2f6fb0; font-weight: 600; border-bottom: 4rpx solid #2f6fb0; }
 .body { padding-top: 8rpx; }
 .admin .card { margin: 20rpx 24rpx 0; }
 .item:active { background: #f0f2f5; }
 .it-name { font-size: 30rpx; color: #303133; font-weight: 600; }
 .it-sub { margin-top: 10rpx; font-size: 25rpx; line-height: 1.5; }
+.review-note { margin-top: 12rpx; padding: 10rpx 14rpx; border-radius: 8rpx; background: #f5f6f8; color: #606266; font-size: 23rpx; }
+.review-kind { margin-top: 14rpx; color: #303133; font-size: 26rpx; }
+.inspection-scroll { width: 100%; margin-top: 16rpx; }
+.inspection-fields { display: flex; gap: 14rpx; padding-bottom: 6rpx; }
+.inspection-field { flex: none; width: 300rpx; min-height: 150rpx; padding: 14rpx; border: 1rpx solid #ebeef5; border-radius: 12rpx; background: #fafbfc; }
+.inspection-photo { width: 100%; height: 150rpx; border-radius: 8rpx; margin-bottom: 10rpx; background: #ebeef5; }
+.field-title { font-size: 24rpx; font-weight: 600; }
+.field-line { margin-top: 4rpx; font-size: 22rpx; }
+.ocr { margin-top: 6rpx; color: #2f6fb0; font-size: 22rpx; }
 .it-acts { display: flex; gap: 20rpx; margin-top: 18rpx; }
 .mini { border: none; font-size: 26rpx; padding: 0 36rpx; line-height: 64rpx; height: 64rpx; border-radius: 10rpx; display: inline-block; margin: 0; }
 .mini::after { border: none; }
@@ -23,3 +32,19 @@
 .denied { padding: 120rpx 60rpx; text-align: center; }
 .denied-title { font-size: 34rpx; color: #303133; font-weight: 600; margin-bottom: 20rpx; }
 .denied .btn { margin-top: 40rpx; }
+
+.admin { background: #F3F6F6; }
+.tabs { margin: 14rpx 16rpx 0; padding: 6rpx; border: 1rpx solid #E1E8E8; border-radius: 18rpx; box-shadow: 0 6rpx 18rpx rgba(27,61,68,.05); }
+.tab { padding: 18rpx 4rpx; border-radius: 12rpx; color: #718089; font-size: 21rpx; }
+.tab.on { color: #FFFFFF; border: none; background: #176B70; }
+.admin .card { margin: 14rpx 20rpx 0; padding: 26rpx; }
+.item:active { background: #F7FAFA; }
+.it-name { color: #1D2B32; }
+.review-note { border: 1rpx solid #E1E8E8; border-radius: 12rpx; background: #F7FAFA; }
+.inspection-field { border-color: #DDE6E6; border-radius: 16rpx; background: #F7FAFA; }
+.mini { border-radius: 14rpx; }
+.mini-ok { background: #176B70; }
+.mini-no { color: #617078; background: #EDF1F1; }
+.pill-pending { background: #D88921; }
+.pill-approved { background: #248A5A; }
+.pill-rejected { background: #77838F; }

@@ -1,4 +1,9 @@
 <view class="ps">
+  <view class="onboard" wx:if="{{onboarding}}">
+    <view class="onboard-step">注册完成 · 第 2 步</view>
+    <view class="onboard-title">告诉我们你的通行情况</view>
+    <view class="onboard-copy">这些信息决定同一个地点对你是“可通过”还是“需要协助”，不会展示给其他用户。</view>
+  </view>
   <view class="intro">你的通行条件仅用于「能不能过」的判断，保存在本机、默认不公开，可随时修改。</view>
 
   <view class="card">
@@ -19,5 +24,5 @@
   </view>
 
   <view class="btn btn-block save" bindtap="save">保存档案</view>
-  <view class="link" wx:if="{{hasProfile}}" bindtap="skip">不建立档案 / 清除</view>
+  <view class="link" wx:if="{{hasProfile && !onboarding}}" bindtap="skip">不建立档案 / 清除</view>
 </view>

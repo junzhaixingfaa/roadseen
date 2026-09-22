@@ -1,4 +1,9 @@
 <view class="form">
+  <view class="form-head">
+    <view class="form-kicker">LIVE UPDATE</view>
+    <view class="form-title">上报现场变化</view>
+    <view class="form-copy">临时故障会立即参与通行判断，帮助其他人提前避开障碍。</view>
+  </view>
   <view class="card">
     <view class="section-title">上报地点</view>
     <picker mode="selector" range="{{places}}" range-key="name" value="{{placeIndex}}" bindchange="onPlace">

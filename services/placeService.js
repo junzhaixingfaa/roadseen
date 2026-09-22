@@ -14,6 +14,16 @@ function all() {
 
 function list() { return Promise.resolve(all()); }
 
+// 页面只通过 service 获取校园展示配置，避免直接依赖 mock 数据目录。
+function getCampusConfig() {
+  return {
+    center: Object.assign({}, campus.center),
+    defaultZoom: campus.defaultZoom,
+    categories: (campus.categories || []).slice(),
+    incidentTypes: (campus.incidentTypes || []).map(i => Object.assign({}, i))
+  };
+}
+
 function get(id) { return Promise.resolve(all().find(p => p.id === id) || null); }
 
 // opts: { category, hasElevator, hasToilet }
@@ -50,4 +60,4 @@ function addPlace(place) {
   storage.set('lj_places_added', added);
 }
 
-module.exports = { list, get, search, getPendingTasks, saveOverride, addPlace };
+module.exports = { list, get, search, getPendingTasks, saveOverride, addPlace, getCampusConfig };

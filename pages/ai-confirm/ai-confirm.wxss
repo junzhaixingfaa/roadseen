@@ -27,8 +27,27 @@
 .c-btn { flex: 1; text-align: center; font-size: 24rpx; color: #606266; background: #f0f2f5; border-radius: 24rpx; padding: 12rpx 0; }
 .c-btn.on { background: #2f6fb0; color: #ffffff; }
 
-.submit-bar {
+.aic-bar {
   position: fixed; left: 0; right: 0; bottom: 0;
   background: #ffffff; border-top: 1rpx solid #eee; padding: 16rpx 24rpx;
+  z-index: 10;
 }
-.submit-bar .btn-block { margin: 0; }
+.aic-bar .btn-block { margin: 0; }
+.btn.disabled { opacity: 0.55; }
+
+.aic { background: #F3F6F6; }
+.aic-hd { margin: 18rpx 20rpx 0; padding: 28rpx; border-radius: 26rpx; color: #FFFFFF; background: #103F4A; }
+.aic-title { font-size: 34rpx; font-weight: 700; }
+.aic-hd .muted { color: #D5E7E4; }
+.tool { color: #103F4A; background: #D9EEEA; }
+.item { margin: 14rpx 20rpx; padding: 26rpx; border: 1rpx solid #E1E8E8; border-radius: 22rpx; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.04); }
+.it-title { color: #1D2B32; }
+.it-photo { border-radius: 18rpx; }
+.chip { color: #176B70; background: #E7F2F2; }
+.ef { border-color: #E7ECEC; }
+.ef-lab { color: #718089; }
+.ef-ipt { color: #27383F; }
+.choice { padding: 6rpx; border-radius: 28rpx; background: #EEF2F2; }
+.c-btn { background: transparent; }
+.c-btn.on { background: #176B70; box-shadow: 0 5rpx 12rpx rgba(23,107,112,.18); }
+.aic-bar { padding: 16rpx 20rpx 24rpx; border-color: #E1E8E8; box-shadow: 0 -8rpx 24rpx rgba(27,61,68,.07); }
