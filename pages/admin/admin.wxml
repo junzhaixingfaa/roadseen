@@ -1,0 +1,67 @@
+<view class="admin">
+  <view wx:if="{{!isAdmin}}" class="denied">
+    <view class="denied-title">无管理权限</view>
+    <view class="muted">当前账号不是管理员。请在「我的」切换到管理员测试账号后重试。</view>
+    <button class="btn btn-block" bindtap="goMine">去我的</button>
+  </view>
+
+  <block wx:else>
+    <view class="tabs">
+      <view wx:for="{{tabs}}" wx:key="key" class="tab {{tab === item.key ? 'on' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+    </view>
+
+    <!-- 勘察审核 -->
+    <view wx:if="{{tab === 'inspection'}}" class="body">
+      <view wx:if="{{!inspections.length}}" class="empty muted">暂无待审核的勘察提交。</view>
+      <view wx:for="{{inspections}}" wx:key="id" class="card item">
+        <view class="row-between">
+          <text class="it-name">{{item.placeName}}</text>
+          <text class="pill pill-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        <view class="muted it-sub">{{item.itemCount}} 个环节 · 提交人 {{item.submittedBy}} · {{item.timeText}}</view>
+        <view wx:if="{{item.status === 'pending'}}" class="it-acts">
+          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="approve">通过</button>
+          <button class="mini mini-no" data-id="{{item.id}}" bindtap="reject">驳回</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 事件管理 -->
+    <view wx:elif="{{tab === 'incident'}}" class="body">
+      <view wx:for="{{incidents}}" wx:key="id" class="card item">
+        <view class="row-between">
+          <text class="it-name">{{item.facilityText}}{{item.type ? ' · ' + item.type : ''}}</text>
+          <text class="pill {{item.status === 'active' ? 'st-active' : 'st-done'}}">{{item.statusText}}</text>
+        </view>
+        <view class="muted it-sub">{{item.description}}{{item.expectedEndAt ? '（预计 ' + item.expectedEndAt + '）' : ''}}</view>
+        <view wx:if="{{item.isTestData}}" class="test-flag">演示数据</view>
+        <view wx:if="{{item.status === 'active'}}" class="it-acts">
+          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="resolveIncident">标记已恢复</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 地点状态 -->
+    <view wx:elif="{{tab === 'place'}}" class="body">
+      <view wx:for="{{places}}" wx:key="id" class="card item" data-id="{{item.id}}" bindtap="openPlace">
+        <view class="row-between">
+          <text class="it-name">{{item.name}}</text>
+          <text class="tag tag-{{item.resultCls}}">{{item.resultText}}</text>
+        </view>
+        <view class="muted it-sub">入口 {{item.entrance}} 个{{item.pending ? ' · 待勘察' : ''}}</view>
+      </view>
+    </view>
+
+    <!-- AI 日志 -->
+    <view wx:else class="body">
+      <view wx:if="{{!aiLogs.length}}" class="empty muted">本会话还没有 AI 调用记录。到「勘察」走一遍拍摄与识别即可生成。</view>
+      <view wx:for="{{aiLogs}}" wx:key="index" class="card log">
+        <view class="row-between">
+          <text class="it-name">{{item.stepKey}}</text>
+          <text class="pill {{item.ok ? 'st-done' : 'st-active'}}">{{item.ok ? '成功' : '失败'}}</text>
+        </view>
+        <view class="muted it-sub">{{item.msg}} · {{item.timeText}}</view>
+      </view>
+    </view>
+  </block>
+</view>

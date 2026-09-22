@@ -11,7 +11,8 @@
     "pages/ai-confirm/ai-confirm",
     "pages/incident-report/incident-report",
     "pages/favorites/favorites",
-    "pages/relay-card/relay-card"
+    "pages/relay-card/relay-card",
+    "pages/admin/admin"
   ],
   "window": {
     "backgroundTextStyle": "light",

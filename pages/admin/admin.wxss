@@ -1,0 +1,25 @@
+.admin { min-height: 100vh; background: #f5f6f8; padding-bottom: 40rpx; }
+.tabs { display: flex; background: #ffffff; border-bottom: 1rpx solid #ebedf0; position: sticky; top: 0; z-index: 5; }
+.tab { flex: 1; text-align: center; padding: 26rpx 0; font-size: 28rpx; color: #606266; }
+.tab.on { color: #2f6fb0; font-weight: 600; border-bottom: 4rpx solid #2f6fb0; }
+.body { padding-top: 8rpx; }
+.admin .card { margin: 20rpx 24rpx 0; }
+.item:active { background: #f0f2f5; }
+.it-name { font-size: 30rpx; color: #303133; font-weight: 600; }
+.it-sub { margin-top: 10rpx; font-size: 25rpx; line-height: 1.5; }
+.it-acts { display: flex; gap: 20rpx; margin-top: 18rpx; }
+.mini { border: none; font-size: 26rpx; padding: 0 36rpx; line-height: 64rpx; height: 64rpx; border-radius: 10rpx; display: inline-block; margin: 0; }
+.mini::after { border: none; }
+.mini-ok { background: #2BA245; color: #fff; }
+.mini-no { background: #f2f3f5; color: #606266; }
+.pill { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 20rpx; background: #eef1f5; color: #606266; }
+.pill-pending { background: #E6A23C; color: #fff; }
+.pill-approved { background: #2BA245; color: #fff; }
+.pill-rejected { background: #909399; color: #fff; }
+.st-active { background: #fdeceb; color: #D93026; }
+.st-done { background: #e9f6ec; color: #2BA245; }
+.test-flag { display: inline-block; margin-top: 12rpx; font-size: 22rpx; color: #b8541f; background: #fdf1e7; padding: 4rpx 16rpx; border-radius: 8rpx; }
+.empty { text-align: center; padding: 100rpx 60rpx; font-size: 26rpx; }
+.denied { padding: 120rpx 60rpx; text-align: center; }
+.denied-title { font-size: 34rpx; color: #303133; font-weight: 600; margin-bottom: 20rpx; }
+.denied .btn { margin-top: 40rpx; }
