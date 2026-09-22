@@ -1,1 +1,15 @@
-<view class="card">消息（本阶段占位，后续实现）</view>
+<view class="msg">
+  <view wx:for="{{messages}}" wx:key="id" class="card mitem" data-id="{{item.placeId}}" bindtap="open">
+    <view class="row-between">
+      <text class="mtype mtype-{{item.type}}">{{item.typeText}}</text>
+      <text class="mtime muted">{{item.time}}</text>
+    </view>
+    <view class="mtitle">{{item.title}}</view>
+    <view class="mdesc">{{item.desc}}</view>
+  </view>
+
+  <view wx:if="{{messages.length <= 1}}" class="empty muted">
+    <view>暂无状态变化消息。</view>
+    <button class="btn btn-block" bindtap="goMap">去地图看看</button>
+  </view>
+</view>

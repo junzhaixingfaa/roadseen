@@ -1,1 +1,12 @@
-/* messages */
+.msg { min-height: 100vh; background: #f5f6f8; padding: 20rpx 0 40rpx; }
+.msg .card { margin: 0 24rpx 20rpx; }
+.mitem:active { background: #f0f2f5; }
+.mtype { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 20rpx; color: #fff; }
+.mtype-incident { background: #D93026; }
+.mtype-recover { background: #2BA245; }
+.mtype-system { background: #2f6fb0; }
+.mtime { font-size: 24rpx; }
+.mtitle { margin-top: 14rpx; font-size: 32rpx; color: #303133; font-weight: 600; }
+.mdesc { margin-top: 8rpx; font-size: 27rpx; color: #606266; line-height: 1.5; }
+.empty { text-align: center; padding: 100rpx 60rpx; }
+.empty .btn { margin-top: 40rpx; }

@@ -1,0 +1,42 @@
+<view class="relay" wx:if="{{place}}">
+  <view class="head result-{{status.cls}}">
+    <view class="head-label">同行接力卡</view>
+    <view class="place-name">{{place.name}}</view>
+    <view class="badge">{{status.text}}</view>
+    <view class="head-summary">{{summary}}</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">约定集合点</view>
+    <view class="line">{{meetNote}}</view>
+    <view wx:if="{{rec}}" class="muted line">入口方向：{{rec.direction || rec.name || '见现场标识'}}</view>
+  </view>
+
+  <view class="card" wx:if="{{steps.length}}">
+    <view class="section-title">通行步骤</view>
+    <view class="step" wx:for="{{steps}}" wx:key="index">
+      <text class="idx">{{index + 1}}</text>
+      <text class="step-text">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">需要协助的位置</view>
+    <view wx:if="{{assistPoints.length}}">
+      <view class="assist-item" wx:for="{{assistPoints}}" wx:key="index">· {{item}}</view>
+    </view>
+    <view wx:else class="muted">目前未发现需要额外协助的环节。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">判断原因</view>
+    <view class="reason" wx:for="{{reasons}}" wx:key="index">· {{item}}</view>
+  </view>
+
+  <view class="muted tip">本卡仅包含同行所需的通行信息，不含个人完整档案。仅供出行准备参考。</view>
+
+  <view class="actions">
+    <button class="btn btn-block" open-type="share">分享给同行人</button>
+    <button class="btn btn-ghost btn-block" bindtap="openPlace">查看地点通行卡</button>
+  </view>
+</view>

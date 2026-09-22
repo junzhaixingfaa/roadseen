@@ -1,0 +1,16 @@
+.relay { min-height: 100vh; background: #f5f6f8; padding-bottom: 40rpx; }
+.head { padding: 36rpx 32rpx; color: #ffffff; }
+.head-label { font-size: 24rpx; opacity: 0.9; }
+.place-name { font-size: 40rpx; font-weight: 700; margin-top: 8rpx; }
+.badge { display: inline-block; margin-top: 16rpx; background: rgba(255,255,255,0.22); padding: 6rpx 20rpx; border-radius: 24rpx; font-size: 26rpx; }
+.head-summary { margin-top: 16rpx; font-size: 28rpx; opacity: 0.95; line-height: 1.5; }
+.relay .card { margin: 20rpx 24rpx 0; }
+.line { font-size: 30rpx; color: #303133; padding: 8rpx 0; }
+.step { display: flex; align-items: flex-start; padding: 12rpx 0; }
+.idx { flex: none; width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; background: #2f6fb0; color: #fff; border-radius: 50%; font-size: 24rpx; margin-right: 16rpx; }
+.step-text { font-size: 28rpx; color: #303133; line-height: 40rpx; }
+.assist-item { font-size: 28rpx; color: #b8541f; padding: 8rpx 0; line-height: 1.5; }
+.reason { font-size: 28rpx; color: #606266; padding: 6rpx 0; }
+.tip { text-align: center; padding: 28rpx 40rpx 0; font-size: 24rpx; line-height: 1.6; }
+.actions { padding: 24rpx 24rpx 0; }
+.actions .btn { margin-bottom: 20rpx; }
