@@ -1,6 +1,7 @@
 const aiService = require('../../services/aiService');
 const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
+const inspectionService = require('../../services/inspectionService');
 const storage = require('../../services/storage');
 
 const STEP_TITLES = {
@@ -106,13 +107,9 @@ Page({
     this.setData({ submitting: true });
     const user = userService.current();
     const inspection = {
-      id: 'insp' + Date.now(),
       placeId: this.data.placeId,
       placeName: this.data.placeName || '新采集地点',
       submittedBy: user ? user.nickname : '匿名',
-      submittedAt: Date.now(),
-      status: 'pending',
-      isTestData: true,
       items: this.data.items.map(it => ({
         key: it.key, title: it.title, choice: it.choice,
         photo: it.photo,
@@ -122,10 +119,9 @@ Page({
         stepCount: it.stepCount, doorType: it.doorType, elevatorStatus: it.elevatorStatus
       }))
     };
-    const list = storage.get('lj_inspections', []);
-    list.unshift(inspection);
-    storage.set('lj_inspections', list);
+    inspectionService.submit(inspection);
     storage.remove('lj_capture_draft');
+    this.setData({ submitting: false });
     wx.showModal({
       title: '已提交审核',
       content: 'AI 结果与人工修正已记录，等待管理员审核发布。',

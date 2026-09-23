@@ -30,6 +30,15 @@
     <view class="loading" wx:if="{{state === 'analyzing'}}"><view class="loading-line"></view><view>正在识别入口、台阶、坡道与门体</view></view>
   </view>
 
+  <view class="flow-card" wx:if="{{state === 'error'}}">
+    <view class="err-title">这次没能完成识别</view>
+    <view class="err-desc">识别服务暂时不可用。你可以重试，或直接把现场情况上报给平台，由他人复核。</view>
+    <view class="err-actions">
+      <view class="secondary" bindtap="analyze">重试识别</view>
+      <view class="primary" bindtap="report">上报现场问题</view>
+    </view>
+  </view>
+
   <view class="result-card" wx:if="{{state === 'done' && result}}">
     <view class="result-top">
       <view><view class="result-kicker">演示检查结果</view><view class="result-title">{{result.title}}</view></view>

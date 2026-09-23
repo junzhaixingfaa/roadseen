@@ -24,13 +24,14 @@ Page({
   },
 
   openImagePicker(source) {
-    wx.chooseImage({
+    wx.chooseMedia({
       count: 1,
+      mediaType: ['image'],
       sizeType: ['compressed'],
       sourceType: [source],
       success: res => {
-        const path = res.tempFilePaths && res.tempFilePaths[0];
-        if (path) this.setData({ photo: path, state: 'ready', result: null });
+        const f = res.tempFiles && res.tempFiles[0];
+        if (f && f.tempFilePath) this.setData({ photo: f.tempFilePath, state: 'ready', result: null });
       },
       fail: err => {
         if (!err || !String(err.errMsg || '').includes('cancel')) {

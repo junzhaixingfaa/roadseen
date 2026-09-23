@@ -15,12 +15,15 @@ Page({
     const profile = user && user.profile;
     const ids = userService.favorites();
     if (!ids.length) { this.setData({ items: [], empty: true }); return; }
+    const places = await placeService.list();
+    const activeMap = incidentService.activeByPlace();
+    const byId = {};
+    places.forEach(p => { byId[p.id] = p; });
     const items = [];
-    for (const id of ids) {
-      const place = await placeService.get(id);
-      if (!place) continue;
-      const active = await incidentService.listActiveForPlace(id);
-      const j = ruleEngine.judgeAccess(place, profile || null, active);
+    ids.forEach(id => {
+      const place = byId[id];
+      if (!place) return;
+      const j = ruleEngine.judgeAccess(place, profile || null, activeMap[id] || []);
       const st = getStatus(j.result);
       items.push({
         id: place.id,
@@ -31,8 +34,8 @@ Page({
         resultCls: st.cls,
         summary: j.reasons[0] || ''
       });
-    }
-    this.setData({ items, empty: false });
+    });
+    this.setData({ items, empty: items.length === 0 });
   },
 
   open(e) {

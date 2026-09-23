@@ -43,12 +43,16 @@
       <view wx:for="{{incidents}}" wx:key="id" class="card item">
         <view class="row-between">
           <text class="it-name">{{item.facilityText}}{{item.type ? ' · ' + item.type : ''}}</text>
-          <text class="pill {{item.status === 'active' ? 'st-active' : 'st-done'}}">{{item.statusText}}</text>
+          <text class="pill {{item.status === 'active' ? 'st-active' : (item.status === 'resolved' ? 'st-done' : 'st-pending')}}">{{item.statusText}}</text>
         </view>
         <view class="muted it-sub">{{item.description}}{{item.expectedEndAt ? '（预计 ' + item.expectedEndAt + '）' : ''}}</view>
         <view wx:if="{{item.isTestData}}" class="test-flag">演示数据</view>
         <view wx:if="{{item.status === 'active'}}" class="it-acts">
           <button class="mini mini-ok" data-id="{{item.id}}" bindtap="resolveIncident">标记已恢复</button>
+        </view>
+        <view wx:elif="{{item.status === 'pending_review'}}" class="it-acts">
+          <button class="mini mini-ok" data-id="{{item.id}}" bindtap="resolveIncident">确认已恢复</button>
+          <button class="mini mini-no" data-id="{{item.id}}" bindtap="reactivateIncident">仍在进行中</button>
         </view>
       </view>
     </view>

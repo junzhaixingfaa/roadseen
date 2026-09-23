@@ -57,6 +57,6 @@
     <view wx:else class="photo-empty" bindtap="choosePhoto">＋ 选择照片</view>
   </view>
 
-  <button class="btn btn-block" bindtap="submit">提交上报</button>
+  <button class="btn btn-block" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}">{{submitting ? '正在提交…' : '提交上报'}}</button>
   <view class="muted tip">上报后将触发该地点通行结果重新计算。演示数据会标记为测试数据。</view>
 </view>

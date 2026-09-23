@@ -1,4 +1,5 @@
 const placeService = require('../../services/placeService');
+const fileService = require('../../services/fileService');
 const storage = require('../../services/storage');
 
 const STEPS = [
@@ -62,8 +63,8 @@ Page({
     const idx = e.currentTarget.dataset.idx;
     wx.chooseMedia({
       count: 1, mediaType: ['image'], sourceType: ['album', 'camera'],
-      success: (res) => {
-        const path = res.tempFiles[0].tempFilePath;
+      success: async (res) => {
+        const path = await fileService.persist(res.tempFiles[0].tempFilePath);
         const steps = this.data.steps;
         steps[idx].photo = path;
         this.setData({ steps });

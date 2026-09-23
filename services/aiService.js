@@ -51,7 +51,7 @@ function quickAssess(imagePath, opts) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (opts.forceFail) {
-        log({ scene: 'quick-check', ok: false, msg: '快速识别失败' });
+        log({ stepKey: '快速检查', scene: 'quick-check', ok: false, msg: '快速识别失败' });
         reject(new Error('识别服务暂时不可用'));
         return;
       }
@@ -66,7 +66,7 @@ function quickAssess(imagePath, opts) {
         actions: ['建议从正面补拍入口全景', '如现场无坡道，请选择“上报问题”'],
         disclaimer: '当前使用本地演示识别，接入服务端视觉模型后才会分析你拍摄的真实画面。'
       };
-      log({ scene: 'quick-check', imagePath: !!imagePath, ok: true, msg: '完成本地演示识别' });
+      log({ stepKey: '快速检查', scene: 'quick-check', imagePath: !!imagePath, ok: true, msg: '完成本地演示识别' });
       resolve(result);
     }, delay);
   });

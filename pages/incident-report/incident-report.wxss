@@ -3,7 +3,7 @@
 .picker-row { display: flex; align-items: center; justify-content: space-between; padding: 22rpx 0; border-bottom: 1rpx solid #f2f3f5; }
 .picker-row:last-child { border-bottom: none; }
 .label { font-size: 28rpx; color: #303133; }
-.value { font-size: 28rpx; color: #2f6fb0; flex: 1; text-align: right; margin-right: 12rpx; }
+.value { font-size: 28rpx; color: var(--brand); flex: 1; text-align: right; margin-right: 12rpx; }
 .arrow { color: #c0c4cc; font-size: 34rpx; }
 .desc { width: 100%; box-sizing: border-box; min-height: 140rpx; font-size: 28rpx; padding: 12rpx 0; }
 .photo-box { padding: 8rpx 0; }

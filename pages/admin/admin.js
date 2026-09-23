@@ -5,7 +5,7 @@ const aiService = require('../../services/aiService');
 const userService = require('../../services/userService');
 const ruleEngine = require('../../services/ruleEngine');
 const reviewService = require('../../services/reviewService');
-const storage = require('../../services/storage');
+const inspectionService = require('../../services/inspectionService');
 const { getStatus } = require('../../utils/status');
 const util = require('../../utils/util');
 
@@ -20,7 +20,7 @@ const TABS = [
 const FAC_TEXT = { elevator: '电梯', ramp: '坡道', path: '通道', toilet: '无障碍厕所', door: '门', openTime: '开放时间', other: '其他' };
 
 function fmtInspections() {
-  const list = storage.get('lj_inspections', []);
+  const list = inspectionService.list();
   return list.map(i => ({
     id: i.id,
     placeName: i.placeName,
@@ -40,77 +40,6 @@ function fmtInspections() {
     })),
     reviewNote: i.reviewNote || '',
     timeText: util.formatDateTime(new Date(i.submittedAt))
-  }));
-}
-
-function setInspection(id, status, extra) {
-  const list = storage.get('lj_inspections', []);
-  const it = list.find(x => x.id === id);
-  if (it) {
-    Object.assign(it, extra || {}, { status, reviewedAt: Date.now() });
-    storage.set('lj_inspections', list);
-  }
-  return it || null;
-}
-
-function hasLabel(item, label) {
-  return !!item && (item.aiDetected || []).indexOf(label) >= 0;
-}
-
-async function publishInspection(inspection) {
-  const place = await placeService.get(inspection.placeId);
-  if (!place) throw new Error('关联地点不存在');
-
-  const usable = (inspection.items || []).filter(i => i.choice !== 'unknown');
-  const byKey = key => usable.find(i => i.key === key);
-  const entrances = (place.entrances || []).map(e => Object.assign({}, e));
-  const rec = entrances.find(e => e.isRecommended) || entrances[0];
-  const entrance = byKey('entrance');
-  const step = byKey('step');
-  const door = byKey('door') || entrance;
-  if (rec) {
-    if (entrance) rec.hasRamp = hasLabel(entrance, '坡道');
-    if (step) {
-      rec.hasSteps = hasLabel(step, '台阶') || Number(step.stepCount) > 0;
-      rec.stepCount = step.stepCount === '' ? rec.stepCount : Number(step.stepCount);
-      rec.hasRamp = hasLabel(step, '坡道');
-    }
-    if (door && door.doorType) rec.doorType = door.doorType;
-  }
-
-  const facilities = Object.assign({}, place.facilities);
-  const elevator = byKey('elevator');
-  if (elevator) {
-    facilities.elevator = Object.assign({}, facilities.elevator, {
-      has: hasLabel(elevator, '电梯'),
-      status: elevator.elevatorStatus || 'unknown'
-    });
-  }
-  const toilet = byKey('toilet');
-  if (toilet) {
-    facilities.accessibleToilet = Object.assign({}, facilities.accessibleToilet, {
-      has: hasLabel(toilet, '厕所标识'),
-      status: hasLabel(toilet, '厕所标识') ? 'open' : 'unknown'
-    });
-  }
-
-  placeService.saveOverride(place.id, {
-    entrances,
-    facilities,
-    lastVerifiedAt: util.formatDate(new Date()),
-    collectedBy: inspection.submittedBy,
-    pendingInspection: false
-  });
-  usable.filter(i => i.photo).forEach(i => evidenceService.addEvidence({
-    placeId: place.id,
-    entranceId: rec ? rec.id : '',
-    type: i.key,
-    imageUrl: i.photo,
-    collectedAt: util.formatDate(new Date()),
-    source: 'volunteer',
-    aiTags: i.aiDetected || [],
-    confirmStatus: 'confirmed',
-    isTestData: true
   }));
 }
 
@@ -143,19 +72,18 @@ Page({
       aiService.listLogs(),
       reviewService.listAll()
     ]);
-    const places = [];
-    for (const p of all) {
-      const active = await incidentService.listActiveForPlace(p.id);
-      const j = ruleEngine.judgeAccess(p, profile || null, active);
+    const activeMap = incidentService.activeByPlace();
+    const places = all.map(p => {
+      const j = ruleEngine.judgeAccess(p, profile || null, activeMap[p.id] || []);
       const st = getStatus(j.result);
-      places.push({ id: p.id, name: p.name, resultText: st.text, resultCls: st.cls, entrance: (p.entrances || []).length, pending: !!p.pendingInspection });
-    }
+      return { id: p.id, name: p.name, resultText: st.text, resultCls: st.cls, entrance: (p.entrances || []).length, pending: !!p.pendingInspection };
+    });
     this.setData({
       inspections: fmtInspections(),
       incidents: incidents.map(i => ({
         id: i.id, placeId: i.placeId, facilityText: FAC_TEXT[i.facility] || i.facility,
         type: i.type, description: i.description, status: i.status,
-        statusText: i.status === 'active' ? '进行中' : (i.status === 'resolved' ? '已恢复' : '待复核'),
+        statusText: i.status === 'active' ? '进行中' : (i.status === 'resolved' ? '已恢复' : '已过期，待复核'),
         expectedEndAt: i.expectedEndAt || '', isTestData: !!i.isTestData
       })),
       reviews: reviews.map(r => ({
@@ -178,16 +106,31 @@ Page({
 
   async approve(e) {
     const id = e.currentTarget.dataset.id;
-    const inspection = storage.get('lj_inspections', []).find(x => x.id === id);
+    const inspection = inspectionService.getById(id);
     if (!inspection) return;
-    try {
-      await publishInspection(inspection);
-      setInspection(id, 'approved', { reviewNote: '审核通过，已发布到地点资料' });
-      wx.showToast({ title: '已审核并发布', icon: 'none' });
-      await this.loadAll();
-    } catch (err) {
-      wx.showModal({ title: '无法发布', content: err.message || '请检查勘察数据', showCancel: false });
+    const publish = async () => {
+      try {
+        await inspectionService.publish(inspection);
+        inspectionService.setStatus(id, 'approved', { reviewNote: '审核通过，已发布到地点资料' });
+        wx.showToast({ title: '已审核并发布', icon: 'none' });
+        await this.loadAll();
+      } catch (err) {
+        wx.showModal({ title: '无法发布', content: err.message || '请检查勘察数据', showCancel: false });
+      }
+    };
+    const place = await placeService.get(inspection.placeId);
+    if (inspectionService.hasVerifiedEntrance(place)) {
+      // AI 识别目前是演示数据，覆盖已核实地点会把真实结论换成假结论，必须显式确认。
+      wx.showModal({
+        title: '覆盖已核实数据？',
+        content: '「' + place.name + '」已有核实过的入口信息，发布将用本次勘察结果覆盖。当前 AI 识别为演示数据，建议只在待勘察地点上演示发布。',
+        confirmText: '仍要发布',
+        cancelText: '取消',
+        success: r => { if (r.confirm) publish(); }
+      });
+      return;
     }
+    await publish();
   },
   reject(e) {
     const id = e.currentTarget.dataset.id;
@@ -195,7 +138,7 @@ Page({
       itemList: ['照片不清晰，需要补拍', '字段信息不完整', '地点选择错误'],
       success: r => {
         const notes = ['照片不清晰，需要补拍', '字段信息不完整', '地点选择错误'];
-        setInspection(id, 'rejected', { reviewNote: notes[r.tapIndex] });
+        inspectionService.setStatus(id, 'rejected', { reviewNote: notes[r.tapIndex] });
         wx.showToast({ title: '已驳回并记录原因', icon: 'none' });
         this.setData({ inspections: fmtInspections() });
       }
@@ -206,6 +149,15 @@ Page({
     const id = e.currentTarget.dataset.id;
     incidentService.resolve(id).then(() => {
       wx.showToast({ title: '已标记恢复，触发重算', icon: 'none' });
+      this.loadAll();
+    });
+  },
+
+  // 事件到期后进入 pending_review，必须由管理员判定是已恢复还是仍在进行，否则会成为死状态
+  reactivateIncident(e) {
+    const id = e.currentTarget.dataset.id;
+    incidentService.reactivate(id).then(() => {
+      wx.showToast({ title: '已恢复为进行中，需再次人工确认恢复', icon: 'none' });
       this.loadAll();
     });
   },

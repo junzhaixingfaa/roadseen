@@ -1,6 +1,6 @@
 const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
-const storage = require('../../services/storage');
+const inspectionService = require('../../services/inspectionService');
 
 const ROLE_TEXT = { user: '普通用户', volunteer: '志愿者', maintainer: '维护者', admin: '管理员' };
 
@@ -16,7 +16,7 @@ Page({
     const u = await userService.ensureCurrent();
     if (!u) { wx.reLaunch({ url: '/pages/login/login' }); return; }
     const tasks = await placeService.getPendingTasks();
-    const myInsp = storage.get('lj_inspections', []);
+    const myInsp = inspectionService.list();
     this.setData({
       roleText: u ? (ROLE_TEXT[u.role] || u.role) : '',
       isCollector: !!u && (u.role === 'volunteer' || u.role === 'maintainer' || u.role === 'admin'),

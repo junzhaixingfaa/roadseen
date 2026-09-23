@@ -8,9 +8,12 @@ function allForPlace(placeId) {
   return Promise.resolve(list);
 }
 
+let seq = 0;
+
 function addEvidence(ev) {
   const added = storage.get('lj_evidences_added', []);
-  ev.id = ev.id || ('ev' + Date.now());
+  // 一次发布往往同时写入多张照片，Date.now() 会撞出重复 id，补一个自增序号
+  ev.id = ev.id || ('ev' + Date.now() + '-' + (++seq));
   added.push(ev);
   storage.set('lj_evidences_added', added);
   return ev;

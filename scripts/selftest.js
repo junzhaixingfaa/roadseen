@@ -7,12 +7,15 @@ const R = p => require(path.join(ROOT, p));
 const ruleEngine = R('services/ruleEngine');
 const places = R('data/places');
 const users = R('data/users');
-const incidents = R('data/incidents');
+const evidences = R('data/evidences');
 const placeService = R('services/placeService');
 const incidentService = R('services/incidentService');
+const inspectionService = R('services/inspectionService');
+const evidenceService = R('services/evidenceService');
 const aiService = R('services/aiService');
 const reviewService = R('services/reviewService');
 const userService = R('services/userService');
+const util = R('utils/util');
 
 const byId = id => places.find(p => p.id === id);
 const prof = id => users.find(u => u.id === id).profile;
@@ -27,10 +30,15 @@ function check(name, got, want) {
 const u1 = prof('user-001'); // 轮椅·陪同·接受协助·必须电梯
 const u2 = prof('user-002'); // 电动·独立·不接受协助·必须电梯
 const u1_alone = Object.assign({}, u1, { accompanied: false });
+const u1_noElev = Object.assign({}, u1, { mustUseElevator: false });
+const needToilet = Object.assign({}, byId('p001'), { needAccessibleToilet: true });
+const stale = Object.assign({}, byId('p001'), { lastVerifiedAt: '2020-01-01' });
 
-const incP005 = incidents.filter(i => i.placeId === 'p005' && i.status === 'active');
+// 事件数组一律现场构造或走 incidentService，
+// 避免像旧版那样直接 filter data/incidents 而绕过 expectedEndAt 过期逻辑，导致自测与线上行为脱节。
+const inc = (facility, description) => [{ status: 'active', facility, description }];
 
-console.log('== 规则用例 ==');
+console.log('== 规则用例：静态资料 ==');
 check('p001 图书馆 + u1', ruleEngine.judgeAccess(byId('p001'), u1, []).result, 'pass');
 check('p001 图书馆 + u2', ruleEngine.judgeAccess(byId('p001'), u2, []).result, 'pass');
 check('p002 老教学楼 + u1 (台阶)', ruleEngine.judgeAccess(byId('p002'), u1, []).result, 'blocked');
@@ -38,22 +46,76 @@ check('p003 食堂 + u1 (陪同接受)', ruleEngine.judgeAccess(byId('p003'), u1
 check('p003 食堂 + u2 (独立不接受)', ruleEngine.judgeAccess(byId('p003'), u2, []).result, 'blocked');
 check('p003 食堂 + u1 改独立(切换陪同)', ruleEngine.judgeAccess(byId('p003'), u1_alone, []).result, 'blocked');
 check('p004 体育馆 无入口', ruleEngine.judgeAccess(byId('p004'), u1, []).result, 'unknown');
-check('p005 实验楼 + u1 无事件(静态)', ruleEngine.judgeAccess(byId('p005'), u1, []).result, 'pass');
-check('p005 实验楼 + u1 + 电梯停运', ruleEngine.judgeAccess(byId('p005'), u1, incP005).result, 'blocked');
-check('p005 实验楼 + u2 无事件', ruleEngine.judgeAccess(byId('p005'), u2, []).result, 'pass');
+check('p005 实验楼 + u1 (静态)', ruleEngine.judgeAccess(byId('p005'), u1, []).result, 'pass');
+check('p005 实验楼 + u2 (静态)', ruleEngine.judgeAccess(byId('p005'), u2, []).result, 'pass');
 check('无档案 p001(通用)', ruleEngine.judgeAccess(byId('p001'), null, []).result, 'pass');
-const doorIncident = [{ status: 'active', facility: 'door', description: '自动门故障' }];
-check('门故障 + u1 陪同接受协助', ruleEngine.judgeAccess(byId('p001'), u1, doorIncident).result, 'assist');
-check('门故障 + u2 独立不接受协助', ruleEngine.judgeAccess(byId('p001'), u2, doorIncident).result, 'blocked');
+check('资料过期降级待复核', ruleEngine.judgeAccess(stale, u1, []).result, 'unknown');
+check('以厕所为关键设施(资料齐备)', ruleEngine.judgeAccess(needToilet, u1, []).result, 'pass');
 
-console.log('== services ==');
+console.log('== 规则用例：动态事件 ==');
+check('p005 + u1 电梯停运', ruleEngine.judgeAccess(byId('p005'), u1, inc('elevator', '电梯停运')).result, 'blocked');
+check('p005 + u2 电梯停运', ruleEngine.judgeAccess(byId('p005'), u2, inc('elevator', '电梯停运')).result, 'blocked');
+check('无档案 p005 电梯停运(保守假定需电梯)', ruleEngine.judgeAccess(byId('p005'), null, inc('elevator', '电梯停运')).result, 'blocked');
+check('无档案 p005 无事件', ruleEngine.judgeAccess(byId('p005'), null, []).result, 'pass');
+check('p005 + 档案无需电梯 + 电梯停运', ruleEngine.judgeAccess(byId('p005'), u1_noElev, inc('elevator', '电梯停运')).result, 'pass');
+check('p001 无需乘电梯 + 电梯停运', ruleEngine.judgeAccess(byId('p001'), u1, inc('elevator', '电梯停运')).result, 'pass');
+check('p001 通道施工', ruleEngine.judgeAccess(byId('p001'), u1, inc('path', '通道施工')).result, 'blocked');
+check('p001 坡道被占', ruleEngine.judgeAccess(byId('p001'), u1, inc('ramp', '坡道被占')).result, 'blocked');
+check('厕所停用(非关键设施)不阻断', ruleEngine.judgeAccess(byId('p001'), u1, inc('toilet', '无障碍厕所停用')).result, 'pass');
+check('厕所停用(关键设施)阻断', ruleEngine.judgeAccess(needToilet, u1, inc('toilet', '无障碍厕所停用')).result, 'blocked');
+check('门故障 + u1 陪同接受协助', ruleEngine.judgeAccess(byId('p001'), u1, inc('door', '自动门故障')).result, 'assist');
+check('门故障 + u2 独立不接受协助', ruleEngine.judgeAccess(byId('p001'), u2, inc('door', '自动门故障')).result, 'blocked');
+check('开放时间变更 → 待复核', ruleEngine.judgeAccess(byId('p001'), u1, inc('openTime', '开放时间调整')).result, 'unknown');
+check('未分类事件 → 待复核', ruleEngine.judgeAccess(byId('p001'), u1, inc('other', '临时堆放杂物')).result, 'unknown');
+check('阻断不被开放时间事件降级', ruleEngine.judgeAccess(byId('p002'), u1, inc('openTime', '开放时间调整')).result, 'blocked');
+
+console.log('== 规则用例：输出结构 ==');
+const j5 = ruleEngine.judgeAccess(byId('p005'), u1, []);
+check('p005 备选入口数量', j5.alternatives.length, 1);
+check('p005 证据 id 透传', j5.evidenceIds.join(','), 'ev005');
+check('有档案标记', j5.hasProfile, true);
+check('免责声明存在', !!j5.disclaimer, true);
+check('无档案标记', ruleEngine.judgeAccess(byId('p001'), null, []).hasProfile, false);
+check('地点不存在的兜底', ruleEngine.judgeAccess(null, u1, []).result, 'unknown');
+
+console.log('== services：地点 / 事件 ==');
 (async () => {
   const list = await placeService.list();
   check('placeService.list 数量', list.length, 5);
   check('placeService 校园配置', placeService.getCampusConfig().center.latitude, 39.992);
-  const act = incidentService.activeByPlace();
-  check('incidentService p005 active', (act['p005'] || []).length, 1);
-  check('incidentService p001 active', (act['p001'] || []).length, 0);
+  const tasks = await placeService.getPendingTasks();
+  const taskIds = tasks.map(p => p.id);
+  check('待办含无入口的 p004', taskIds.indexOf('p004') >= 0, true);
+  check('待办不含已核实的 p001', taskIds.indexOf('p001') >= 0, false);
+  check('搜索命中图书馆', (await placeService.search('图书')).length, 1);
+
+  const active = incidentService.activeByPlace();
+  check('incidentService p005 active', (active['p005'] || []).length, 1);
+  check('incidentService p001 active', (active['p001'] || []).length, 0);
+  check('已恢复事件不计入 active', (active['p003'] || []).length, 0);
+  check('listActiveForPlace p005', (await incidentService.listActiveForPlace('p005')).length, 1);
+
+  const reported = await incidentService.report({ placeId: 'p002', facility: 'path', description: '自测：通道施工' });
+  check('上报后为 active', reported.status, 'active');
+  check('上报计入 activeByPlace', (incidentService.activeByPlace()['p002'] || []).length, 1);
+  const expired = await incidentService.report({
+    placeId: 'p001', facility: 'other', description: '自测：已过期事件', expectedEndAt: '2020-01-01'
+  });
+  await incidentService.listAll(); // 触发 expireSweep
+  check('过期事件自动降级待复核', incidentService.getById(expired.id).status, 'pending_review');
+  check('过期事件不计入 active', (await incidentService.listActiveForPlace('p001')).length, 0);
+  const re = await incidentService.reactivate(expired.id);
+  check('复核后重新生效', re.status, 'active');
+  check('重新生效清空预计结束时间', re.expectedEndAt, '');
+  check('重新生效计入 active', (await incidentService.listActiveForPlace('p001')).length, 1);
+  const resolved = await incidentService.resolve(reported.id);
+  check('确认恢复后为 resolved', resolved.status, 'resolved');
+  check('恢复后不再计入 active', (incidentService.activeByPlace()['p002'] || []).length, 0);
+
+  const evIds = [].concat.apply([], places.map(p => p.evidenceIds || []));
+  check('地点引用的证据 id 全部存在', evIds.every(id => evidences.some(e => e.id === id)), true);
+
+  console.log('== services：AI / 复核 / 账号 ==');
   const ai = await aiService.recognize('entrance', { delay: 0 });
   check('aiService entrance hasRamp', ai.detected.hasRamp, true);
   const quickAi = await aiService.quickAssess('mock-photo.jpg', { delay: 0 });
@@ -62,10 +124,12 @@ console.log('== services ==');
   let aiFailed = false;
   await aiService.recognize('entrance', { delay: 0, forceFail: true }).catch(() => { aiFailed = true; });
   check('aiService 失败回退可 reject', aiFailed, true);
+
   const review = await reviewService.submit({ placeId: 'p001', kind: 'uncertain' });
   check('reviewService 创建复核记录', review.status, 'pending');
   const reviewed = await reviewService.setStatus(review.id, 'accepted', '测试采纳');
   check('reviewService 处理复核记录', reviewed.status, 'accepted');
+
   const loginUser = await userService.authenticate('demo', '123456');
   check('userService 账号密码登录', loginUser && loginUser.role, 'user');
   const badLogin = await userService.authenticate('demo', 'wrong-password');
@@ -74,6 +138,84 @@ console.log('== services ==');
   check('userService 注册普通用户', registered.role, 'user');
   await userService.logout();
   check('userService 退出登录', userService.current(), null);
+
+  console.log('== services：勘察发布（会改动地点，放在最后）==');
+  check('p004 无入口 → 未核实', inspectionService.hasVerifiedEntrance(byId('p004')), false);
+  check('p001 有入口且非待采集 → 已核实', inspectionService.hasVerifiedEntrance(byId('p001')), true);
+
+  const insp = inspectionService.submit({
+    placeId: 'p001',
+    placeName: '图书馆',
+    submittedBy: 'selftest',
+    items: [
+      { key: 'entrance', choice: 'yes', photo: 'mock-entrance.jpg', aiDetected: ['坡道', '自动门'] },
+      { key: 'step', choice: 'yes', photo: 'mock-step.jpg', aiDetected: ['台阶'], stepCount: '4' },
+      { key: 'door', choice: 'yes', photo: '', aiDetected: ['自动门'], doorType: '自动门' }
+    ]
+  });
+  check('submit 生成待审核记录', insp.status, 'pending');
+  check('submit 补齐 id', !!insp.id, true);
+  check('submit 标记演示数据', insp.isTestData, true);
+
+  const before = await placeService.get('p001');
+  const beforeVerdict = ruleEngine.judgeAccess(before, u1, []).result;
+  const evBefore = (await evidenceService.allForPlace('p001')).length;
+  await inspectionService.publish(inspectionService.getById(insp.id));
+  const after = await placeService.get('p001');
+  const afterVerdict = ruleEngine.judgeAccess(after, u1, []).result;
+  check('发布不改变可通行结论', beforeVerdict + '→' + afterVerdict, 'pass→pass');
+  check('发布写入台阶数', after.entrances[0].stepCount, 4);
+  check('发布写入有台阶', after.entrances[0].hasSteps, true);
+  check('发布不把台阶照当成无坡道', after.entrances[0].hasRamp, true);
+  check('发布清除待采集标记', after.pendingInspection, false);
+  check('发布更新核实日期', after.lastVerifiedAt, util.formatDate(new Date()));
+  check('发布追加带照片的证据', (await evidenceService.allForPlace('p001')).length > evBefore, true);
+  const evAfter = await evidenceService.allForPlace('p001');
+  check('同批新增证据 id 不重复', new Set(evAfter.map(e => e.id)).size, evAfter.length);
+
+  const nanInsp = inspectionService.submit({
+    placeId: 'p001', placeName: '图书馆', submittedBy: 'selftest',
+    items: [{ key: 'step', choice: 'yes', photo: '', aiDetected: [], stepCount: '' }]
+  });
+  await inspectionService.publish(inspectionService.getById(nanInsp.id));
+  const afterNan = await placeService.get('p001');
+  check('空台阶数不写入 NaN', Number.isNaN(afterNan.entrances[0].stepCount), false);
+  check('空台阶数保留原值', afterNan.entrances[0].stepCount, 4);
+  check('空台阶数不误改结论', ruleEngine.judgeAccess(afterNan, u1, []).result, 'pass');
+
+  const unknown5 = inspectionService.submit({
+    placeId: 'p005', placeName: '实验楼', submittedBy: 'selftest',
+    items: [
+      { key: 'entrance', choice: 'unknown', photo: '', aiDetected: [] },
+      { key: 'elevator', choice: 'unknown', photo: '', aiDetected: [] }
+    ]
+  });
+  await inspectionService.publish(inspectionService.getById(unknown5.id));
+  const after5 = await placeService.get('p005');
+  check('未确认项不覆盖电梯资料', after5.facilities.elevator.has, true);
+  check('未确认项不改变 p005 结论', ruleEngine.judgeAccess(after5, u1, []).result, 'pass');
+
+  const unknown2 = inspectionService.submit({
+    placeId: 'p002', placeName: '老教学楼', submittedBy: 'selftest',
+    items: [{ key: 'step', choice: 'unknown', photo: '', aiDetected: [] }]
+  });
+  await inspectionService.publish(inspectionService.getById(unknown2.id));
+  const after2 = await placeService.get('p002');
+  check('p002 仍为有台阶', after2.entrances[0].hasSteps, true);
+  check('p002 仍为无坡道', after2.entrances[0].hasRamp, false);
+  check('p002 结论仍为阻断', ruleEngine.judgeAccess(after2, u1, []).result, 'blocked');
+
+  const noEnt = inspectionService.submit({
+    placeId: 'p004', placeName: '体育馆', submittedBy: 'selftest',
+    items: [{ key: 'entrance', choice: 'yes', photo: '', aiDetected: ['坡道'] }]
+  });
+  const r4 = await inspectionService.publish(inspectionService.getById(noEnt.id));
+  check('无入口地点发布不报错且不伪造入口', r4.entranceUpdated, false);
+  check('无入口地点结论仍为待复核', ruleEngine.judgeAccess(await placeService.get('p004'), u1, []).result, 'unknown');
+
+  let published = false;
+  await inspectionService.publish({ placeId: 'p999', items: [] }).catch(() => { published = true; });
+  check('发布到不存在地点会抛错', published, true);
 
   console.log('\n结果: ' + pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);

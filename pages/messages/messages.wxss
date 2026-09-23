@@ -4,7 +4,7 @@
 .mtype { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 20rpx; color: #fff; }
 .mtype-incident { background: #D93026; }
 .mtype-recover { background: #2BA245; }
-.mtype-system { background: #2f6fb0; }
+.mtype-system { background: var(--brand); }
 .mtime { font-size: 24rpx; }
 .mtitle { margin-top: 14rpx; font-size: 32rpx; color: #303133; font-weight: 600; }
 .mdesc { margin-top: 8rpx; font-size: 27rpx; color: #606266; line-height: 1.5; }
@@ -21,6 +21,7 @@
 .mtype { padding: 5rpx 14rpx; font-size: 20rpx; font-weight: 600; }
 .mtype-incident { background: #C84B4B; }
 .mtype-recover { background: #248A5A; }
+.mtype-review { background: #D88921; }
 .mtype-system { background: #176B70; }
 .mtitle { color: #1D2B32; font-size: 30rpx; }
 .mdesc { color: #617078; font-size: 25rpx; }

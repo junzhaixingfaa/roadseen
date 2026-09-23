@@ -11,7 +11,8 @@ Page({
     hasProfile: false,
     profileSummary: '',
     favCount: 0,
-    canCollect: false
+    canCollect: false,
+    isAdmin: false
   },
 
   async onShow() {
@@ -25,6 +26,7 @@ Page({
       account: u.account || '',
       roleText: u ? (ROLE_TEXT[u.role] || u.role) : '',
       canCollect: !!u && (u.role === 'volunteer' || u.role === 'maintainer' || u.role === 'admin'),
+      isAdmin: !!u && u.role === 'admin',
       hasProfile: !!p,
       profileSummary: p ? (p.device + ' · ' + (p.accompanied ? '有人陪同' : '独立出行') + ' · ' + (p.acceptAssist ? '接受协助' : '不接受协助')) : '未建立',
       favCount: favs.length

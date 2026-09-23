@@ -52,7 +52,7 @@ Page({
       return;
     }
     const width = d.deviceWidth === '' ? null : Number(d.deviceWidth);
-    if (width != null && (width < 30 || width > 120)) {
+    if (width != null && (Number.isNaN(width) || width < 30 || width > 120)) {
       wx.showToast({ title: '设备宽度请填写30-120cm', icon: 'none' });
       return;
     }

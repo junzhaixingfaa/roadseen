@@ -17,7 +17,6 @@ Page({
     f: { hasElevator: false, hasToilet: false, onlyPass: false },
     showFilter: false,
     showList: false,
-    sel: null,
     loading: true,
     hasProfile: false,
     userHint: '按通用轮椅条件计算',
@@ -221,20 +220,5 @@ Page({
   openPlace(e) {
     const id = e.currentTarget.dataset.id;
     if (id) wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + id });
-  },
-  navTo() {
-    const r = this.data.sel;
-    if (!r) return;
-    const loc = (r.rec && r.rec.location) ? r.rec.location : { latitude: r.lat, longitude: r.lng };
-    wx.openLocation({
-      latitude: loc.latitude, longitude: loc.longitude,
-      name: r.name, address: (r.rec && r.rec.direction) || '推荐无障碍入口', scale: 18
-    });
-  },
-  async addFav() {
-    const r = this.data.sel;
-    if (!r) return;
-    const res = await userService.toggleFavorite(r.id);
-    wx.showToast({ title: res.favorite ? '已收藏' : '已取消收藏', icon: 'none' });
   }
 });

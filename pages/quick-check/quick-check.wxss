@@ -37,8 +37,10 @@
 .bullet text { color: #176B70; font-weight: 800; }
 .warning .bullet text { color: #C87916; }
 .disclaimer { margin-top: 20rpx; padding: 16rpx; border-radius: 14rpx; color: #755A2B; background: #FFF8E9; font-size: 21rpx; line-height: 1.55; }
-.result-actions { display: flex; gap: 14rpx; margin-top: 22rpx; }
-.result-actions view { flex: 1; padding: 20rpx 10rpx; border-radius: 16rpx; text-align: center; font-size: 24rpx; font-weight: 600; }
+.result-actions, .err-actions { display: flex; gap: 14rpx; margin-top: 22rpx; }
+.result-actions view, .err-actions view { flex: 1; padding: 20rpx 10rpx; border-radius: 16rpx; text-align: center; font-size: 24rpx; font-weight: 600; }
+.err-title { font-size: 28rpx; font-weight: 600; color: #C84B4B; }
+.err-desc { margin-top: 10rpx; font-size: 24rpx; line-height: 1.6; color: #617078; }
 .secondary { color: #176B70; border: 1rpx solid #A9CBC7; background: #fff; }
 .primary { color: #fff; background: #176B70; }
 .safe-note { color: #697A80; font-size: 22rpx; line-height: 1.6; }

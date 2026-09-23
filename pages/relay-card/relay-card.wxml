@@ -40,3 +40,11 @@
     <button class="btn btn-ghost btn-block" bindtap="openPlace">查看地点通行卡</button>
   </view>
 </view>
+
+<view class="loading" wx:elif="{{loading}}">加载中…</view>
+
+<view class="missing" wx:else>
+  <view class="missing-t">没能生成接力卡</view>
+  <view class="missing-d">地点信息可能已失效。你可以回到地图重新选择地点。</view>
+  <button class="btn btn-block" bindtap="goMap">返回地图</button>
+</view>

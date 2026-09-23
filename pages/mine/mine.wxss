@@ -3,16 +3,16 @@
 .profile-hd { display: flex; align-items: center; padding: 40rpx 30rpx; background: #ffffff; }
 .avatar {
   width: 100rpx; height: 100rpx; border-radius: 50%;
-  background: #2f6fb0; color: #ffffff; font-size: 44rpx;
+  background: var(--brand); color: #ffffff; font-size: 44rpx;
   display: flex; align-items: center; justify-content: center; margin-right: 24rpx;
 }
 .p-name { font-size: 32rpx; font-weight: 600; }
 .p-role { font-size: 24rpx; color: #909399; margin-top: 6rpx; }
-.p-account { margin-top: 3rpx; color: #2f6fb0; font-size: 22rpx; }
+.p-account { margin-top: 3rpx; color: var(--brand); font-size: 22rpx; }
 
 .card { background: #ffffff; border-radius: 16rpx; margin: 20rpx; padding: 8rpx 24rpx; }
 .row-between { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 0; font-size: 28rpx; }
-.val { color: #2f6fb0; font-size: 26rpx; }
+.val { color: var(--brand); font-size: 26rpx; }
 .val.muted { color: #b8bcc4; }
 
 .list .li { display: flex; align-items: center; justify-content: space-between; padding: 26rpx 0; border-bottom: 1rpx solid #f2f3f5; font-size: 28rpx; }

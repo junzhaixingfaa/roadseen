@@ -3,7 +3,7 @@
 .aic-hd { background: #ffffff; padding: 24rpx; }
 .aic-title { font-size: 32rpx; font-weight: 600; }
 .aic-tools { margin-top: 12rpx; }
-.tool { font-size: 24rpx; color: #2f6fb0; background: #eaf1f9; padding: 6rpx 18rpx; border-radius: 20rpx; }
+.tool { font-size: 24rpx; color: var(--brand); background: var(--brand-soft); padding: 6rpx 18rpx; border-radius: 20rpx; }
 
 .item { background: #ffffff; border-radius: 14rpx; margin: 16rpx 20rpx; padding: 22rpx; }
 .it-title { font-size: 28rpx; font-weight: 600; }
@@ -13,7 +13,7 @@
 .it-error { color: #D93026; font-size: 24rpx; background: #fdeceb; border-radius: 10rpx; padding: 16rpx; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 8rpx 0; }
-.chip { font-size: 22rpx; color: #2f6fb0; background: #eaf1f9; padding: 4rpx 16rpx; border-radius: 16rpx; }
+.chip { font-size: 22rpx; color: var(--brand); background: var(--brand-soft); padding: 4rpx 16rpx; border-radius: 16rpx; }
 .it-basis { margin: 6rpx 0; }
 
 .ef { display: flex; align-items: center; padding: 12rpx 0; border-top: 1rpx solid #f2f3f5; }
@@ -25,7 +25,7 @@
 
 .choice { display: flex; gap: 16rpx; margin-top: 16rpx; }
 .c-btn { flex: 1; text-align: center; font-size: 24rpx; color: #606266; background: #f0f2f5; border-radius: 24rpx; padding: 12rpx 0; }
-.c-btn.on { background: #2f6fb0; color: #ffffff; }
+.c-btn.on { background: var(--brand); color: #ffffff; }
 
 .aic-bar {
   position: fixed; left: 0; right: 0; bottom: 0;

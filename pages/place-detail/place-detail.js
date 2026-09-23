@@ -117,6 +117,8 @@ Page({
     wx.showToast({ title: res.favorite ? '已收藏' : '已取消收藏', icon: 'none' });
   },
 
+  goMap() { wx.switchTab({ url: '/pages/map/map' }); },
+
   goRelay() {
     wx.navigateTo({ url: '/pages/relay-card/relay-card?id=' + this.data.id });
   },

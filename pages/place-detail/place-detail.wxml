@@ -94,3 +94,9 @@
 </view>
 
 <view class="loading" wx:elif="{{loading}}">加载中…</view>
+
+<view class="missing" wx:else>
+  <view class="missing-t">没能打开这个地点</view>
+  <view class="missing-d">链接可能已失效，或该地点尚未录入。你可以回到地图重新选择。</view>
+  <button class="btn btn-block" bindtap="goMap">返回地图</button>
+</view>

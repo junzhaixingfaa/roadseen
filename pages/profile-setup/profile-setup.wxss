@@ -1,12 +1,12 @@
 .ps { min-height: 100vh; background: #f5f6f8; padding: 20rpx 0; }
-.onboard { margin: -20rpx 0 20rpx; padding: 30rpx 26rpx; color: #fff; background: linear-gradient(135deg, #195b98, #408eae); }
+.onboard { margin: -20rpx 0 20rpx; padding: 30rpx 26rpx; color: #fff; background: linear-gradient(135deg, #103F4A, #176B70); }
 .onboard-step { font-size: 22rpx; opacity: 0.82; }
 .onboard-title { margin-top: 8rpx; font-size: 36rpx; font-weight: 700; }
 .onboard-copy { margin-top: 10rpx; font-size: 23rpx; line-height: 1.55; opacity: 0.9; }
 .intro {
   margin: 8rpx 24rpx 4rpx;
-  background: #eaf1f9;
-  color: #2f6fb0;
+  background: var(--brand-soft);
+  color: var(--brand);
   border-radius: 12rpx;
   padding: 18rpx 22rpx;
   font-size: 24rpx;
@@ -14,7 +14,7 @@
 .field { display: flex; align-items: center; justify-content: space-between; padding: 22rpx 0; border-bottom: 1rpx solid #f2f3f5; }
 .field:last-child { border-bottom: none; }
 .lab { font-size: 28rpx; color: #303133; }
-.pk { color: #2f6fb0; font-size: 28rpx; }
+.pk { color: var(--brand); font-size: 28rpx; }
 .ipt { text-align: right; font-size: 28rpx; width: 260rpx; }
 .save { margin: 32rpx 24rpx; }
 .link { text-align: center; color: #909399; font-size: 26rpx; padding: 24rpx; }

@@ -74,6 +74,12 @@ function setStatus(id, status, extra) {
 
 function resolve(id) { return setStatus(id, 'resolved', { resolvedAt: util.formatDate(new Date()) }); }
 
+// 到期事件经管理员确认「仍在进行中」后重新生效；
+// 必须清掉 expectedEndAt，否则下一次 expireSweep 会立刻把它再次降级。
+function reactivate(id) {
+  return setStatus(id, 'active', { expectedEndAt: '', reactivatedAt: util.formatDate(new Date()) });
+}
+
 function confirm(id) {
   const cur = getById(id) || {};
   const over = storage.get('lj_incidents_over', {});
@@ -83,4 +89,4 @@ function confirm(id) {
   return Promise.resolve(getById(id));
 }
 
-module.exports = { listAll, listActiveForPlace, listResolvedForPlace, activeByPlace, report, resolve, confirm, setStatus, getById };
+module.exports = { listAll, listActiveForPlace, listResolvedForPlace, activeByPlace, report, resolve, reactivate, confirm, setStatus, getById };

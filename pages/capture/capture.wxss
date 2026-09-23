@@ -2,9 +2,9 @@
 
 .cap-hd { background: #ffffff; padding: 24rpx; }
 .cap-title { font-size: 32rpx; font-weight: 600; }
-.place-picker { margin-top: 14rpx; padding: 16rpx 20rpx; border-radius: 12rpx; background: #eef4fb; color: #2f6fb0; font-size: 26rpx; }
+.place-picker { margin-top: 14rpx; padding: 16rpx 20rpx; border-radius: 12rpx; background: var(--brand-soft); color: var(--brand); font-size: 26rpx; }
 .place-picker.placeholder { color: #b8541f; background: #fdf1e7; }
-.prog { margin-top: 8rpx; font-size: 24rpx; color: #2f6fb0; }
+.prog { margin-top: 8rpx; font-size: 24rpx; color: var(--brand); }
 
 .step-card { background: #ffffff; border-radius: 14rpx; margin: 16rpx 20rpx; padding: 22rpx; }
 .st-title { font-size: 28rpx; font-weight: 600; }

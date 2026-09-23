@@ -10,11 +10,13 @@ Page({
   },
 
   async onShow() {
+    const [all, places] = await Promise.all([incidentService.listAll(), placeService.list()]);
+    const nameOf = {};
+    places.forEach(p => { nameOf[p.id] = p.name; });
+
     const list = [];
-    const all = await incidentService.listAll();
-    for (const inc of all) {
-      const place = await placeService.get(inc.placeId);
-      const pname = place ? place.name : '某地点';
+    all.forEach(inc => {
+      const pname = nameOf[inc.placeId] || '某地点';
       const fac = FAC_TEXT[inc.facility] || '设施';
       if (inc.status === 'resolved') {
         list.push({
@@ -36,8 +38,19 @@ Page({
           desc: (inc.description || '') + (inc.expectedEndAt ? ('（预计 ' + inc.expectedEndAt + ' 结束）') : ''),
           time: inc.occurredAt || ''
         });
+      } else {
+        // 已过期待复核：不能从列表里凭空消失，否则用户会以为上报被吞了
+        list.push({
+          id: 'p' + inc.id,
+          type: 'review',
+          typeText: '待复核',
+          placeId: inc.placeId,
+          title: pname + ' · ' + fac + '已过预计结束时间',
+          desc: (inc.description || '') + '（等待现场确认是否已恢复）',
+          time: inc.expectedEndAt || inc.occurredAt || ''
+        });
       }
-    }
+    });
 
     // 收藏地点的变化优先展示
     const favs = userService.favorites();

@@ -39,19 +39,27 @@ function judgeAccess(place, profile, activeIncidents) {
   const fac = place.facilities || {};
   const elev = fac.elevator || {};
   const toilet = fac.accessibleToilet || {};
-  const needElev = place.needElevatorToTarget && prof.mustUseElevator;
+  // 未建档案时按「通用轮椅条件」保守假定需要电梯，与地图页「按通用轮椅条件计算」的文案一致，
+  // 否则无档案用户会在电梯停运的楼层型地点看到错误的「可通行」。
+  const needElev = !!place.needElevatorToTarget && (hasProfile ? !!prof.mustUseElevator : true);
 
   // 3) 动态事件（优先级最高的阻断）
   incidents.forEach(inc => {
     const desc = '【动态】' + (inc.description || inc.type || '存在临时障碍');
     if (inc.facility === 'elevator') {
-      if (needElev) { reasons.push(desc); result = 'blocked'; }
-      else { reasons.push(desc + '（当前地点您暂无需使用电梯）'); }
+      if (needElev) {
+        reasons.push(desc + (hasProfile ? '' : '（未设置档案，按通用轮椅条件假定需乘电梯）'));
+        result = 'blocked';
+      } else if (place.needElevatorToTarget) {
+        reasons.push(desc + '（您的档案为无需乘电梯，本次判断不受影响）');
+      } else {
+        reasons.push(desc + '（到达该地点目标无需乘电梯）');
+      }
     } else if (inc.facility === 'entrance' || inc.facility === 'path' || inc.facility === 'ramp') {
       reasons.push(desc); result = 'blocked';
     } else if (inc.facility === 'toilet') {
       if (place.needAccessibleToilet) { reasons.push(desc); result = 'blocked'; }
-      else { reasons.push(desc); }
+      else { reasons.push(desc + '（不影响通行，如厕需另行安排）'); }
     } else if (inc.facility === 'door') {
       if (prof.acceptAssist && prof.accompanied) {
         reasons.push(desc + '（有人陪同，可尝试协助开门）');
@@ -60,8 +68,14 @@ function judgeAccess(place, profile, activeIncidents) {
         reasons.push(desc + '，当前条件下无法确认可安全进入');
         result = 'blocked';
       }
+    } else if (inc.facility === 'openTime') {
+      reasons.push(desc + '，实际开放时间需复核后确认');
+      if (result !== 'blocked') result = 'unknown';
     } else {
-      reasons.push(desc);
+      // other 及将来新增的未分类事件：影响范围不明时保守降为待复核。
+      // 不能维持「可通行」，否则用户上报后地图颜色毫无变化，动态闭环形同虚设。
+      reasons.push(desc + '，影响范围不明，需现场确认');
+      if (result !== 'blocked') result = 'unknown';
     }
   });
 

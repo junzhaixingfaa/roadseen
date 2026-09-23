@@ -1,6 +1,7 @@
 const incidentService = require('../../services/incidentService');
 const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
+const fileService = require('../../services/fileService');
 const storage = require('../../services/storage');
 const util = require('../../utils/util');
 const campus = placeService.getCampusConfig();
@@ -16,7 +17,8 @@ Page({
     description: '',
     occurredAt: util.formatDate(new Date()),
     expectedEndAt: '',
-    photo: ''
+    photo: '',
+    submitting: false
   },
 
   onLoad() {
@@ -61,25 +63,44 @@ Page({
   onOccurred(e) { this.setData({ occurredAt: e.detail.value }); },
   onEnd(e) { this.setData({ expectedEndAt: e.detail.value }); },
   choosePhoto() {
-    wx.chooseMedia({ count: 1, mediaType: ['image'], success: (res) => this.setData({ photo: res.tempFiles[0].tempFilePath }) });
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      success: async res => {
+        const photo = await fileService.persist(res.tempFiles[0].tempFilePath);
+        this.setData({ photo });
+      }
+    });
   },
 
   async submit() {
+    if (this.data.submitting) return;
     if (!this.data.description.trim()) { wx.showToast({ title: '请填写说明', icon: 'none' }); return; }
-    const user = userService.current();
-    const t = this.data.types[this.data.typeIndex];
-    await incidentService.report({
-      placeId: this.data.placeId,
-      facility: t.facility,
-      type: t.label,
-      description: this.data.description.trim(),
-      imageUrl: this.data.photo,
-      occurredAt: this.data.occurredAt,
-      expectedEndAt: this.data.expectedEndAt,
-      reportBy: user ? user.id : 'user'
-    });
-    wx.showToast({ title: '已上报，将重算通行结果', icon: 'none' });
-    this.setData({ description: '', expectedEndAt: '', photo: '' });
-    setTimeout(() => wx.switchTab({ url: '/pages/map/map' }), 800);
+    if (!this.data.placeId) { wx.showToast({ title: '请先选择地点', icon: 'none' }); return; }
+    // 预计结束时间早于今天会被 expireSweep 立刻降级，用户会看到「上报了但地图没变化」
+    if (this.data.expectedEndAt && this.data.expectedEndAt < util.formatDate(new Date())) {
+      wx.showToast({ title: '预计结束时间不能早于今天', icon: 'none' });
+      return;
+    }
+    this.setData({ submitting: true });
+    try {
+      const user = userService.current();
+      const t = this.data.types[this.data.typeIndex];
+      await incidentService.report({
+        placeId: this.data.placeId,
+        facility: t.facility,
+        type: t.label,
+        description: this.data.description.trim(),
+        imageUrl: this.data.photo,
+        occurredAt: this.data.occurredAt,
+        expectedEndAt: this.data.expectedEndAt,
+        reportBy: user ? user.id : 'user'
+      });
+      wx.showToast({ title: '已上报，已记入该地点通行卡', icon: 'none' });
+      this.setData({ description: '', expectedEndAt: '', photo: '' });
+      setTimeout(() => wx.switchTab({ url: '/pages/map/map' }), 800);
+    } finally {
+      this.setData({ submitting: false });
+    }
   }
 });

@@ -18,7 +18,7 @@
   <view class="card list">
     <view class="li" bindtap="goFavorites"><text>我的收藏</text><text class="val">{{favCount}} 个 ›</text></view>
     <view class="li" wx:if="{{canCollect}}" bindtap="goSurvey"><text>我的贡献 / 勘察任务</text><text class="val">›</text></view>
-    <view class="li" wx:if="{{roleText === '管理员'}}" bindtap="goAdmin"><text>管理端</text><text class="val">›</text></view>
+    <view class="li" wx:if="{{isAdmin}}" bindtap="goAdmin"><text>管理端</text><text class="val">›</text></view>
   </view>
 
   <view class="privacy-note">通行档案只用于个性化判断，当前保存在本机，不会随分享卡公开。</view>
