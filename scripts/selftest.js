@@ -1,6 +1,7 @@
 // 离线自测：验证规则引擎判断用例与 services 层。不进小程序编译目录。
 // 用法：node scripts/selftest.js
 const path = require('path');
+const fs = require('fs');
 const ROOT = process.argv[2] || path.join(__dirname, '..');
 const R = p => require(path.join(ROOT, p));
 
@@ -8,6 +9,7 @@ const ruleEngine = R('services/ruleEngine');
 const places = R('data/places');
 const users = R('data/users');
 const evidences = R('data/evidences');
+const aiResults = R('data/aiResults');
 const placeService = R('services/placeService');
 const incidentService = R('services/incidentService');
 const inspectionService = R('services/inspectionService');
@@ -118,6 +120,15 @@ console.log('== services：地点 / 事件 ==');
   console.log('== services：AI / 复核 / 账号 ==');
   const ai = await aiService.recognize('entrance', { delay: 0 });
   check('aiService entrance hasRamp', ai.detected.hasRamp, true);
+  // 采集步骤定义在页面文件里（Page() 无法被 node require），只能读源码取 key；
+  // 少了预置结果的步骤在演示时会直接显示「未能识别」，等于 AI 环节当场翻车。
+  const captureSrc = fs.readFileSync(path.join(ROOT, 'pages/capture/capture.js'), 'utf8');
+  const stepKeys = [];
+  const keyRe = /\{ key: '([a-zA-Z]+)'/g;
+  let km;
+  while ((km = keyRe.exec(captureSrc))) stepKeys.push(km[1]);
+  check('采集步骤数量', stepKeys.length, 8);
+  check('每个采集步骤都有 AI 预置结果', stepKeys.filter(k => !aiResults[k]).join(',') || '(无缺失)', '(无缺失)');
   const quickAi = await aiService.quickAssess('mock-photo.jpg', { delay: 0 });
   check('aiService 普通用户快速检查', quickAi.mode, 'demo');
   check('aiService 快速检查给出结论', quickAi.result, 'assist');

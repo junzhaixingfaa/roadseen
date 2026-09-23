@@ -76,8 +76,16 @@ Page({
 
   continueSession() { wx.switchTab({ url: '/pages/map/map' }); },
 
-  async changeAccount() {
-    await userService.logout();
-    this.setData({ currentUser: null, account: '', password: '', error: '' });
+  changeAccount() {
+    // 误触会直接登出并清空已填账号，答辩演示时很难挽回，先确认一次
+    wx.showModal({
+      title: '切换账号',
+      content: '将退出当前登录并清空已填内容，确定继续？',
+      success: async (res) => {
+        if (!res.confirm) return;
+        await userService.logout();
+        this.setData({ currentUser: null, account: '', password: '', error: '' });
+      }
+    });
   }
 });

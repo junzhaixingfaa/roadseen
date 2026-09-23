@@ -60,5 +60,25 @@ module.exports = {
     confidence: 'high',
     unknownFields: [],
     suggestRetake: []
+  },
+  door: {
+    facilityType: 'door',
+    detected: { hasSteps: false, hasRamp: false, hasElevator: false, hasDoor: true, hasToiletSign: false, hasAccessibleSign: false },
+    observable: { doorType: '自动门' },
+    ocrText: '请按按钮开门',
+    basis: '画面可见自动门与开门按钮，门体关闭但处于可感应状态',
+    confidence: 'high',
+    unknownFields: ['doorWidth', 'needAssistToOpen'],
+    suggestRetake: ['建议补拍门把手与开门按钮的高度']
+  },
+  other: {
+    facilityType: 'other',
+    detected: { hasSteps: false, hasRamp: false, hasElevator: false, hasDoor: false, hasToiletSign: false, hasAccessibleSign: false },
+    observable: {},
+    ocrText: '',
+    basis: '画面未见可分类的无障碍设施，疑似临时堆物占用通道',
+    confidence: 'low',
+    unknownFields: ['obstacleType', 'passageWidth'],
+    suggestRetake: ['建议补拍含参照物的全景，便于判断剩余通行宽度']
   }
 };
