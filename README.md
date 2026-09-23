@@ -45,7 +45,7 @@
 
 - 微信小程序**原生框架**，无第三方构建。
 - 数据与校园配置全部走 `services/` 数据访问层，读的是 `data/` 本地 mock 数据；页面不直接 import `data/`。后续接入云开发时主要重写 `services/`。
-- 通行判断为 `services/ruleEngine.js` **真实规则引擎**（作品核心），可离线自测：`node scripts/selftest.js`（86 项断言，覆盖规则全部分支、事件过期与复核、勘察发布回归）。
+- 通行判断为 `services/ruleEngine.js` **真实规则引擎**（作品核心），可离线自测：`node scripts/selftest.js`（88 项断言，覆盖规则全部分支、事件过期与复核、勘察发布回归）。
 - 勘察提交与审核发布逻辑在 `services/inspectionService.js`，同样被离线自测覆盖。
 - 结构校验：`node scripts/structcheck.js` 检查 WXML 事件绑定是否都有对应方法、页面跳转目标是否已注册（小程序编译器不检查这两项，绑定名打错只会静默失败）。
 - AI 识图/OCR 为 `services/aiService.js` **模拟结果**，用于演示「AI 预填 → 人工确认」流程。
