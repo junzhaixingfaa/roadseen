@@ -51,6 +51,7 @@
       <evidence-card wx:for="{{evidences}}" wx:key="index" ev="{{item}}" />
     </scroll-view>
     <view class="muted" wx:else>暂无现场照片，等待志愿者勘察</view>
+    <view class="muted" wx:if="{{evidenceHidden > 0}}">另有 {{evidenceHidden}} 条较早的证据未被本次结论采信</view>
   </view>
 
   <!-- 动态事件 -->
@@ -77,6 +78,7 @@
     <view class="section-title">信息来源</view>
     <view class="rec-line"><text class="k">最近核验</text>{{place.lastVerifiedAt || '未知'}}</view>
     <view class="rec-line"><text class="k">采集人</text>{{place.collectedBy || '未知'}}</view>
+    <view class="rec-line" wx:if="{{revisions > 0}}"><text class="k">发布修订</text>共 {{revisions}} 次</view>
     <view class="rec-line"><text class="k">来源</text>志愿者现场采集 + AI 辅助识别</view>
   </view>
 

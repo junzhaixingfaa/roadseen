@@ -89,6 +89,11 @@ function judgeAccess(place, profile, activeIncidents) {
     if (!elev.has) { reasons.push('需上楼但无可用电梯'); result = 'blocked'; }
     else if (elev.status === 'fault') { reasons.push('电梯故障中'); result = 'blocked'; }
   }
+  // 4b2) 设备宽度 vs 路径最窄处净宽：过不去就是过不去，属于硬阻断，不给「协助」兜底
+  if (prof.deviceWidth && place.minPassageWidth && prof.deviceWidth > place.minPassageWidth) {
+    reasons.push('通往目标的路径最窄处净宽约 ' + place.minPassageWidth + ' cm，' + (prof.device || '轮椅') + '宽 ' + prof.deviceWidth + ' cm 无法通过');
+    result = 'blocked';
+  }
   // 4c) 无障碍厕所（若该地点以其为关键设施）
   if (place.needAccessibleToilet) {
     if (toilet.has === false) { reasons.push('缺少无障碍厕所'); result = 'blocked'; }

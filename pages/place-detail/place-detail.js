@@ -4,6 +4,7 @@ const evidenceService = require('../../services/evidenceService');
 const userService = require('../../services/userService');
 const ruleEngine = require('../../services/ruleEngine');
 const reviewService = require('../../services/reviewService');
+const inspectionService = require('../../services/inspectionService');
 const storage = require('../../services/storage');
 const { getStatus } = require('../../utils/status');
 
@@ -22,6 +23,8 @@ Page({
     facilities: [],
     steps: [],
     evidences: [],
+    evidenceHidden: 0,
+    revisions: 0,
     incidents: [],
     resolved: [],
     rec: null,
@@ -54,6 +57,9 @@ Page({
       ]);
       const j = ruleEngine.judgeAccess(place, profile || null, activeInc);
       const st = getStatus(j.result);
+      // evidenceIds 是当前采信的证据集；为空时（尚未发布过）退回展示全部，避免证据区凭空变空
+      const ids = place.evidenceIds || [];
+      const picked = ids.length ? ids.map(eid => evs.filter(e => e.id === eid)[0]).filter(Boolean) : evs;
 
       this.setData({
         place,
@@ -64,13 +70,15 @@ Page({
         alternatives: j.alternatives || [],
         facilities: this.buildFacilities(place),
         steps: place.steps || [],
-        evidences: evs.map(e => ({
+        evidences: picked.map(e => ({
           imageUrl: e.imageUrl,
           typeText: TYPE_MAP[e.type] || e.type,
           collectedAt: e.collectedAt,
           confirmStatusText: CONFIRM_MAP[e.confirmStatus] || e.confirmStatus,
           aiTagsText: (e.aiTags || []).join('、')
         })),
+        evidenceHidden: Math.max(0, evs.length - picked.length),
+        revisions: inspectionService.listRevisions(id).length,
         incidents: activeInc.map(i => Object.assign({}, i, { facilityText: FAC_MAP[i.facility] || i.facility })),
         resolved: resolvedInc,
         isFav: userService.isFavorite(id),
@@ -99,6 +107,7 @@ Page({
       { label: '电梯', value: elev.status === 'unknown' ? '未知' : (elev.has ? ('有' + (elev.location ? ' · ' + elev.location : '') + (elev.status === 'fault' ? '（故障）' : '')) : '无'), unknown: elev.status === 'unknown' },
       { label: '无障碍厕所', value: toilet.status === 'unknown' ? '未知' : (toilet.has ? ('有' + (toilet.location ? ' · ' + toilet.location : '') + (toilet.status === 'closed' ? '（关闭）' : '')) : '无'), unknown: toilet.status === 'unknown' },
       { label: '路面状况', value: fac.pathCondition || '未知', unknown: isU(fac.pathCondition) },
+      { label: '路径最窄处', value: place.minPassageWidth ? (place.minPassageWidth + ' cm') : '未知', unknown: !place.minPassageWidth },
       { label: '其他障碍', value: fac.otherObstacles || '无', unknown: false }
     ];
   },

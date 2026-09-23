@@ -1,4 +1,4 @@
-// 5 个测试地点，覆盖四色状态 + 动态演示
+// 5 个测试地点，覆盖四色状态、动态事件、设备宽度、坡道与协助等规则分支
 // 坐标示例落在北京大学·海淀燕园（相对布局保持），可按需整体替换
 module.exports = [
   {
@@ -26,7 +26,7 @@ module.exports = [
     id: 'p002', name: '老教学楼', category: '教学楼',
     address: '北区道路东侧', openTime: '07:30-21:00',
     location: { latitude: 39.9932, longitude: 116.3122 },
-    needElevatorToTarget: false, needAccessibleToilet: false,
+    needElevatorToTarget: true, needAccessibleToilet: false, // 主要教室在二层，楼内未确认有电梯
     entrances: [
       {
         id: 'e002', name: '正门台阶入口', direction: '正对道路，门前有连续台阶',
@@ -40,7 +40,7 @@ module.exports = [
       accessibleToilet: { has: false, location: '', status: 'unknown', note: '' },
       pathCondition: '门前为台阶，未见坡道', otherObstacles: '仅有台阶，暂无轮椅可通行入口'
     },
-    steps: ['到达老教学楼正门', '门前为连续台阶，暂未发现无障碍入口'],
+    steps: ['到达老教学楼正门', '门前为连续台阶，暂未发现无障碍入口', '主要教室在二层，楼内未确认有电梯'],
     evidenceIds: ['ev003'], lastVerifiedAt: '2026-09-08', collectedBy: '志愿者-张', isTestData: false
   },
   {
@@ -48,20 +48,21 @@ module.exports = [
     address: '生活区中心', openTime: '06:30-20:30',
     location: { latitude: 39.9908, longitude: 116.3118 },
     needElevatorToTarget: false, needAccessibleToilet: false,
+    minPassageWidth: 75, // 取餐通道最窄处净宽，电动轮椅常过不去
     entrances: [
       {
-        id: 'e003', name: '西侧门厅入口', direction: '西侧门厅，经坡道后为较重的平开门',
+        id: 'e003', name: '西侧门厅入口', direction: '西侧门厅，经较陡坡道后为沉重的平开门',
         location: { latitude: 39.99076, longitude: 116.31186 }, isRecommended: true,
-        hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
+        hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '较陡',
         hasThreshold: true, thresholdHeight: 3, doorType: '平开门', needAssistToOpen: true
       }
     ],
     facilities: {
       elevator: { has: false, location: '', status: 'na', note: '单层建筑，无需电梯' },
       accessibleToilet: { has: true, location: '食堂内西北角', status: 'open', note: '' },
-      pathCondition: '室内平整', otherObstacles: '入口为较重平开门，高峰期人流多'
+      pathCondition: '室内平整', otherObstacles: '入口坡道较陡且为沉重平开门，高峰期取餐通道拥挤'
     },
-    steps: ['到达食堂西侧门厅', '经无障碍坡道至门前', '门为较重的平开门，可能需他人协助推开', '室内为单层，通道平整'],
+    steps: ['到达食堂西侧门厅', '经较陡无障碍坡道至门前', '门为沉重的平开门，可能需他人协助推开', '室内为单层，取餐通道最窄处约 75 cm'],
     evidenceIds: ['ev004'], lastVerifiedAt: '2026-09-05', collectedBy: '志愿者-方', isTestData: false
   },
   {
@@ -83,6 +84,7 @@ module.exports = [
     address: '中区教学科研楼', openTime: '08:00-21:00',
     location: { latitude: 39.9925, longitude: 116.3095 },
     needElevatorToTarget: true, needAccessibleToilet: false, // 主要实验室在 3 楼，需上楼
+    minPassageWidth: 76, // 三楼目标实验室门洞净宽偏窄
     entrances: [
       {
         id: 'e005', name: '北门无障碍入口', direction: '北侧广场，平坡进入',

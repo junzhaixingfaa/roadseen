@@ -49,10 +49,30 @@ check('p003 食堂 + u2 (独立不接受)', ruleEngine.judgeAccess(byId('p003'),
 check('p003 食堂 + u1 改独立(切换陪同)', ruleEngine.judgeAccess(byId('p003'), u1_alone, []).result, 'blocked');
 check('p004 体育馆 无入口', ruleEngine.judgeAccess(byId('p004'), u1, []).result, 'unknown');
 check('p005 实验楼 + u1 (静态)', ruleEngine.judgeAccess(byId('p005'), u1, []).result, 'pass');
-check('p005 实验楼 + u2 (静态)', ruleEngine.judgeAccess(byId('p005'), u2, []).result, 'pass');
+check('p005 实验楼 + u2 (78cm 设备)', ruleEngine.judgeAccess(byId('p005'), u2, []).result, 'blocked');
 check('无档案 p001(通用)', ruleEngine.judgeAccess(byId('p001'), null, []).result, 'pass');
 check('资料过期降级待复核', ruleEngine.judgeAccess(stale, u1, []).result, 'unknown');
 check('以厕所为关键设施(资料齐备)', ruleEngine.judgeAccess(needToilet, u1, []).result, 'pass');
+
+console.log('== 规则用例：设备宽度 / 门槛 / 厕所未知 ==');
+// 宽度是物理硬约束，过不去就不给「协助」兜底；无档案时 deviceWidth 为 null，不参与判断
+const w5 = ruleEngine.judgeAccess(byId('p005'), u2, []);
+check('宽度阻断给出实测数值', /78/.test(w5.reasons.join('')) && /76/.test(w5.reasons.join('')), true);
+check('p005 + u1 (70cm 设备可通过)', ruleEngine.judgeAccess(byId('p005'), u1, []).result, 'pass');
+check('无档案不假设设备宽度', ruleEngine.judgeAccess(byId('p005'), null, []).result, 'pass');
+const p003_flat = Object.assign({}, byId('p003'), {
+  entrances: [Object.assign({}, byId('p003').entrances[0], { rampCondition: '平缓', needAssistToOpen: false })]
+});
+check('仅门槛一项 → 需协助', ruleEngine.judgeAccess(p003_flat, u1, []).result, 'assist');
+check('接受低门槛后放行', ruleEngine.judgeAccess(p003_flat, Object.assign({}, u1, { acceptLowThreshold: true }), []).result, 'pass');
+const toiletUnknown = Object.assign({}, byId('p001'), {
+  needAccessibleToilet: true,
+  facilities: Object.assign({}, byId('p001').facilities, { accessibleToilet: { has: true, status: 'unknown' } })
+});
+check('厕所状态未知 → 待复核', ruleEngine.judgeAccess(toiletUnknown, u1, []).result, 'unknown');
+// 下面两条把「原本在演示数据里不可达」的分支钉住：改动地点数据时若把它们改没了会直接红
+check('p002 演示数据可达「需上楼但无电梯」', /需上楼但无可用电梯/.test(ruleEngine.judgeAccess(byId('p002'), u1, []).reasons.join('')), true);
+check('p003 演示数据可达「坡道较陡」', /坡道较陡/.test(ruleEngine.judgeAccess(byId('p003'), u1, []).reasons.join('')), true);
 
 console.log('== 规则用例：动态事件 ==');
 check('p005 + u1 电梯停运', ruleEngine.judgeAccess(byId('p005'), u1, inc('elevator', '电梯停运')).result, 'blocked');
@@ -171,10 +191,16 @@ console.log('== services：地点 / 事件 ==');
   const before = await placeService.get('p001');
   const beforeVerdict = ruleEngine.judgeAccess(before, u1, []).result;
   const evBefore = (await evidenceService.allForPlace('p001')).length;
-  await inspectionService.publish(inspectionService.getById(insp.id));
+  const pub = await inspectionService.publish(inspectionService.getById(insp.id));
   const after = await placeService.get('p001');
   const afterVerdict = ruleEngine.judgeAccess(after, u1, []).result;
   check('发布不改变可通行结论', beforeVerdict + '→' + afterVerdict, 'pass→pass');
+  check('发布返回变更摘要', pub.changes.length > 0, true);
+  check('发布生成修订记录', inspectionService.listRevisions('p001').length, 1);
+  check('修订记录记发布人', inspectionService.listRevisions('p001')[0].by, 'selftest');
+  check('新证据并入采信集', after.evidenceIds.length, 4);
+  const evAll = await evidenceService.allForPlace('p001');
+  check('采信集每条都能解析到证据', after.evidenceIds.every(i => evAll.some(e => e.id === i)), true);
   check('发布写入台阶数', after.entrances[0].stepCount, 4);
   check('发布写入有台阶', after.entrances[0].hasSteps, true);
   check('发布不把台阶照当成无坡道', after.entrances[0].hasRamp, true);
@@ -193,6 +219,7 @@ console.log('== services：地点 / 事件 ==');
   check('空台阶数不写入 NaN', Number.isNaN(afterNan.entrances[0].stepCount), false);
   check('空台阶数保留原值', afterNan.entrances[0].stepCount, 4);
   check('空台阶数不误改结论', ruleEngine.judgeAccess(afterNan, u1, []).result, 'pass');
+  check('再次发布累加修订记录', inspectionService.listRevisions('p001').length, 2);
 
   const unknown5 = inspectionService.submit({
     placeId: 'p005', placeName: '实验楼', submittedBy: 'selftest',

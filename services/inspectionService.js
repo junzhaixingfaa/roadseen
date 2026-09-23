@@ -6,6 +6,8 @@ const evidenceService = require('./evidenceService');
 const util = require('../utils/util');
 
 const KEY = 'lj_inspections';
+const REV_KEY = 'lj_place_revisions';
+let revSeq = 0;
 
 function list() { return storage.get(KEY, []); }
 
@@ -46,6 +48,54 @@ function toNumber(v) {
 // 该地点是否已有核实过的入口数据；为真时发布会覆盖它，页面需二次确认
 function hasVerifiedEntrance(place) {
   return !!place && !place.pendingInspection && (place.entrances || []).length > 0;
+}
+
+function fmtVal(v) {
+  if (v === false) return '否';
+  if (v === true) return '是';
+  if (v === '' || v == null) return '未填';
+  return String(v);
+}
+
+const ENTRANCE_LABELS = {
+  hasSteps: '有台阶', hasRamp: '有坡道', stepCount: '台阶数',
+  thresholdHeight: '门槛高', doorType: '门型', rampCondition: '坡道状况'
+};
+
+function diffEntrance(before, after) {
+  if (!before || !after) return [];
+  return Object.keys(ENTRANCE_LABELS)
+    .filter(k => before[k] !== after[k])
+    .map(k => ENTRANCE_LABELS[k] + '：' + fmtVal(before[k]) + ' → ' + fmtVal(after[k]));
+}
+
+function diffFacilities(before, after) {
+  const out = [];
+  const b = before || {}, a = after || {};
+  [['elevator', '电梯'], ['accessibleToilet', '无障碍厕所']].forEach(pair => {
+    const x = b[pair[0]] || {}, y = a[pair[0]] || {};
+    if (x.has !== y.has || x.status !== y.status) {
+      out.push(pair[1] + '：' + fmtVal(x.has) + '/' + fmtVal(x.status) + ' → ' + fmtVal(y.has) + '/' + fmtVal(y.status));
+    }
+  });
+  return out;
+}
+
+function listRevisions(placeId) {
+  const all = storage.get(REV_KEY, []);
+  return placeId ? all.filter(r => r.placeId === placeId) : all;
+}
+
+function addRevision(rev) {
+  const all = storage.get(REV_KEY, []);
+  const item = Object.assign({
+    id: 'rev' + Date.now() + '-' + (++revSeq),
+    at: util.formatDate(new Date()),
+    changes: []
+  }, rev);
+  all.unshift(item);
+  storage.set(REV_KEY, all.slice(0, 200));
+  return item;
 }
 
 // 依据已确认的采集项更新入口与设施。只写有依据的字段，
@@ -90,16 +140,8 @@ async function publish(inspection) {
     });
   }
 
-  placeService.saveOverride(place.id, {
-    entrances,
-    facilities,
-    lastVerifiedAt: util.formatDate(new Date()),
-    collectedBy: inspection.submittedBy,
-    pendingInspection: false
-  });
-
   const collectedAt = util.formatDate(new Date());
-  usable.filter(i => i.photo).forEach(i => evidenceService.addEvidence({
+  const newIds = usable.filter(i => i.photo).map(i => evidenceService.addEvidence({
     placeId: place.id,
     entranceId: rec ? rec.id : '',
     type: i.key,
@@ -109,9 +151,32 @@ async function publish(inspection) {
     aiTags: i.aiDetected || [],
     confirmStatus: 'confirmed',
     isTestData: true
-  }));
+  }).id);
 
-  return { placeId: place.id, entranceUpdated: !!rec };
+  // evidenceIds 是「当前被采信的证据集」，地点页按它过滤证据区；
+  // 不把新照片写进来，刚发布的证据就会在地点页被藏掉。
+  const evidenceIds = (place.evidenceIds || []).slice();
+  newIds.forEach(id => { if (evidenceIds.indexOf(id) < 0) evidenceIds.push(id); });
+
+  placeService.saveOverride(place.id, {
+    entrances,
+    facilities,
+    evidenceIds,
+    lastVerifiedAt: collectedAt,
+    collectedBy: inspection.submittedBy,
+    pendingInspection: false
+  });
+
+  const beforeRec = (place.entrances || []).find(e => e.isRecommended) || (place.entrances || [])[0] || null;
+  const changes = diffEntrance(beforeRec, rec).concat(diffFacilities(place.facilities, facilities));
+  const revision = addRevision({
+    placeId: place.id,
+    inspectionId: inspection.id,
+    by: inspection.submittedBy,
+    changes: changes
+  });
+
+  return { placeId: place.id, entranceUpdated: !!rec, evidenceAdded: newIds.length, changes: changes, revisionId: revision.id };
 }
 
-module.exports = { list, getById, submit, setStatus, publish, hasVerifiedEntrance };
+module.exports = { list, getById, submit, setStatus, publish, hasVerifiedEntrance, listRevisions };

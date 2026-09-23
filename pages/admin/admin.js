@@ -110,9 +110,9 @@ Page({
     if (!inspection) return;
     const publish = async () => {
       try {
-        await inspectionService.publish(inspection);
+        const r = await inspectionService.publish(inspection);
         inspectionService.setStatus(id, 'approved', { reviewNote: '审核通过，已发布到地点资料' });
-        wx.showToast({ title: '已审核并发布', icon: 'none' });
+        wx.showToast({ title: r.changes.length ? ('已发布 ' + r.changes.length + ' 项变更') : '已发布', icon: 'none' });
         await this.loadAll();
       } catch (err) {
         wx.showModal({ title: '无法发布', content: err.message || '请检查勘察数据', showCancel: false });
