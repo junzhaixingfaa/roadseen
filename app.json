@@ -14,6 +14,8 @@
     "pages/incident-report/incident-report",
     "pages/favorites/favorites",
     "pages/subscriptions/subscriptions",
+    "pages/recent/recent",
+    "pages/my-reports/my-reports",
     "pages/relay-card/relay-card",
     "pages/admin/admin"
   ],

@@ -1,6 +1,6 @@
 <view class="msg">
   <view class="msg-head">
-    <view class="msg-title">状态消息</view>
+    <view class="row-between"><view class="msg-title">状态消息</view><view class="read-all" wx:if="{{stats.unread > 0}}" bindtap="markAllRead">{{stats.unread}} 条未读 · 全部已读</view></view>
     <view class="msg-copy">订阅地点的故障、恢复和复核结果会集中显示在这里。</view>
     <view class="msg-stats">
       <view><text>{{stats.all}}</text><text>全部动态</text></view>
@@ -13,9 +13,9 @@
     <view class="filter-chip {{filter === 'followed' ? 'on' : ''}}" data-filter="followed" bindtap="setFilter">我的关注</view>
     <view class="filter-chip {{filter === 'review' ? 'on' : ''}}" data-filter="review" bindtap="setFilter">待复核</view>
   </view>
-  <view wx:for="{{messages}}" wx:key="id" class="card mitem" data-id="{{item.placeId}}" bindtap="open">
+  <view wx:for="{{messages}}" wx:key="id" class="card mitem {{item.unread ? 'unread' : ''}}" data-id="{{item.placeId}}" data-mid="{{item.id}}" bindtap="open">
     <view class="row-between">
-      <text class="mtype mtype-{{item.type}}">{{item.typeText}}</text>
+      <view class="type-wrap"><view class="unread-dot" wx:if="{{item.unread}}"></view><text class="mtype mtype-{{item.type}}">{{item.typeText}}</text></view>
       <text class="mtime muted">{{item.time}}</text>
     </view>
     <view class="mtitle">{{item.title}}</view>

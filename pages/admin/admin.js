@@ -52,7 +52,8 @@ Page({
     incidents: [],
     reviews: [],
     places: [],
-    aiLogs: []
+    aiLogs: [],
+    dashboard: { pendingInspection: 0, activeIncident: 0, pendingReview: 0, incompletePlace: 0 }
   },
 
   async onShow() {
@@ -78,8 +79,9 @@ Page({
       const st = getStatus(j.result);
       return { id: p.id, name: p.name, resultText: st.text, resultCls: st.cls, entrance: (p.entrances || []).length, pending: !!p.pendingInspection };
     });
+    const formattedInspections = fmtInspections();
     this.setData({
-      inspections: fmtInspections(),
+      inspections: formattedInspections,
       incidents: incidents.map(i => ({
         id: i.id, placeId: i.placeId, facilityText: FAC_TEXT[i.facility] || i.facility,
         type: i.type, description: i.description, status: i.status,
@@ -98,7 +100,13 @@ Page({
         timeText: util.formatDateTime(new Date(r.createdAt))
       })),
       places,
-      aiLogs: logs.map(l => ({ stepKey: l.stepKey, ok: l.ok, msg: l.msg, timeText: util.formatDateTime(new Date(l.at)) }))
+      aiLogs: logs.map(l => ({ stepKey: l.stepKey, ok: l.ok, msg: l.msg, timeText: util.formatDateTime(new Date(l.at)) })),
+      dashboard: {
+        pendingInspection: formattedInspections.filter(i => i.status === 'pending').length,
+        activeIncident: incidents.filter(i => i.status === 'active').length,
+        pendingReview: incidents.filter(i => i.status === 'pending_review').length + reviews.filter(r => r.status === 'pending').length,
+        incompletePlace: places.filter(p => p.pending || p.entrance === 0).length
+      }
     });
   },
 

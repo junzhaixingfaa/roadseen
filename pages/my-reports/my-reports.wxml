@@ -1,0 +1,13 @@
+<view class="reports-page">
+  <view class="report-hero">
+    <view class="hero-title">上报处理进度</view>
+    <view class="hero-copy">从提交到恢复，每条现场障碍都有明确状态。</view>
+    <view class="report-stats"><view><text>{{stats.active}}</text><text>处理中</text></view><view><text>{{stats.review}}</text><text>待复核</text></view><view><text>{{stats.resolved}}</text><text>已恢复</text></view></view>
+  </view>
+  <view class="empty" wx:if="{{empty}}"><view class="empty-title">还没有上报记录</view><view class="empty-desc">发现电梯停运、施工占道或坡道被占时，可以及时告诉其他人。</view><button class="btn btn-block" bindtap="goReport">上报现场障碍</button></view>
+  <view class="report-card" wx:for="{{items}}" wx:key="id" data-id="{{item.placeId}}" bindtap="open">
+    <view class="row-between"><view><view class="place-name">{{item.placeName}}</view><view class="report-time">{{item.occurredAt}}</view></view><text class="status status-{{item.statusCls}}">{{item.statusText}}</text></view>
+    <view class="report-type">{{item.type || '现场障碍'}}</view><view class="report-desc">{{item.description}}</view>
+    <view class="progress"><view class="progress-dot status-{{item.statusCls}}"></view><text>{{item.progressText}}</text></view>
+  </view>
+</view>

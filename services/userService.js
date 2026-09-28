@@ -117,10 +117,47 @@ function toggleSubscription(id) {
   return Promise.resolve({ subscribed: i < 0, ids });
 }
 
+// ---- 最近浏览 ----
+function recentStore() { return storage.get('lj_recent_places', {}); }
+function recentPlaces() {
+  const uid = storage.get(CUR, null);
+  return uid ? (recentStore()[uid] || []) : [];
+}
+function recordRecentPlace(id) {
+  const uid = storage.get(CUR, null);
+  if (!uid || !id) return;
+  const store = recentStore();
+  const list = (store[uid] || []).filter(x => x.id !== id);
+  list.unshift({ id, at: Date.now() });
+  store[uid] = list.slice(0, 20);
+  storage.set('lj_recent_places', store);
+}
+
+// ---- 消息已读状态 ----
+function readStore() { return storage.get('lj_message_reads', {}); }
+function readMessageIds() {
+  const uid = storage.get(CUR, null);
+  return uid ? (readStore()[uid] || []) : [];
+}
+function markMessagesRead(ids) {
+  const uid = storage.get(CUR, null);
+  if (!uid) return;
+  const store = readStore();
+  const merged = new Set((store[uid] || []).concat(ids || []));
+  store[uid] = Array.from(merged).slice(-300);
+  storage.set('lj_message_reads', store);
+}
+function unreadMessageCount(ids) {
+  const read = readMessageIds();
+  return (ids || []).filter(id => read.indexOf(id) < 0).length;
+}
+
 module.exports = {
   listUsers, current, ensureCurrent, setCurrent,
   authenticate, register, logout,
   getProfile, saveProfile,
   favorites, isFavorite, toggleFavorite,
-  subscriptions, isSubscribed, toggleSubscription
+  subscriptions, isSubscribed, toggleSubscription,
+  recentPlaces, recordRecentPlace,
+  readMessageIds, markMessagesRead, unreadMessageCount
 };

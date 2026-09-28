@@ -9,7 +9,7 @@ Page({
     messages: [],
     allMessages: [],
     filter: 'all',
-    stats: { all: 0, followed: 0, review: 0 },
+    stats: { all: 0, followed: 0, review: 0, unread: 0 },
     emptyText: '暂无状态变化消息。'
   },
 
@@ -59,11 +59,13 @@ Page({
     // 已订阅地点优先，其次是收藏地点。
     const favs = userService.favorites();
     const subs = userService.subscriptions();
+    const readIds = userService.readMessageIds();
     list.forEach(item => {
       item.subscribed = subs.indexOf(item.placeId) >= 0;
       item.favorite = favs.indexOf(item.placeId) >= 0;
       item.followed = item.subscribed || item.favorite;
       item.relationText = item.subscribed ? '已订阅' : (item.favorite ? '已收藏' : '');
+      item.unread = readIds.indexOf(item.id) < 0;
     });
     list.sort((a, b) => {
       const as = a.subscribed ? 1 : 0;
@@ -91,9 +93,10 @@ Page({
       stats: {
         all: list.filter(x => x.type !== 'system').length,
         followed: list.filter(x => x.followed).length,
-        review: list.filter(x => x.type === 'review').length
+        review: list.filter(x => x.type === 'review').length,
+        unread: list.filter(x => x.unread).length
       }
-    }, () => this.applyFilter());
+    }, () => { this.applyFilter(); this.updateBadge(); });
   },
 
   setFilter(e) {
@@ -109,8 +112,24 @@ Page({
     this.setData({ messages, emptyText });
   },
 
+  updateBadge() {
+    const count = this.data.stats.unread;
+    if (count > 0) wx.setTabBarBadge({ index: 3, text: String(Math.min(count, 99)) });
+    else wx.removeTabBarBadge({ index: 3 });
+  },
+
+  markAllRead() {
+    const ids = this.data.allMessages.filter(x => x.type !== 'system').map(x => x.id);
+    userService.markMessagesRead(ids);
+    const allMessages = this.data.allMessages.map(x => Object.assign({}, x, { unread: false }));
+    this.setData({ allMessages, stats: Object.assign({}, this.data.stats, { unread: 0 }) }, () => { this.applyFilter(); this.updateBadge(); });
+    wx.showToast({ title: '已全部标为已读', icon: 'none' });
+  },
+
   open(e) {
     const id = e.currentTarget.dataset.id;
+    const mid = e.currentTarget.dataset.mid;
+    if (mid) userService.markMessagesRead([mid]);
     if (id) wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + id });
   },
 

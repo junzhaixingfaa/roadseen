@@ -73,3 +73,15 @@
 .place-name { margin-bottom: 4rpx; color: #25383E; font-size: 28rpx; font-weight: 650; }
 .one-line { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .empty-list { padding: 60rpx 24rpx; color: #87949A; text-align: center; font-size: 24rpx; }
+
+.guide-mask { position: fixed; z-index: 99; left: 0; right: 0; top: 0; bottom: 0; display: flex; align-items: flex-end; padding: 28rpx; box-sizing: border-box; background: rgba(10,28,32,.62); }
+.guide-card { width: 100%; padding: 34rpx 30rpx 26rpx; box-sizing: border-box; border-radius: 30rpx; background: #FFFFFF; box-shadow: 0 20rpx 60rpx rgba(0,0,0,.22); }
+.guide-badge { display: inline-block; padding: 6rpx 14rpx; border-radius: 16rpx; color: #176B70; background: #D9EEEA; font-size: 20rpx; font-weight: 700; }
+.guide-title { margin: 18rpx 0 24rpx; color: #1D2B32; font-size: 34rpx; font-weight: 800; }
+.guide-step { display: flex; gap: 18rpx; margin-top: 18rpx; }
+.guide-step > text { flex: none; width: 44rpx; height: 44rpx; border-radius: 14rpx; color: #FFFFFF; background: #176B70; text-align: center; font-size: 23rpx; font-weight: 700; line-height: 44rpx; }
+.guide-step-title { color: #26373E; font-size: 25rpx; font-weight: 700; }
+.guide-step-copy { margin-top: 4rpx; color: #718089; font-size: 21rpx; line-height: 1.45; }
+.guide-primary { margin-top: 30rpx; border: none; border-radius: 17rpx; color: #FFFFFF; background: #176B70; font-size: 27rpx; font-weight: 700; }
+.guide-primary::after { border: none; }
+.guide-skip { padding: 20rpx 0 4rpx; color: #718089; text-align: center; font-size: 23rpx; }

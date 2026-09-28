@@ -90,4 +90,16 @@
       <view class="empty-list" wx:if="{{filteredRows.length === 0}}">当前筛选下没有地点</view>
     </view>
   </view>
+
+  <view class="guide-mask" wx:if="{{showGuide}}">
+    <view class="guide-card">
+      <view class="guide-badge">第一次使用</view>
+      <view class="guide-title">三步找到适合你的通行路线</view>
+      <view class="guide-step"><text>1</text><view><view class="guide-step-title">先建立通行档案</view><view class="guide-step-copy">填写轮椅宽度、是否陪同和可接受协助。</view></view></view>
+      <view class="guide-step"><text>2</text><view><view class="guide-step-title">查看地图四色状态</view><view class="guide-step-copy">绿色可通过，橙色需协助，红色暂不可通过。</view></view></view>
+      <view class="guide-step"><text>3</text><view><view class="guide-step-title">订阅常去地点</view><view class="guide-step-copy">地点发生停运、施工或恢复时，在消息页集中查看。</view></view></view>
+      <button class="guide-primary" bindtap="guideProfile">建立我的档案</button>
+      <view class="guide-skip" bindtap="dismissGuide">先看看地图</view>
+    </view>
+  </view>
 </view>

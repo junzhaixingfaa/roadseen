@@ -20,7 +20,7 @@
     <view class="overview-grid">
       <view class="overview-item" bindtap="goFavorites"><text>{{favCount}}</text><text>收藏地点</text></view>
       <view class="overview-item" bindtap="goSubscriptions"><text>{{subCount}}</text><text>状态订阅</text></view>
-      <view class="overview-item" bindtap="goReport"><text>{{reportCount}}</text><text>我的上报</text></view>
+      <view class="overview-item" bindtap="goMyReports"><text>{{reportCount}}</text><text>我的上报</text></view>
     </view>
   </view>
 
@@ -34,6 +34,9 @@
   <view class="card list">
     <view class="li" bindtap="goFavorites"><text>我的收藏</text><text class="val">{{favCount}} 个 ›</text></view>
     <view class="li" bindtap="goSubscriptions"><text>我的订阅</text><text class="val">{{subCount}} 个 ›</text></view>
+    <view class="li" bindtap="goRecent"><text>最近浏览</text><text class="val">{{recentCount}} 个 ›</text></view>
+    <view class="li" bindtap="goMyReports"><text>我的上报</text><text class="val">{{reportCount}} 条 ›</text></view>
+    <view class="li" bindtap="replayGuide"><text>使用引导</text><text class="val">重新查看 ›</text></view>
     <view class="li" wx:if="{{canCollect}}" bindtap="goSurvey"><text>我的贡献 / 勘察任务</text><text class="val">›</text></view>
     <view class="li" wx:if="{{isAdmin}}" bindtap="goAdmin"><text>管理端</text><text class="val">›</text></view>
   </view>

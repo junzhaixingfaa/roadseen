@@ -59,6 +59,7 @@ Page({
         evidenceService.allForPlace(id)
       ]);
       const j = ruleEngine.judgeAccess(place, profile || null, activeInc);
+      userService.recordRecentPlace(id);
       const st = getStatus(j.result);
       // evidenceIds 是当前采信的证据集；为空时（尚未发布过）退回展示全部，避免证据区凭空变空
       const ids = place.evidenceIds || [];

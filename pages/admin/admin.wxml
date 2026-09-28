@@ -6,6 +6,15 @@
   </view>
 
   <block wx:else>
+    <view class="dashboard">
+      <view class="dashboard-head"><view><view class="dashboard-title">运营概览</view><view class="dashboard-copy">需要处理的事项集中显示</view></view><view class="live-dot">实时</view></view>
+      <view class="dashboard-grid">
+        <view class="metric" data-key="inspection" bindtap="switchTab"><text>{{dashboard.pendingInspection}}</text><text>待审勘察</text></view>
+        <view class="metric" data-key="incident" bindtap="switchTab"><text>{{dashboard.activeIncident}}</text><text>进行事件</text></view>
+        <view class="metric" data-key="review" bindtap="switchTab"><text>{{dashboard.pendingReview}}</text><text>待复核</text></view>
+        <view class="metric" data-key="place" bindtap="switchTab"><text>{{dashboard.incompletePlace}}</text><text>资料不足</text></view>
+      </view>
+    </view>
     <view class="tabs">
       <view wx:for="{{tabs}}" wx:key="key" class="tab {{tab === item.key ? 'on' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
     </view>

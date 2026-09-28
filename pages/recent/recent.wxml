@@ -1,0 +1,8 @@
+<view class="recent-page">
+  <view class="recent-head" wx:if="{{!empty}}"><view class="head-title">最近浏览</view><view class="head-copy">按查看时间排列，方便快速回到刚才看过的通行卡。</view></view>
+  <view class="empty" wx:if="{{empty}}"><view class="empty-icon">↻</view><view class="empty-title">还没有浏览记录</view><view class="empty-desc">从地图打开一个地点后，它会自动出现在这里。</view><button class="btn btn-block" bindtap="goMap">去地图看看</button></view>
+  <view class="recent-card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view class="row-between"><view><view class="place-name">{{item.name}}</view><view class="place-meta">{{item.category}} · {{item.timeText}}</view></view><text class="tag tag-{{item.resultCls}}">{{item.resultText}}</text></view>
+    <view class="summary">{{item.summary}}</view>
+  </view>
+</view>

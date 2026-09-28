@@ -2,6 +2,7 @@ const placeService = require('../../services/placeService');
 const incidentService = require('../../services/incidentService');
 const userService = require('../../services/userService');
 const ruleEngine = require('../../services/ruleEngine');
+const storage = require('../../services/storage');
 const { getStatus } = require('../../utils/status');
 const campus = placeService.getCampusConfig();
 
@@ -27,7 +28,8 @@ Page({
     mapReady: false,
     mapLoaded: false,
     mapSlow: false,
-    mapError: ''
+    mapError: '',
+    showGuide: false
   },
 
   onLoad() {
@@ -35,6 +37,7 @@ Page({
       const si = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : wx.getSystemInfoSync();
       this.setData({ mapH: Math.max(350, Math.min(410, si.windowHeight - 230)) });
     } catch (e) { /* ignore */ }
+    this.setData({ showGuide: !storage.get('lj_onboarding_done', false) });
     this.startMapTimer();
   },
 
@@ -49,7 +52,13 @@ Page({
     if (this.mapLoadTimer) clearTimeout(this.mapLoadTimer);
   },
 
-  onShow() { this.load(); },
+  onShow() {
+    if (storage.get('lj_replay_guide', false)) {
+      storage.remove('lj_replay_guide');
+      this.setData({ showGuide: true });
+    }
+    this.load();
+  },
 
   async load() {
     this.setData({ loading: true });
@@ -60,7 +69,7 @@ Page({
         return;
       }
       const profile = user && user.profile;
-      const places = await placeService.list();
+      const [places, allIncidents] = await Promise.all([placeService.list(), incidentService.listAll()]);
       const active = incidentService.activeByPlace();
       const rows = places.map(p => {
         const j = ruleEngine.judgeAccess(p, profile || null, active[p.id] || []);
@@ -92,6 +101,10 @@ Page({
         hasProfile: !!profile,
         userHint: profile ? ('已按“' + (profile.device || '个人档案') + '”条件计算') : '按通用轮椅条件计算'
       }, () => this.applyFilters());
+      const messageIds = allIncidents.map(i => (i.status === 'resolved' ? 'r' : (i.status === 'active' ? 'a' : 'p')) + i.id);
+      const unread = userService.unreadMessageCount(messageIds);
+      if (unread > 0) wx.setTabBarBadge({ index: 3, text: String(Math.min(unread, 99)) });
+      else wx.removeTabBarBadge({ index: 3 });
     } catch (e) {
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
@@ -220,5 +233,14 @@ Page({
   openPlace(e) {
     const id = e.currentTarget.dataset.id;
     if (id) wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + id });
+  },
+  dismissGuide() {
+    storage.set('lj_onboarding_done', true);
+    this.setData({ showGuide: false });
+  },
+  guideProfile() {
+    storage.set('lj_onboarding_done', true);
+    this.setData({ showGuide: false });
+    wx.navigateTo({ url: '/pages/profile-setup/profile-setup' });
   }
 });
