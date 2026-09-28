@@ -24,6 +24,7 @@
 
 .alts { margin-top: 14rpx; font-size: 24rpx; }
 .alt { color: var(--brand); margin-right: 12rpx; }
+.alt-blocked { display: block; color: #C0392B; font-size: 22rpx; margin: 4rpx 0 8rpx; }
 
 .rec-line { font-size: 26rpx; color: #303133; padding: 8rpx 0; }
 .rec-line .k { display: inline-block; width: 120rpx; color: #909399; }

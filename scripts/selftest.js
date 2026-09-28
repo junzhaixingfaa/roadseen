@@ -94,6 +94,10 @@ check('阻断不被开放时间事件降级', ruleEngine.judgeAccess(byId('p002'
 console.log('== 规则用例：输出结构 ==');
 const j5 = ruleEngine.judgeAccess(byId('p005'), u1, []);
 check('p005 备选入口数量', j5.alternatives.length, 1);
+// P3-b：备选入口按门洞净宽过滤——东门次入口 72 cm，电动轮椅(78)过不去、手动轮椅(70)可通行
+const j5u2 = ruleEngine.judgeAccess(byId('p005'), u2, []);
+check('备选入口门宽不足标注过不去(电动 78cm)', !!(j5u2.alternatives[0] && j5u2.alternatives[0].blockedByWidth), true);
+check('备选入口门宽足够不标注(手动 70cm)', !!(j5.alternatives[0] && j5.alternatives[0].blockedByWidth), false);
 check('p005 证据 id 透传', j5.evidenceIds.join(','), 'ev005');
 check('有档案标记', j5.hasProfile, true);
 check('免责声明存在', !!j5.disclaimer, true);

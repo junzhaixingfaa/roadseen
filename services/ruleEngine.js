@@ -124,8 +124,15 @@ function judgeAccess(place, profile, activeIncidents) {
 
   if (!result) result = 'unknown';
 
-  // 备选入口
-  const alternatives = entrances.filter(e => e !== rec).map(e => ({ id: e.id, name: e.name, direction: e.direction }));
+  // 备选入口；若档案设备宽度大于该入口门洞净宽，标注过不去并附原因（未测量 doorWidth 的入口不参与）
+  const alternatives = entrances.filter(e => e !== rec).map(e => {
+    const alt = { id: e.id, name: e.name, direction: e.direction };
+    if (prof.deviceWidth && e.doorWidth && prof.deviceWidth > e.doorWidth) {
+      alt.blockedByWidth = true;
+      alt.blockReason = '门洞净宽约 ' + e.doorWidth + ' cm，您的设备宽 ' + prof.deviceWidth + ' cm，过不去';
+    }
+    return alt;
+  });
 
   return { result, reasons, evidenceIds, alternatives, hasProfile, disclaimer: '仅供出行准备参考' };
 }

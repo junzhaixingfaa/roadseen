@@ -23,7 +23,7 @@
     <reason-list reasons="{{reasons}}" />
     <view class="alts" wx:if="{{alternatives.length}}">
       <text class="muted">备选入口：</text>
-      <text class="alt" wx:for="{{alternatives}}" wx:key="id">{{item.name}}{{item.direction ? '（' + item.direction + '）' : ''}}</text>
+      <text class="alt" wx:for="{{alternatives}}" wx:key="id">{{item.name}}{{item.direction ? '（' + item.direction + '）' : ''}}<text class="alt-blocked" wx:if="{{item.blockedByWidth}}">过不去 · {{item.blockReason}}</text></text>
     </view>
   </view>
 

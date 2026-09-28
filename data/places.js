@@ -11,7 +11,8 @@ module.exports = [
         id: 'e001', name: '南侧无障碍入口', direction: '面向广场，玻璃门西侧约 5 米',
         location: { latitude: 39.99142, longitude: 116.31058 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
-        hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false
+        hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false,
+        doorWidth: 90 // 门洞净宽 cm，未测量的入口省略该字段
       }
     ],
     facilities: {
@@ -54,7 +55,8 @@ module.exports = [
         id: 'e003', name: '西侧门厅入口', direction: '西侧门厅，经较陡坡道后为沉重的平开门',
         location: { latitude: 39.99076, longitude: 116.31186 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '较陡',
-        hasThreshold: true, thresholdHeight: 3, doorType: '平开门', needAssistToOpen: true
+        hasThreshold: true, thresholdHeight: 3, doorType: '平开门', needAssistToOpen: true,
+        doorWidth: 82
       }
     ],
     facilities: {
@@ -90,13 +92,15 @@ module.exports = [
         id: 'e005', name: '北门无障碍入口', direction: '北侧广场，平坡进入',
         location: { latitude: 39.99256, longitude: 116.30944 }, isRecommended: true,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
-        hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false
+        hasThreshold: false, thresholdHeight: 0, doorType: '自动门', needAssistToOpen: false,
+        doorWidth: 90
       },
       {
         id: 'e005b', name: '东门次入口', direction: '东侧，有一级 2cm 门槛',
         location: { latitude: 39.99248, longitude: 116.30962 }, isRecommended: false,
         hasSteps: false, stepCount: 0, hasRamp: true, rampCondition: '平缓',
-        hasThreshold: true, thresholdHeight: 2, doorType: '推拉门', needAssistToOpen: false
+        hasThreshold: true, thresholdHeight: 2, doorType: '推拉门', needAssistToOpen: false,
+        doorWidth: 72 // 门洞净宽偏窄，电动轮椅（78 cm）过不去
       }
     ],
     facilities: {
