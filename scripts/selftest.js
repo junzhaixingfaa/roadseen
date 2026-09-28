@@ -188,6 +188,15 @@ console.log('== services：地点 / 事件 ==');
 
   const loginUser = await userService.authenticate('demo', '123456');
   check('userService 账号密码登录', loginUser && loginUser.role, 'user');
+  check('订阅初始为空', userService.subscriptions().length, 0);
+  const subOn = await userService.toggleSubscription('p001');
+  check('订阅地点成功', subOn.subscribed, true);
+  check('订阅状态可查询', userService.isSubscribed('p001'), true);
+  await userService.setCurrent('user-002');
+  check('订阅按账号隔离', userService.subscriptions().length, 0);
+  await userService.setCurrent(loginUser.id);
+  const subOff = await userService.toggleSubscription('p001');
+  check('取消订阅成功', subOff.subscribed, false);
   const badLogin = await userService.authenticate('demo', 'wrong-password');
   check('userService 拒绝错误密码', badLogin, null);
   const registered = await userService.register({ account: 'selftest-user', password: '123456', nickname: '测试用户' });

@@ -25,10 +25,13 @@ Page({
     evidences: [],
     evidenceHidden: 0,
     revisions: 0,
+    revisionItems: [],
+    showRevisions: false,
     incidents: [],
     resolved: [],
     rec: null,
     isFav: false,
+    isSubscribed: false,
     hasProfile: false,
     profileTip: '',
     disclaimer: '仅供出行准备参考',
@@ -61,6 +64,7 @@ Page({
       const ids = place.evidenceIds || [];
       const picked = ids.length ? ids.map(eid => evs.filter(e => e.id === eid)[0]).filter(Boolean) : evs;
 
+      const revisions = inspectionService.listRevisions(id);
       this.setData({
         place,
         rec: (place.entrances || []).find(e => e.isRecommended) || (place.entrances || [])[0] || null,
@@ -78,10 +82,18 @@ Page({
           aiTagsText: (e.aiTags || []).join('、')
         })),
         evidenceHidden: Math.max(0, evs.length - picked.length),
-        revisions: inspectionService.listRevisions(id).length,
+        revisions: revisions.length,
+        revisionItems: revisions.slice(0, 10).map((r, index) => ({
+          id: r.id,
+          at: r.at || '时间未知',
+          by: r.by || '管理员',
+          title: index === 0 ? '最新发布' : '历史修订',
+          changes: (r.changes && r.changes.length) ? r.changes : ['完成资料复核，本次无字段差异']
+        })),
         incidents: activeInc.map(i => Object.assign({}, i, { facilityText: FAC_MAP[i.facility] || i.facility })),
         resolved: resolvedInc,
         isFav: userService.isFavorite(id),
+        isSubscribed: userService.isSubscribed(id),
         hasProfile: !!profile,
         profileTip: profile ? '' : '未建立通行档案，以下为按通用轮椅条件的判断；到「我的 - 通行档案」设置后更准确',
         loading: false
@@ -165,8 +177,14 @@ Page({
     });
   },
 
-  subscribe() {
-    wx.showToast({ title: '已订阅该地点状态更新（雏形）', icon: 'none' });
+  toggleRevisions() {
+    this.setData({ showRevisions: !this.data.showRevisions });
+  },
+
+  async subscribe() {
+    const res = await userService.toggleSubscription(this.data.id);
+    this.setData({ isSubscribed: res.subscribed });
+    wx.showToast({ title: res.subscribed ? '已订阅状态更新' : '已取消订阅', icon: 'none' });
   },
 
   onShareAppMessage() {

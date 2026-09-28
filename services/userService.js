@@ -96,9 +96,31 @@ function toggleFavorite(id) {
   return Promise.resolve({ favorite: i < 0, ids: f });
 }
 
+// ---- 地点状态订阅 ----
+// 按用户分别保存，避免切换演示账号后看到其他账号的订阅。
+function subscriptionStore() { return storage.get('lj_subscriptions', {}); }
+function subscriptions() {
+  const uid = storage.get(CUR, null);
+  if (!uid) return [];
+  return subscriptionStore()[uid] || [];
+}
+function isSubscribed(id) { return subscriptions().indexOf(id) >= 0; }
+function toggleSubscription(id) {
+  const uid = storage.get(CUR, null);
+  if (!uid) return Promise.resolve({ subscribed: false, ids: [] });
+  const allSubs = subscriptionStore();
+  const ids = (allSubs[uid] || []).slice();
+  const i = ids.indexOf(id);
+  if (i >= 0) ids.splice(i, 1); else ids.unshift(id);
+  allSubs[uid] = ids;
+  storage.set('lj_subscriptions', allSubs);
+  return Promise.resolve({ subscribed: i < 0, ids });
+}
+
 module.exports = {
   listUsers, current, ensureCurrent, setCurrent,
   authenticate, register, logout,
   getProfile, saveProfile,
-  favorites, isFavorite, toggleFavorite
+  favorites, isFavorite, toggleFavorite,
+  subscriptions, isSubscribed, toggleSubscription
 };

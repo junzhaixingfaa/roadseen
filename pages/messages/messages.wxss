@@ -15,6 +15,12 @@
 .msg-head { margin: 0 20rpx 22rpx; padding: 28rpx; border-radius: 24rpx; color: #FFFFFF; background: #103F4A; }
 .msg-title { font-size: 34rpx; font-weight: 700; }
 .msg-copy { margin-top: 8rpx; color: #D5E7E4; font-size: 23rpx; }
+.msg-stats { display: flex; margin-top: 24rpx; padding-top: 20rpx; border-top: 1rpx solid rgba(255,255,255,.14); }
+.msg-stats view { flex: 1; display: flex; flex-direction: column; gap: 5rpx; color: #CDE2DF; font-size: 20rpx; }
+.msg-stats view text:first-child { color: #FFFFFF; font-size: 34rpx; font-weight: 700; }
+.filter-row { display: flex; gap: 12rpx; margin: -8rpx 20rpx 18rpx; }
+.filter-chip { padding: 12rpx 24rpx; border: 1rpx solid #D8E3E2; border-radius: 28rpx; color: #617078; background: #FFFFFF; font-size: 23rpx; }
+.filter-chip.on { color: #FFFFFF; border-color: #176B70; background: #176B70; }
 .msg .card { margin: 0 20rpx 14rpx; padding: 26rpx; }
 .mitem { border-left: 6rpx solid #D5E2E2; }
 .mitem:active { background: #F7FAFA; }
@@ -25,3 +31,4 @@
 .mtype-system { background: #176B70; }
 .mtitle { color: #1D2B32; font-size: 30rpx; }
 .mdesc { color: #617078; font-size: 25rpx; }
+.relation { display: inline-block; margin-top: 14rpx; padding: 4rpx 12rpx; border-radius: 14rpx; color: #176B70; background: #E7F2F2; font-size: 20rpx; }

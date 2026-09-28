@@ -13,6 +13,7 @@
     "pages/ai-confirm/ai-confirm",
     "pages/incident-report/incident-report",
     "pages/favorites/favorites",
+    "pages/subscriptions/subscriptions",
     "pages/relay-card/relay-card",
     "pages/admin/admin"
   ],

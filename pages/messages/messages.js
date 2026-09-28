@@ -6,7 +6,11 @@ const FAC_TEXT = { elevator: '电梯', ramp: '坡道', path: '通道', toilet: '
 
 Page({
   data: {
-    messages: []
+    messages: [],
+    allMessages: [],
+    filter: 'all',
+    stats: { all: 0, followed: 0, review: 0 },
+    emptyText: '暂无状态变化消息。'
   },
 
   async onShow() {
@@ -52,9 +56,19 @@ Page({
       }
     });
 
-    // 收藏地点的变化优先展示
+    // 已订阅地点优先，其次是收藏地点。
     const favs = userService.favorites();
+    const subs = userService.subscriptions();
+    list.forEach(item => {
+      item.subscribed = subs.indexOf(item.placeId) >= 0;
+      item.favorite = favs.indexOf(item.placeId) >= 0;
+      item.followed = item.subscribed || item.favorite;
+      item.relationText = item.subscribed ? '已订阅' : (item.favorite ? '已收藏' : '');
+    });
     list.sort((a, b) => {
+      const as = a.subscribed ? 1 : 0;
+      const bs = b.subscribed ? 1 : 0;
+      if (as !== bs) return bs - as;
       const af = favs.indexOf(a.placeId) >= 0 ? 1 : 0;
       const bf = favs.indexOf(b.placeId) >= 0 ? 1 : 0;
       if (af !== bf) return bf - af;
@@ -72,7 +86,27 @@ Page({
       time: ''
     });
 
-    this.setData({ messages: list });
+    this.setData({
+      allMessages: list,
+      stats: {
+        all: list.filter(x => x.type !== 'system').length,
+        followed: list.filter(x => x.followed).length,
+        review: list.filter(x => x.type === 'review').length
+      }
+    }, () => this.applyFilter());
+  },
+
+  setFilter(e) {
+    this.setData({ filter: e.currentTarget.dataset.filter }, () => this.applyFilter());
+  },
+
+  applyFilter() {
+    const f = this.data.filter;
+    let messages = this.data.allMessages;
+    if (f === 'followed') messages = messages.filter(x => x.followed);
+    if (f === 'review') messages = messages.filter(x => x.type === 'review');
+    const emptyText = f === 'followed' ? '订阅或收藏地点发生变化后，会显示在这里。' : (f === 'review' ? '目前没有等待现场复核的事件。' : '暂无状态变化消息。');
+    this.setData({ messages, emptyText });
   },
 
   open(e) {

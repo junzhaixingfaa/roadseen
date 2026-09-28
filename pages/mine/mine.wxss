@@ -36,3 +36,20 @@
 .privacy-note { color: #315F61; background: #E7F2F2; border: 1rpx solid #D3E7E4; }
 .prototype-note { color: #786D5B; background: #F7F3EA; }
 .logout { border-radius: 16rpx; color: #A54545; border-color: #E9CFCF; background: #FFF9F9; }
+
+.overview-card { margin: 14rpx 20rpx; padding: 24rpx 12rpx 20rpx; border-radius: 22rpx; color: #FFFFFF; background: linear-gradient(135deg, #176B70, #278C87); box-shadow: 0 10rpx 26rpx rgba(23,107,112,.16); }
+.overview-title { padding: 0 16rpx 18rpx; font-size: 25rpx; font-weight: 700; }
+.overview-grid { display: flex; }
+.overview-item { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5rpx; color: #D9EEEA; font-size: 20rpx; }
+.overview-item + .overview-item::before { content: ''; position: absolute; left: 0; top: 8rpx; bottom: 8rpx; width: 1rpx; background: rgba(255,255,255,.18); }
+.overview-item text:first-child { color: #FFFFFF; font-size: 38rpx; font-weight: 800; }
+.section-label { margin: 28rpx 24rpx 14rpx; color: #53646B; font-size: 25rpx; font-weight: 700; }
+.quick-grid { display: flex; gap: 12rpx; margin: 0 20rpx 18rpx; }
+.quick-item { flex: 1; min-width: 0; padding: 22rpx 14rpx; border: 1rpx solid #E1E8E8; border-radius: 20rpx; background: #FFFFFF; text-align: center; }
+.quick-item:active { background: #F2F8F7; }
+.quick-icon { width: 54rpx; height: 54rpx; margin: 0 auto 12rpx; border-radius: 16rpx; color: #FFFFFF; font-size: 23rpx; font-weight: 800; line-height: 54rpx; }
+.quick-icon.ai { background: #176B70; }
+.quick-icon.report { background: #C36A42; font-size: 30rpx; }
+.quick-icon.message { color: #176B70; background: #D9EEEA; }
+.quick-title { color: #26373E; font-size: 23rpx; font-weight: 700; }
+.quick-copy { margin-top: 6rpx; color: #819096; font-size: 18rpx; line-height: 1.4; }

@@ -1,7 +1,17 @@
 <view class="msg">
   <view class="msg-head">
     <view class="msg-title">状态消息</view>
-    <view class="msg-copy">收藏地点的故障、恢复和复核结果会集中显示在这里。</view>
+    <view class="msg-copy">订阅地点的故障、恢复和复核结果会集中显示在这里。</view>
+    <view class="msg-stats">
+      <view><text>{{stats.all}}</text><text>全部动态</text></view>
+      <view><text>{{stats.followed}}</text><text>我的关注</text></view>
+      <view><text>{{stats.review}}</text><text>待复核</text></view>
+    </view>
+  </view>
+  <view class="filter-row">
+    <view class="filter-chip {{filter === 'all' ? 'on' : ''}}" data-filter="all" bindtap="setFilter">全部</view>
+    <view class="filter-chip {{filter === 'followed' ? 'on' : ''}}" data-filter="followed" bindtap="setFilter">我的关注</view>
+    <view class="filter-chip {{filter === 'review' ? 'on' : ''}}" data-filter="review" bindtap="setFilter">待复核</view>
   </view>
   <view wx:for="{{messages}}" wx:key="id" class="card mitem" data-id="{{item.placeId}}" bindtap="open">
     <view class="row-between">
@@ -10,10 +20,11 @@
     </view>
     <view class="mtitle">{{item.title}}</view>
     <view class="mdesc">{{item.desc}}</view>
+    <view class="relation" wx:if="{{item.relationText}}">{{item.relationText}}地点</view>
   </view>
 
-  <view wx:if="{{messages.length <= 1}}" class="empty muted">
-    <view>暂无状态变化消息。</view>
+  <view wx:if="{{messages.length === 0}}" class="empty muted">
+    <view>{{emptyText}}</view>
     <button class="btn btn-block" bindtap="goMap">去地图看看</button>
   </view>
 </view>

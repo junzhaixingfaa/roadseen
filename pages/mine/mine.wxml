@@ -15,8 +15,25 @@
     </view>
   </view>
 
+  <view class="overview-card">
+    <view class="overview-title">我的路见</view>
+    <view class="overview-grid">
+      <view class="overview-item" bindtap="goFavorites"><text>{{favCount}}</text><text>收藏地点</text></view>
+      <view class="overview-item" bindtap="goSubscriptions"><text>{{subCount}}</text><text>状态订阅</text></view>
+      <view class="overview-item" bindtap="goReport"><text>{{reportCount}}</text><text>我的上报</text></view>
+    </view>
+  </view>
+
+  <view class="section-label">常用功能</view>
+  <view class="quick-grid">
+    <view class="quick-item" bindtap="goQuickCheck"><view class="quick-icon ai">AI</view><view class="quick-title">现场检查</view><view class="quick-copy">拍照判断能否通过</view></view>
+    <view class="quick-item" bindtap="goReport"><view class="quick-icon report">!</view><view class="quick-title">故障上报</view><view class="quick-copy">记录施工与停运</view></view>
+    <view class="quick-item" bindtap="goMessages"><view class="quick-icon message">●</view><view class="quick-title">状态消息</view><view class="quick-copy">查看关注地点变化</view></view>
+  </view>
+
   <view class="card list">
     <view class="li" bindtap="goFavorites"><text>我的收藏</text><text class="val">{{favCount}} 个 ›</text></view>
+    <view class="li" bindtap="goSubscriptions"><text>我的订阅</text><text class="val">{{subCount}} 个 ›</text></view>
     <view class="li" wx:if="{{canCollect}}" bindtap="goSurvey"><text>我的贡献 / 勘察任务</text><text class="val">›</text></view>
     <view class="li" wx:if="{{isAdmin}}" bindtap="goAdmin"><text>管理端</text><text class="val">›</text></view>
   </view>

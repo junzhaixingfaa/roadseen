@@ -54,6 +54,8 @@
 }
 .ab-item { flex: 1; text-align: center; font-size: 30rpx; color: #606266; line-height: 1.2; }
 .ab-item.on { color: #E6A23C; }
+.ab-item.subscribed { color: #176B70; }
+.ab-item.subscribed .ab-t { color: #176B70; font-weight: 600; }
 .ab-t { font-size: 20rpx; color: #909399; }
 .ab-btn { background: transparent; border: none; padding: 0; margin: 0; line-height: 1.2; }
 .ab-btn::after { border: none; }
@@ -81,3 +83,15 @@
 .missing-t { font-size: 32rpx; font-weight: 600; color: #1D2B32; }
 .missing-d { margin-top: 16rpx; font-size: 26rpx; line-height: 1.6; color: #718089; }
 .missing .btn { margin-top: 48rpx; }
+
+.revision-link { align-items: center; }
+.revision-toggle { float: right; color: #176B70; font-size: 23rpx; }
+.revision-list { margin-top: 18rpx; padding-top: 8rpx; border-top: 1rpx solid #E8EDED; }
+.revision-item { position: relative; margin-left: 12rpx; padding: 16rpx 0 18rpx 26rpx; border-left: 3rpx solid #CFE3E1; }
+.revision-item::before { content: ''; position: absolute; left: -8rpx; top: 24rpx; width: 13rpx; height: 13rpx; border-radius: 50%; background: #176B70; }
+.revision-head { display: flex; justify-content: space-between; align-items: center; }
+.revision-title { color: #26373E; font-size: 25rpx; font-weight: 700; }
+.revision-date, .revision-by { color: #819096; font-size: 21rpx; }
+.revision-by { margin-top: 5rpx; }
+.revision-change { margin-top: 7rpx; color: #53646B; font-size: 23rpx; line-height: 1.5; }
+.revision-empty { padding: 18rpx 4rpx 8rpx; color: #819096; font-size: 22rpx; line-height: 1.55; }

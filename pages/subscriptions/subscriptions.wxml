@@ -1,0 +1,29 @@
+<view class="subs-page">
+  <view class="subs-hero" wx:if="{{!empty}}">
+    <view class="hero-title">状态订阅</view>
+    <view class="hero-copy">关注常去地点，故障、恢复和待复核变化会集中出现在消息页。</view>
+    <view class="hero-count">正在关注 <text>{{items.length}}</text> 个地点</view>
+  </view>
+
+  <view class="empty" wx:if="{{empty}}">
+    <view class="empty-icon">◉</view>
+    <view class="empty-title">还没有订阅地点</view>
+    <view class="empty-desc">打开任意地点通行卡，点击底部“订阅”，即可持续关注状态变化。</view>
+    <button class="btn btn-block" bindtap="goMap">去地图选择地点</button>
+  </view>
+
+  <view class="sub-card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="open">
+    <view class="sub-top">
+      <view>
+        <view class="sub-name">{{item.name}}</view>
+        <view class="sub-cat">{{item.category}}</view>
+      </view>
+      <text class="tag tag-{{item.resultCls}}">{{item.resultText}}</text>
+    </view>
+    <view class="sub-summary">{{item.summary}}</view>
+    <view class="sub-bottom">
+      <text class="alert {{item.incidentCount ? 'has' : ''}}">{{item.incidentCount ? item.incidentCount + ' 条当前动态' : '当前无动态障碍'}}</text>
+      <text class="unsubscribe" data-id="{{item.id}}" catchtap="unsubscribe">取消订阅</text>
+    </view>
+  </view>
+</view>

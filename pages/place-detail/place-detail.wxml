@@ -78,8 +78,16 @@
     <view class="section-title">信息来源</view>
     <view class="rec-line"><text class="k">最近核验</text>{{place.lastVerifiedAt || '未知'}}</view>
     <view class="rec-line"><text class="k">采集人</text>{{place.collectedBy || '未知'}}</view>
-    <view class="rec-line" wx:if="{{revisions > 0}}"><text class="k">发布修订</text>共 {{revisions}} 次</view>
+    <view class="rec-line revision-link" bindtap="toggleRevisions"><text class="k">发布修订</text>{{revisions > 0 ? '共 ' + revisions + ' 次' : '暂无修订'}} <text class="revision-toggle">{{revisions > 0 ? (showRevisions ? '收起 ∧' : '查看记录 ›') : '待首次发布'}}</text></view>
     <view class="rec-line"><text class="k">来源</text>志愿者现场采集 + AI 辅助识别</view>
+    <view class="revision-list" wx:if="{{showRevisions}}">
+      <view class="revision-item" wx:for="{{revisionItems}}" wx:key="id">
+        <view class="revision-head"><text class="revision-title">{{item.title}}</text><text class="revision-date">{{item.at}}</text></view>
+        <view class="revision-by">发布人：{{item.by}}</view>
+        <view class="revision-change" wx:for="{{item.changes}}" wx:for-item="change" wx:key="*this">• {{change}}</view>
+      </view>
+      <view class="revision-empty" wx:if="{{revisionItems.length === 0}}">管理员审核发布新的现场资料后，变更内容会记录在这里。</view>
+    </view>
   </view>
 
   <view style="height: 140rpx;"></view>
@@ -89,7 +97,7 @@
     <view class="ab-item {{isFav ? 'on' : ''}}" bindtap="toggleFav">{{isFav ? '★' : '☆'}}<view class="ab-t">收藏</view></view>
     <view class="ab-item" bindtap="goRelay">⇄<view class="ab-t">接力卡</view></view>
     <view class="ab-item" bindtap="doCorrect">✎<view class="ab-t">纠错</view></view>
-    <view class="ab-item" bindtap="subscribe">🔔<view class="ab-t">订阅</view></view>
+    <view class="ab-item {{isSubscribed ? 'subscribed' : ''}}" bindtap="subscribe">{{isSubscribed ? '🔔' : '♧'}}<view class="ab-t">{{isSubscribed ? '已订阅' : '订阅'}}</view></view>
     <button class="ab-item ab-btn" open-type="share">➤<view class="ab-t">分享</view></button>
     <view class="ab-cta" bindtap="goIncident">上报动态</view>
   </view>
