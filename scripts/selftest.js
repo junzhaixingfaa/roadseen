@@ -103,6 +103,12 @@ check('有档案标记', j5.hasProfile, true);
 check('免责声明存在', !!j5.disclaimer, true);
 check('无档案标记', ruleEngine.judgeAccess(byId('p001'), null, []).hasProfile, false);
 check('地点不存在的兜底', ruleEngine.judgeAccess(null, u1, []).result, 'unknown');
+// 早退分支（无入口 / 地点不存在）必须与正常返回同形状，否则前端与自测取字段会拿到 undefined
+check('无入口地点仍带免责声明', !!ruleEngine.judgeAccess(byId('p004'), u1, []).disclaimer, true);
+check('无入口地点仍带档案标记', ruleEngine.judgeAccess(byId('p004'), u1, []).hasProfile, true);
+check('地点不存在仍带免责声明', !!ruleEngine.judgeAccess(null, u1, []).disclaimer, true);
+const noEnt = Object.assign({}, byId('p001'), { entrances: [] });
+check('无入口变体证据 id 不丢', ruleEngine.judgeAccess(noEnt, u1, []).evidenceIds.join(','), 'ev001,ev002');
 
 console.log('== services：地点 / 事件 ==');
 (async () => {
@@ -137,6 +143,21 @@ console.log('== services：地点 / 事件 ==');
   const resolved = await incidentService.resolve(reported.id);
   check('确认恢复后为 resolved', resolved.status, 'resolved');
   check('恢复后不再计入 active', (incidentService.activeByPlace()['p002'] || []).length, 0);
+
+  // 到期日边界：上报页是日期选择器，「预计今天结束」应在今天 24:00 前保持有效
+  const today = util.formatDate(new Date());
+  const yesterday = util.formatDate(new Date(Date.now() - 86400000));
+  const endsToday = await incidentService.report({
+    placeId: 'p001', facility: 'other', description: '自测：今天结束', expectedEndAt: today
+  });
+  await incidentService.listAll(); // 触发 expireSweep
+  check('预计今天结束仍有效', incidentService.getById(endsToday.id).status, 'active');
+  check('预计今天结束计入 active', (await incidentService.listActiveForPlace('p001')).filter(i => i.id === endsToday.id).length, 1);
+  const endsYesterday = await incidentService.report({
+    placeId: 'p001', facility: 'other', description: '自测：昨天结束', expectedEndAt: yesterday
+  });
+  await incidentService.listAll();
+  check('预计昨天结束自动降级', incidentService.getById(endsYesterday.id).status, 'pending_review');
 
   const evIds = [].concat.apply([], places.map(p => p.evidenceIds || []));
   check('地点引用的证据 id 全部存在', evIds.every(id => evidences.some(e => e.id === id)), true);

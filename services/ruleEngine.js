@@ -11,22 +11,24 @@ const GENERIC_PROFILE = {
 };
 
 function judgeAccess(place, profile, activeIncidents) {
-  const res = { result: 'unknown', reasons: [], evidenceIds: [], alternatives: [] };
+  const hasProfile = !!profile;
+  const res = { result: 'unknown', reasons: [], evidenceIds: [], alternatives: [], hasProfile, disclaimer: '仅供出行准备参考' };
   if (!place) {
     res.reasons = ['地点信息不存在'];
     return res;
   }
   const prof = profile || GENERIC_PROFILE;
-  const hasProfile = !!profile;
   const incidents = activeIncidents || [];
   const reasons = [];
   const evidenceIds = (place.evidenceIds || []).slice();
+  res.evidenceIds = evidenceIds;
   let result = null;
 
   // 1) 入口信息缺失 → 信息不足
   const entrances = place.entrances || [];
   if (entrances.length === 0) {
-    return { result: 'unknown', reasons: ['缺少入口信息，无法判断，建议现场勘察'], evidenceIds, alternatives: [] };
+    res.reasons = ['缺少入口信息，无法判断，建议现场勘察'];
+    return res;
   }
   const rec = entrances.find(e => e.isRecommended) || entrances[0];
 

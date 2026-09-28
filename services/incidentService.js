@@ -10,12 +10,19 @@ function current() {
   return apply(base).concat(apply(added));
 }
 
+// 预计结束时间是否已过。上报页用日期选择器（YYYY-MM-DD），
+// 纯日期按「当天结束」理解：次日零点才过期，否则「预计今天结束」的事件
+// 在当天 00:00 就被降级为待复核，与上报页允许选今天的校验自相矛盾。
+function isEndAtPassed(expectedEndAt) {
+  const d = util.parseDate(expectedEndAt);
+  if (!d) return false;
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(String(expectedEndAt).trim());
+  return d.getTime() + (dateOnly ? 86400000 : 0) <= Date.now();
+}
+
 function isActive(i) {
   if (i.status !== 'active') return false;
-  if (i.expectedEndAt) {
-    const d = util.parseDate(i.expectedEndAt);
-    if (d && d.getTime() < Date.now()) return false;
-  }
+  if (i.expectedEndAt && isEndAtPassed(i.expectedEndAt)) return false;
   return true;
 }
 
@@ -23,12 +30,9 @@ function expireSweep() {
   const over = storage.get('lj_incidents_over', {});
   let changed = false;
   current().forEach(i => {
-    if (i.status === 'active' && i.expectedEndAt) {
-      const d = util.parseDate(i.expectedEndAt);
-      if (d && d.getTime() < Date.now()) {
-        over[i.id] = Object.assign({}, over[i.id], { status: 'pending_review' });
-        changed = true;
-      }
+    if (i.status === 'active' && i.expectedEndAt && isEndAtPassed(i.expectedEndAt)) {
+      over[i.id] = Object.assign({}, over[i.id], { status: 'pending_review' });
+      changed = true;
     }
   });
   if (changed) storage.set('lj_incidents_over', over);
