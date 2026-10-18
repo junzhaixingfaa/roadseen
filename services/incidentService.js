@@ -1,6 +1,7 @@
 // 动态事件访问层：上报 / 查询 active / 确认 / 恢复 / 自动过期
 const base = require('../data/incidents');
 const util = require('../utils/util');
+const { nextId } = require('../utils/id');
 const storage = require('./storage');
 
 function current() {
@@ -61,7 +62,7 @@ function activeByPlace() {
 function report(p) {
   const added = storage.get('lj_incidents_added', []);
   const item = Object.assign(
-    { id: 'in' + Date.now(), status: 'active', confirmCount: 1, isTestData: true, occurredAt: util.formatDate(new Date()) },
+    { id: nextId('in'), status: 'active', confirmCount: 1, isTestData: true, occurredAt: util.formatDate(new Date()) },
     p
   );
   added.push(item);

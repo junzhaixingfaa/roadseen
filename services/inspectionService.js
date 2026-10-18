@@ -3,11 +3,12 @@
 const storage = require('./storage');
 const placeService = require('./placeService');
 const evidenceService = require('./evidenceService');
+const aiSchema = require('./aiSchema');
 const util = require('../utils/util');
+const { nextId } = require('../utils/id');
 
 const KEY = 'lj_inspections';
 const REV_KEY = 'lj_place_revisions';
-let revSeq = 0;
 
 function list() { return storage.get(KEY, []); }
 
@@ -16,7 +17,7 @@ function getById(id) { return list().find(x => x.id === id) || null; }
 function submit(inspection) {
   const list = storage.get(KEY, []);
   const item = Object.assign({
-    id: 'insp' + Date.now(),
+    id: nextId('insp'),
     status: 'pending',
     submittedAt: Date.now(),
     isTestData: true
@@ -39,10 +40,12 @@ function hasLabel(item, label) {
   return !!item && (item.aiDetected || []).indexOf(label) >= 0;
 }
 
-function toNumber(v) {
+function toNumber(v, field) {
   if (v === '' || v == null) return NaN;
   const n = Number(v);
-  return Number.isNaN(n) ? NaN : n;
+  const rule = aiSchema.MEASUREMENTS[field];
+  if (Number.isNaN(n) || !rule || n < rule.min || n > rule.max) return NaN;
+  return rule.integer ? Math.round(n) : Math.round(n * 10) / 10;
 }
 
 // 该地点是否已有核实过的入口数据；为真时发布会覆盖它，页面需二次确认
@@ -89,7 +92,7 @@ function listRevisions(placeId) {
 function addRevision(rev) {
   const all = storage.get(REV_KEY, []);
   const item = Object.assign({
-    id: 'rev' + Date.now() + '-' + (++revSeq),
+    id: nextId('rev'),
     at: util.formatDate(new Date()),
     changes: []
   }, rev);
@@ -117,11 +120,11 @@ async function publish(inspection) {
     // 用它覆盖 hasRamp 会把可通行地点误判成「仅有台阶且无坡道」。
     if (entrance) rec.hasRamp = hasLabel(entrance, '坡道');
     if (step) {
-      const sc = toNumber(step.stepCount);
+      const sc = toNumber(step.stepCount, 'stepCount');
       rec.hasSteps = hasLabel(step, '台阶') || (!Number.isNaN(sc) && sc > 0);
       if (!Number.isNaN(sc)) rec.stepCount = sc;
     }
-    if (door && door.doorType) rec.doorType = door.doorType;
+    if (door && door.doorType) rec.doorType = String(door.doorType).trim().slice(0, 30);
   }
 
   const facilities = Object.assign({}, place.facilities);
@@ -129,14 +132,15 @@ async function publish(inspection) {
   if (elevator) {
     facilities.elevator = Object.assign({}, facilities.elevator, {
       has: hasLabel(elevator, '电梯'),
-      status: elevator.elevatorStatus || 'unknown'
+      status: aiSchema.elevatorStatus(elevator.elevatorStatus) || 'unknown'
     });
   }
   const toilet = byKey('toilet');
   if (toilet) {
+    const toiletStatus = aiSchema.toiletStatus(toilet.toiletStatus);
     facilities.accessibleToilet = Object.assign({}, facilities.accessibleToilet, {
       has: hasLabel(toilet, '厕所标识'),
-      status: hasLabel(toilet, '厕所标识') ? 'open' : 'unknown'
+      status: toiletStatus || (hasLabel(toilet, '厕所标识') ? 'open' : 'unknown')
     });
   }
 

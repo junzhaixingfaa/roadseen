@@ -1,21 +1,12 @@
 const aiService = require('../../services/aiService');
+const aiSchema = require('../../services/aiSchema');
 const placeService = require('../../services/placeService');
 const userService = require('../../services/userService');
 const inspectionService = require('../../services/inspectionService');
 const storage = require('../../services/storage');
 
-const STEP_TITLES = {
-  entrance: '入口全景', path: '通道', step: '台阶/坡道/门槛',
-  elevator: '电梯', toilet: '无障碍厕所', notice: '文字通知', door: '门', other: '其他'
-};
-const DETECT_LABEL = {
-  hasSteps: '台阶', hasRamp: '坡道', hasElevator: '电梯', hasDoor: '门',
-  hasToiletSign: '厕所标识', hasAccessibleSign: '无障碍标志'
-};
-
-function detectedLabels(detected) {
-  return Object.keys(DETECT_LABEL).filter(k => detected && detected[k]).map(k => DETECT_LABEL[k]);
-}
+const STEP_TITLES = {};
+aiSchema.STEPS.forEach(s => { STEP_TITLES[s.key] = s.title; });
 
 Page({
   data: {
@@ -32,12 +23,13 @@ Page({
     if (placeId) { const p = await placeService.get(placeId); placeName = p ? p.name : ''; }
     const draft = storage.get('lj_capture_draft', {});
     const photos = draft.placeId === placeId ? (draft.photos || {}) : {};
-    const keys = Object.keys(photos).filter(k => photos[k]);
+    const keys = aiSchema.STEP_KEYS.filter(k => photos[k]);
     const items = (keys.length ? keys : ['entrance']).map(k => ({
       key: k, title: STEP_TITLES[k] || k, photo: photos[k] || '',
-      loading: true, error: '', detected: [], ocrText: '', basis: '',
-      confidence: '', unknownFields: [], suggestRetake: [],
-      stepCount: '', doorType: '', elevatorStatus: '',
+      loading: true, error: '', detected: [], flags: aiSchema.flagsFromLabels([]),
+      ocrText: '', basis: '', confidence: '', unknownFields: [], suggestRetake: [],
+      unknownText: '', retakeText: '',
+      stepCount: '', doorType: '', elevatorStatus: '', toiletStatus: '',
       choice: 'confirmed' // confirmed / modified / unknown
     }));
     this.setData({ placeId, placeName, items });
@@ -46,25 +38,34 @@ Page({
 
   recognize(i, opts) {
     const key = this.data.items[i].key;
+    this.setData({ ['items[' + i + '].loading']: true, ['items[' + i + '].error']: '' });
     aiService.recognize(key, Object.assign({ delay: 500 }, opts)).then(r => {
       const obs = r.observable || {};
+      const labels = aiSchema.detectedLabels(r.detected);
+      const needsManual = (r.unknownFields || []).indexOf('all') >= 0;
       const patch = {};
       patch['items[' + i + '].loading'] = false;
       patch['items[' + i + '].error'] = '';
-      patch['items[' + i + '].detected'] = detectedLabels(r.detected);
+      patch['items[' + i + '].detected'] = labels;
+      patch['items[' + i + '].flags'] = aiSchema.flagsFromLabels(labels);
       patch['items[' + i + '].ocrText'] = r.ocrText || '';
       patch['items[' + i + '].basis'] = r.basis || '';
       patch['items[' + i + '].confidence'] = r.confidence || '';
       patch['items[' + i + '].unknownFields'] = r.unknownFields || [];
       patch['items[' + i + '].suggestRetake'] = r.suggestRetake || [];
+      patch['items[' + i + '].unknownText'] = needsManual ? '全部字段（需人工确认）' : (r.unknownFields || []).join('、');
+      patch['items[' + i + '].retakeText'] = (r.suggestRetake || []).join('；');
       patch['items[' + i + '].stepCount'] = obs.stepCount != null ? String(obs.stepCount) : '';
       patch['items[' + i + '].doorType'] = obs.doorType || '';
       patch['items[' + i + '].elevatorStatus'] = obs.elevatorStatus || '';
+      patch['items[' + i + '].toiletStatus'] = obs.toiletStatus || '';
+      patch['items[' + i + '].choice'] = needsManual ? 'unknown' : 'confirmed';
       this.setData(patch);
     }).catch(err => {
       this.setData({
         ['items[' + i + '].loading']: false,
-        ['items[' + i + '].error']: err.message || '识别失败，请人工填写'
+        ['items[' + i + '].error']: err.message || '识别失败，请人工填写',
+        ['items[' + i + '].choice']: 'unknown'
       });
     });
   },
@@ -83,6 +84,18 @@ Page({
   editOcr(e) {
     const i = e.currentTarget.dataset.i;
     this.setData({ ['items[' + i + '].ocrText']: e.detail.value, ['items[' + i + '].choice']: 'modified' });
+  },
+  toggleFlag(e) {
+    const i = Number(e.currentTarget.dataset.i);
+    const key = e.currentTarget.dataset.k;
+    const item = this.data.items[i];
+    if (!item) return;
+    const flags = item.flags.map(f => f.key === key ? Object.assign({}, f, { on: !f.on }) : f);
+    this.setData({
+      ['items[' + i + '].flags']: flags,
+      ['items[' + i + '].detected']: aiSchema.labelsFromFlags(flags),
+      ['items[' + i + '].choice']: 'modified'
+    });
   },
 
   simulateFail() {
@@ -104,29 +117,44 @@ Page({
       wx.showToast({ title: '缺少勘察地点，请返回重选', icon: 'none' });
       return;
     }
-    this.setData({ submitting: true });
-    const user = userService.current();
-    const inspection = {
-      placeId: this.data.placeId,
-      placeName: this.data.placeName || '新采集地点',
-      submittedBy: user ? user.nickname : '匿名',
-      items: this.data.items.map(it => ({
-        key: it.key, title: it.title, choice: it.choice,
-        photo: it.photo,
-        aiDetected: it.detected, ocrText: it.ocrText,
-        basis: it.basis, confidence: it.confidence,
-        unknownFields: it.unknownFields, suggestRetake: it.suggestRetake,
-        stepCount: it.stepCount, doorType: it.doorType, elevatorStatus: it.elevatorStatus
-      }))
-    };
-    inspectionService.submit(inspection);
-    storage.remove('lj_capture_draft');
-    this.setData({ submitting: false });
-    wx.showModal({
-      title: '已提交审核',
-      content: 'AI 结果与人工修正已记录，等待管理员审核发布。',
-      showCancel: false,
-      success: () => wx.redirectTo({ url: '/pages/survey/survey' })
+    const badStep = this.data.items.find(it => {
+      if (it.key !== 'step' || it.stepCount === '' || it.stepCount == null) return false;
+      const n = Number(it.stepCount);
+      return !isFinite(n) || n < 0 || n > 30 || Math.round(n) !== n;
     });
+    if (badStep) {
+      wx.showToast({ title: '台阶数请填 0-30 的整数', icon: 'none' });
+      return;
+    }
+    this.setData({ submitting: true });
+    try {
+      const user = userService.current();
+      const inspection = {
+        placeId: this.data.placeId,
+        placeName: this.data.placeName || '新采集地点',
+        submittedBy: user ? user.nickname : '匿名',
+        items: this.data.items.map(it => ({
+          key: it.key, title: it.title, choice: it.choice,
+          photo: it.photo,
+          aiDetected: it.detected, ocrText: it.ocrText,
+          basis: it.basis, confidence: it.confidence,
+          unknownFields: it.unknownFields, suggestRetake: it.suggestRetake,
+          stepCount: it.stepCount, doorType: it.doorType,
+          elevatorStatus: it.elevatorStatus, toiletStatus: it.toiletStatus
+        }))
+      };
+      inspectionService.submit(inspection);
+      storage.remove('lj_capture_draft');
+      this.setData({ submitting: false });
+      wx.showModal({
+        title: '已提交审核',
+        content: 'AI 结果与人工修正已记录，等待管理员审核发布。',
+        showCancel: false,
+        success: () => wx.redirectTo({ url: '/pages/survey/survey' })
+      });
+    } catch (e) {
+      this.setData({ submitting: false });
+      wx.showToast({ title: '提交失败，请重试', icon: 'none' });
+    }
   }
 });

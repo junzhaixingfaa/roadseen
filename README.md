@@ -45,13 +45,14 @@
 
 - 微信小程序**原生框架**，无第三方构建。
 - 数据与校园配置全部走 `services/` 数据访问层，读的是 `data/` 本地 mock 数据；页面不直接 import `data/`。后续接入云开发时主要重写 `services/`。
-- 通行判断为 `services/ruleEngine.js` **真实规则引擎**（作品核心），可离线自测：`node scripts/selftest.js`（122 项断言，覆盖规则全部分支、事件过期与复核、账号隔离订阅/浏览/已读状态、勘察发布回归）。
+- 通行判断为 `services/ruleEngine.js` **真实规则引擎**（作品核心），可离线自测：`node scripts/selftest.js`（139 项断言，覆盖规则全部分支、事件过期与复核、账号隔离收藏/订阅/浏览/已读、AI 字段契约与勘察发布回归）。
 - 勘察提交与审核发布逻辑在 `services/inspectionService.js`，同样被离线自测覆盖。
 - 结构校验：`node scripts/structcheck.js` 检查 WXML 事件绑定是否都有对应方法、页面跳转目标是否已注册（小程序编译器不检查这两项，绑定名打错只会静默失败）。
-- AI 识图/OCR 为 `services/aiService.js` **模拟结果**，用于演示「AI 预填 → 人工确认」流程。
+- AI 识图/OCR 为 `services/aiService.js` **模拟结果**，用于演示「AI 预填 → 人工确认」流程；正式字段契约在 `services/aiSchema.js` 与 `docs/ai-result.schema.json`，脏数据会先清洗再进入页面。
+- AI 失败时仍可人工补录设施特征、台阶数、门型、电梯/厕所状态和 OCR，勘察流程不会因模型不可用而中断。
 - 采集照片经 `services/fileService.js` 由临时路径转存为本地永久文件，重启后证据不裂图；尚未上传云端。
 
-> 详细完成情况、简化项与后端迁移提示见 [`开发进度.md`](./开发进度.md)。
+> 详细完成情况、简化项与后端迁移提示见 [`开发进度.md`](./开发进度.md)。AI 提示词、采集质检、测试记录、架构与答辩稿见 [`docs/README.md`](./docs/README.md)。
 
 ## 团队协作与版本管理（GitHub）
 

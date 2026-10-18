@@ -1,5 +1,6 @@
 // 地点纠错与复核记录：本地雏形实现，后续可替换为云数据库集合。
 const storage = require('./storage');
+const { nextId } = require('../utils/id');
 
 const KEY = 'lj_reviews';
 
@@ -10,7 +11,7 @@ function listAll() {
 function submit(data) {
   const list = storage.get(KEY, []);
   const item = Object.assign({
-    id: 'rv' + Date.now(),
+    id: nextId('rv'),
     status: 'pending',
     createdAt: Date.now(),
     isTestData: true

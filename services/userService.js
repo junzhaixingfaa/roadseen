@@ -1,6 +1,7 @@
 // 用户 / 档案 / 收藏访问层（雏形用本地存储，模拟登录与角色切换）
 const base = require('../data/users');
 const storage = require('./storage');
+const { nextId } = require('../utils/id');
 
 const CUR = 'lj_current_uid';
 
@@ -46,7 +47,7 @@ function register(data) {
   }
   const added = storage.get('lj_users_added', []);
   const user = {
-    id: 'user-local-' + Date.now(),
+    id: nextId('user-local-'),
     account,
     password: data.password,
     nickname: String(data.nickname || '').trim() || account,
@@ -86,13 +87,40 @@ function saveProfile(profile) {
 }
 
 // ---- 收藏 ----
-function favorites() { return storage.get('lj_favorites', []); }
+const FAVORITES_KEY = 'lj_favorites_by_user';
+const LEGACY_FAVORITES_KEY = 'lj_favorites';
+
+function favoriteStore() {
+  const store = storage.get(FAVORITES_KEY, null);
+  if (store && typeof store === 'object' && !Array.isArray(store)) return store;
+  const empty = {};
+  storage.set(FAVORITES_KEY, empty);
+  return empty;
+}
+
+function favorites() {
+  const uid = storage.get(CUR, null);
+  if (!uid) return [];
+  const store = favoriteStore();
+  if (!Object.prototype.hasOwnProperty.call(store, uid)) {
+    const legacy = storage.get(LEGACY_FAVORITES_KEY, []);
+    store[uid] = Array.isArray(legacy) ? legacy.slice() : [];
+    storage.set(FAVORITES_KEY, store);
+    // 旧版全局收藏只迁移给首个登录账号，避免之后每个账号都重复继承同一份数据。
+    storage.remove(LEGACY_FAVORITES_KEY);
+  }
+  return store[uid];
+}
 function isFavorite(id) { return favorites().indexOf(id) >= 0; }
 function toggleFavorite(id) {
-  const f = favorites();
+  const uid = storage.get(CUR, null);
+  if (!uid) return Promise.resolve({ favorite: false, ids: [] });
+  const store = favoriteStore();
+  const f = (store[uid] || []).slice();
   const i = f.indexOf(id);
   if (i >= 0) f.splice(i, 1); else f.unshift(id);
-  storage.set('lj_favorites', f);
+  store[uid] = f;
+  storage.set(FAVORITES_KEY, store);
   return Promise.resolve({ favorite: i < 0, ids: f });
 }
 

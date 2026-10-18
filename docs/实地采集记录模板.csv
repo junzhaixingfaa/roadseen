@@ -1,0 +1,3 @@
+recordId,placeId,placeName,entranceId,entranceName,stepKey,photoFile,referenceObject,observedFacts,aiPrefill,manualCorrection,confidence,unknownFields,collector,collectedAt,qualityLevel,reviewer,reviewedAt,notes
+SAMPLE-001,p001,图书馆,e001,南侧无障碍入口,entrance,p001_e001_entrance_01.jpg,卷尺,可见平缓坡道与自动门,坡道/自动门,人工确认门宽90cm,high,,采集员A,2026-10-17,A,复核员B,2026-10-17,演示模板行，请勿当作真实数据
+SAMPLE-002,p001,图书馆,e001,南侧无障碍入口,step,p001_e001_step_01.jpg,卷尺,门口无台阶,无台阶,人工确认无门槛,high,,采集员A,2026-10-17,A,复核员B,2026-10-17,演示模板行，请勿当作真实数据

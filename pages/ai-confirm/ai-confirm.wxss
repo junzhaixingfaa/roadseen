@@ -14,6 +14,10 @@
 
 .chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 8rpx 0; }
 .chip { font-size: 22rpx; color: var(--brand); background: var(--brand-soft); padding: 4rpx 16rpx; border-radius: 16rpx; }
+.flag-title { margin-top: 14rpx; font-size: 22rpx; color: #718089; }
+.flags { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 10rpx 0 4rpx; }
+.flag { font-size: 22rpx; color: #718089; background: #EEF2F2; border: 1rpx solid #DDE6E6; padding: 8rpx 18rpx; border-radius: 18rpx; }
+.flag.on { color: #FFFFFF; background: #176B70; border-color: #176B70; }
 .it-basis { margin: 6rpx 0; }
 
 .ef { display: flex; align-items: center; padding: 12rpx 0; border-top: 1rpx solid #f2f3f5; }

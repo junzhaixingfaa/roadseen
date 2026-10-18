@@ -15,6 +15,7 @@ const incidentService = R('services/incidentService');
 const inspectionService = R('services/inspectionService');
 const evidenceService = R('services/evidenceService');
 const aiService = R('services/aiService');
+const aiSchema = R('services/aiSchema');
 const reviewService = R('services/reviewService');
 const userService = R('services/userService');
 const util = R('utils/util');
@@ -165,6 +166,24 @@ console.log('== services：地点 / 事件 ==');
   console.log('== services：AI / 复核 / 账号 ==');
   const ai = await aiService.recognize('entrance', { delay: 0 });
   check('aiService entrance hasRamp', ai.detected.hasRamp, true);
+  check('AI 契约覆盖 8 个采集步骤', aiSchema.STEP_KEYS.length, 8);
+  check('全部预置结果符合字段契约', aiSchema.STEP_KEYS.every(k => aiSchema.validateResult(k, aiResults[k]).ok), true);
+  const dirtyAi = aiSchema.normalizeResult('step', {
+    detected: { hasSteps: 'true', hasRamp: 1 },
+    observable: { stepCount: 99, elevatorStatus: '运行正常' },
+    confidence: '高', unknownFields: 'not-an-array'
+  });
+  check('AI 非布尔特征不采信', dirtyAi.detected.hasSteps, false);
+  check('AI 越界测量值被丢弃', Object.prototype.hasOwnProperty.call(dirtyAi.observable, 'stepCount'), false);
+  check('AI 置信度中文归一', dirtyAi.confidence, 'high');
+  check('AI 数组字段类型保护', Array.isArray(dirtyAi.unknownFields), true);
+  const booleanValue = aiSchema.normalizeResult('step', { observable: { stepCount: true }, ocrText: { text: 'x' } });
+  check('AI 布尔值不当作测量值', Object.prototype.hasOwnProperty.call(booleanValue.observable, 'stepCount'), false);
+  check('AI 对象文字不写入 OCR', booleanValue.ocrText, '');
+  const aiFallback = aiSchema.fallbackResult('entrance');
+  check('AI 空结果要求人工确认', aiFallback.unknownFields[0], 'all');
+  const manualFlags = aiSchema.flagsFromLabels(['坡道', '电梯']);
+  check('人工补录标签双向一致', aiSchema.labelsFromFlags(manualFlags).join(','), '坡道,电梯');
   // 采集步骤定义在页面文件里（Page() 无法被 node require），只能读源码取 key；
   // 少了预置结果的步骤在演示时会直接显示「未能识别」，等于 AI 环节当场翻车。
   const captureSrc = fs.readFileSync(path.join(ROOT, 'pages/capture/capture.js'), 'utf8');
@@ -188,6 +207,14 @@ console.log('== services：地点 / 事件 ==');
 
   const loginUser = await userService.authenticate('demo', '123456');
   check('userService 账号密码登录', loginUser && loginUser.role, 'user');
+  check('收藏初始为空', userService.favorites().length, 0);
+  await userService.toggleFavorite('p001');
+  check('收藏地点成功', userService.isFavorite('p001'), true);
+  await userService.setCurrent('user-002');
+  check('收藏按账号隔离', userService.favorites().length, 0);
+  await userService.setCurrent(loginUser.id);
+  check('切回账号后收藏保留', userService.isFavorite('p001'), true);
+  await userService.toggleFavorite('p001');
   check('订阅初始为空', userService.subscriptions().length, 0);
   const subOn = await userService.toggleSubscription('p001');
   check('订阅地点成功', subOn.subscribed, true);
@@ -266,6 +293,14 @@ console.log('== services：地点 / 事件 ==');
   check('空台阶数不误改结论', ruleEngine.judgeAccess(afterNan, u1, []).result, 'pass');
   check('再次发布累加修订记录', inspectionService.listRevisions('p001').length, 2);
 
+  const badCount = inspectionService.submit({
+    placeId: 'p001', placeName: '图书馆', submittedBy: 'selftest',
+    items: [{ key: 'step', choice: 'modified', photo: '', aiDetected: ['台阶'], stepCount: '99' }]
+  });
+  await inspectionService.publish(inspectionService.getById(badCount.id));
+  const afterBadCount = await placeService.get('p001');
+  check('越界台阶数不写入', afterBadCount.entrances[0].stepCount, 4);
+
   const unknown5 = inspectionService.submit({
     placeId: 'p005', placeName: '实验楼', submittedBy: 'selftest',
     items: [
@@ -277,6 +312,22 @@ console.log('== services：地点 / 事件 ==');
   const after5 = await placeService.get('p005');
   check('未确认项不覆盖电梯资料', after5.facilities.elevator.has, true);
   check('未确认项不改变 p005 结论', ruleEngine.judgeAccess(after5, u1, []).result, 'pass');
+
+  const statusInsp = inspectionService.submit({
+    placeId: 'p005', placeName: '实验楼', submittedBy: 'selftest',
+    items: [{ key: 'elevator', choice: 'modified', photo: '', aiDetected: ['电梯'], elevatorStatus: '故障' }]
+  });
+  await inspectionService.publish(inspectionService.getById(statusInsp.id));
+  const afterStatus = await placeService.get('p005');
+  check('电梯状态中文归一为枚举', afterStatus.facilities.elevator.status, 'fault');
+
+  const toiletInsp = inspectionService.submit({
+    placeId: 'p001', placeName: '图书馆', submittedBy: 'selftest',
+    items: [{ key: 'toilet', choice: 'modified', photo: '', aiDetected: ['厕所标识'], toiletStatus: '关闭' }]
+  });
+  await inspectionService.publish(inspectionService.getById(toiletInsp.id));
+  const afterToilet = await placeService.get('p001');
+  check('厕所状态中文归一为枚举', afterToilet.facilities.accessibleToilet.status, 'closed');
 
   const unknown2 = inspectionService.submit({
     placeId: 'p002', placeName: '老教学楼', submittedBy: 'selftest',

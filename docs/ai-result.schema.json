@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://roadseen.local/schemas/ai-result.schema.json",
+  "title": "路见 AI 单步识别结果",
+  "description": "AI 仅输出现场可观察事实，不输出通行结论。小程序端还会经过 services/aiSchema.js 清洗。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "facilityType",
+    "detected",
+    "observable",
+    "ocrText",
+    "basis",
+    "confidence",
+    "unknownFields",
+    "suggestRetake"
+  ],
+  "properties": {
+    "facilityType": {
+      "type": "string",
+      "enum": ["entrance", "path", "steps", "door", "elevator", "accessibleToilet", "notice", "other"]
+    },
+    "detected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hasSteps",
+        "hasRamp",
+        "hasElevator",
+        "hasDoor",
+        "hasToiletSign",
+        "hasAccessibleSign"
+      ],
+      "properties": {
+        "hasSteps": { "type": "boolean" },
+        "hasRamp": { "type": "boolean" },
+        "hasElevator": { "type": "boolean" },
+        "hasDoor": { "type": "boolean" },
+        "hasToiletSign": { "type": "boolean" },
+        "hasAccessibleSign": { "type": "boolean" }
+      }
+    },
+    "observable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stepCount": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "thresholdHeight": { "type": "number", "minimum": 0, "maximum": 50 },
+        "doorWidth": { "type": "number", "minimum": 30, "maximum": 200 },
+        "doorType": { "type": "string", "maxLength": 30 },
+        "elevatorStatus": { "type": "string", "enum": ["normal", "fault", "unknown"] },
+        "toiletStatus": { "type": "string", "enum": ["open", "closed", "unknown"] },
+        "surface": { "type": "string", "maxLength": 80 }
+      }
+    },
+    "ocrText": { "type": "string", "maxLength": 500 },
+    "basis": { "type": "string", "maxLength": 300 },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "unknownFields": {
+      "type": "array",
+      "maxItems": 12,
+      "items": { "type": "string", "maxLength": 40 }
+    },
+    "suggestRetake": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "type": "string", "maxLength": 120 }
+    }
+  }
+}

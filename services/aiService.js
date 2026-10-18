@@ -1,5 +1,6 @@
 // 模拟多模态识别：返回预置结构化结果，带假延迟；支持失败回退
 const ai = require('../data/aiResults');
+const aiSchema = require('./aiSchema');
 const storage = require('./storage');
 
 function log(entry) {
@@ -10,19 +11,6 @@ function log(entry) {
 
 function listLogs() {
   return Promise.resolve(storage.get('lj_ai_logs', []));
-}
-
-function fallback(stepKey) {
-  return {
-    facilityType: stepKey,
-    detected: {},
-    observable: {},
-    ocrText: '',
-    basis: '未能识别到明确信息，请人工核对',
-    confidence: 'low',
-    unknownFields: ['all'],
-    suggestRetake: ['建议补拍更清晰画面']
-  };
 }
 
 // opts: { delay, forceFail }
@@ -38,7 +26,7 @@ function recognize(stepKey, opts) {
       }
       const r = ai[stepKey];
       log({ stepKey, ok: true, msg: r ? '命中预置识别结果' : '无匹配，返回空结果待人工' });
-      resolve(r ? JSON.parse(JSON.stringify(r)) : fallback(stepKey));
+      resolve(r ? aiSchema.normalizeResult(stepKey, r) : aiSchema.fallbackResult(stepKey));
     }, delay);
   });
 }

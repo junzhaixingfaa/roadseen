@@ -8,7 +8,7 @@
     </view>
   </view>
 
-  <view class="item" wx:for="{{items}}" wx:key="key">
+  <view class="item" wx:for="{{items}}" wx:key="key" wx:for-index="itemIndex">
     <view class="row-between">
       <text class="it-title">{{item.title}}</text>
       <text class="it-conf" wx:if="{{item.confidence}}">置信 {{item.confidence}}</text>
@@ -17,43 +17,49 @@
 
     <view class="muted it-loading" wx:if="{{item.loading}}">AI 识别中…</view>
 
-    <view class="it-error" wx:elif="{{item.error}}">
+    <view class="it-error" wx:if="{{!item.loading && item.error}}">
       {{item.error}}
       <view class="muted" style="margin-top:6rpx;">可继续人工填写下方字段后提交</view>
     </view>
 
-    <view wx:else>
-      <view class="chips" wx:if="{{item.detected.length}}">
-        <text class="chip" wx:for="{{item.detected}}" wx:for-item="d" wx:key="*this">{{d}}</text>
-      </view>
+    <block wx:if="{{!item.loading}}">
       <view class="muted it-basis" wx:if="{{item.basis}}">依据：{{item.basis}}</view>
+
+      <view class="flag-title">{{item.error ? '人工补录设施特征' : '识别到的设施特征'}}（点击切换）</view>
+      <view class="flags">
+        <view class="flag {{flag.on ? 'on' : ''}}" wx:for="{{item.flags}}" wx:for-item="flag" wx:for-index="flagIndex" wx:key="key" data-i="{{itemIndex}}" data-k="{{flag.key}}" bindtap="toggleFlag">{{flag.label}}</view>
+      </view>
 
       <view class="ef" wx:if="{{item.stepCount !== '' || item.key === 'step'}}">
         <text class="ef-lab">台阶数</text>
-        <input class="ef-ipt" type="digit" value="{{item.stepCount}}" data-i="{{index}}" data-f="stepCount" bindinput="editField" placeholder="AI 未判断可手填" />
+        <input class="ef-ipt" type="digit" value="{{item.stepCount}}" data-i="{{itemIndex}}" data-f="stepCount" bindinput="editField" placeholder="0-30 的整数" />
       </view>
-      <view class="ef" wx:if="{{item.doorType || item.key === 'entrance'}}">
+      <view class="ef" wx:if="{{item.doorType || item.key === 'entrance' || item.key === 'door'}}">
         <text class="ef-lab">门类型</text>
-        <input class="ef-ipt" value="{{item.doorType}}" data-i="{{index}}" data-f="doorType" bindinput="editField" placeholder="自动门/平开门…" />
+        <input class="ef-ipt" value="{{item.doorType}}" data-i="{{itemIndex}}" data-f="doorType" bindinput="editField" placeholder="自动门 / 平开门 / 需他人开门" />
       </view>
       <view class="ef" wx:if="{{item.elevatorStatus || item.key === 'elevator'}}">
         <text class="ef-lab">电梯状态</text>
-        <input class="ef-ipt" value="{{item.elevatorStatus}}" data-i="{{index}}" data-f="elevatorStatus" bindinput="editField" placeholder="normal/fault/未知" />
+        <input class="ef-ipt" value="{{item.elevatorStatus}}" data-i="{{itemIndex}}" data-f="elevatorStatus" bindinput="editField" placeholder="正常 / 故障 / 未知" />
+      </view>
+      <view class="ef" wx:if="{{item.toiletStatus || item.key === 'toilet'}}">
+        <text class="ef-lab">厕所状态</text>
+        <input class="ef-ipt" value="{{item.toiletStatus}}" data-i="{{itemIndex}}" data-f="toiletStatus" bindinput="editField" placeholder="开放 / 关闭 / 未知" />
       </view>
       <view class="ef">
         <text class="ef-lab">OCR 文字</text>
-        <input class="ef-ipt" value="{{item.ocrText}}" data-i="{{index}}" bindinput="editOcr" placeholder="通知/开放时间" />
+        <input class="ef-ipt" value="{{item.ocrText}}" data-i="{{itemIndex}}" bindinput="editOcr" placeholder="通知 / 开放时间" />
       </view>
 
-      <view class="it-unknown" wx:if="{{item.unknownFields.length}}">无法判断：{{item.unknownFields}}</view>
-      <view class="it-retake" wx:if="{{item.suggestRetake.length}}">建议补拍：{{item.suggestRetake}}</view>
+      <view class="it-unknown" wx:if="{{item.unknownText}}">无法判断：{{item.unknownText}}</view>
+      <view class="it-retake" wx:if="{{item.retakeText}}">建议补拍：{{item.retakeText}}</view>
 
       <view class="choice">
-        <text class="c-btn {{item.choice === 'confirmed' ? 'on' : ''}}" data-i="{{index}}" data-v="confirmed" bindtap="choose">确认</text>
-        <text class="c-btn {{item.choice === 'modified' ? 'on' : ''}}" data-i="{{index}}" data-v="modified" bindtap="choose">已修改</text>
-        <text class="c-btn {{item.choice === 'unknown' ? 'on' : ''}}" data-i="{{index}}" data-v="unknown" bindtap="choose">标记未知</text>
+        <text class="c-btn {{item.choice === 'confirmed' ? 'on' : ''}}" data-i="{{itemIndex}}" data-v="confirmed" bindtap="choose">确认</text>
+        <text class="c-btn {{item.choice === 'modified' ? 'on' : ''}}" data-i="{{itemIndex}}" data-v="modified" bindtap="choose">已修改</text>
+        <text class="c-btn {{item.choice === 'unknown' ? 'on' : ''}}" data-i="{{itemIndex}}" data-v="unknown" bindtap="choose">标记未知</text>
       </view>
-    </view>
+    </block>
   </view>
 
   <view style="height: 140rpx;"></view>
