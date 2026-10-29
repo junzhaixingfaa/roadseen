@@ -51,7 +51,10 @@ AI **不得**直接输出“可以通行 / 不可通行”，也不得在缺少�
 | `stepCount` | 0-30 整数 | 台阶照；必须能逐级数清 |
 | `thresholdHeight` | 0-50 cm | 门槛特写；无参照物时必须留空 |
 | `doorWidth` | 30-200 cm | 门洞净宽；无参照物时必须留空 |
+| `minPassageWidth` | 30-500 cm | 连续通道最窄处净宽；无测量时必须留空 |
 | `doorType` | 字符串，≤30 字 | 自动门、平开门、需他人开门等 |
+| `rampCondition` | `平缓/较陡/未知` | 只描述有现场依据的坡道状态 |
+| `needAssistToOpen` | 布尔值 | 可见门体或按钮足以判断是否需协助开启 |
 | `elevatorStatus` | `normal/fault/unknown` | 电梯是否正常，以现场告示或状态灯为准 |
 | `toiletStatus` | `open/closed/unknown` | 厕所开放状态，以门锁或告示为准 |
 | `surface` | 字符串，≤80 字 | 路面材质或明显状况，仅描述可见内容 |

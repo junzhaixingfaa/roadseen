@@ -8,6 +8,33 @@
     </view>
   </view>
 
+  <view class="item meta-card">
+    <view class="it-title">采集信息</view>
+    <view class="ef">
+      <text class="ef-lab">数据类型</text>
+      <picker class="ef-picker" mode="selector" range="{{sourceOptions}}" value="{{sourceIndex}}" bindchange="onSource">
+        <view>{{sourceOptions[sourceIndex]}} ›</view>
+      </picker>
+    </view>
+    <view class="ef">
+      <text class="ef-lab">入口名称</text>
+      <input class="ef-ipt" value="{{entranceName}}" data-f="entranceName" bindinput="editMeta" placeholder="如：南侧无障碍入口" />
+    </view>
+    <view class="ef">
+      <text class="ef-lab">入口方向</text>
+      <input class="ef-ipt" value="{{entranceDirection}}" data-f="entranceDirection" bindinput="editMeta" placeholder="从校园道路如何到达" />
+    </view>
+    <view class="ef">
+      <text class="ef-lab">到目标需电梯</text>
+      <switch color="#176B70" checked="{{needElevatorToTarget}}" data-f="needElevatorToTarget" bindchange="editMeta" />
+    </view>
+    <view class="ef">
+      <text class="ef-lab">厕所为必要条件</text>
+      <switch color="#176B70" checked="{{needAccessibleToilet}}" data-f="needAccessibleToilet" bindchange="editMeta" />
+    </view>
+    <view class="source-tip">实地采集审核通过后标记为“已核验”；调试流程请选择“演示数据”。</view>
+  </view>
+
   <view class="item" wx:for="{{items}}" wx:key="key" wx:for-index="itemIndex">
     <view class="row-between">
       <text class="it-title">{{item.title}}</text>
@@ -34,9 +61,29 @@
         <text class="ef-lab">台阶数</text>
         <input class="ef-ipt" type="digit" value="{{item.stepCount}}" data-i="{{itemIndex}}" data-f="stepCount" bindinput="editField" placeholder="0-30 的整数" />
       </view>
+      <view class="ef" wx:if="{{item.key === 'step'}}">
+        <text class="ef-lab">门槛高度</text>
+        <input class="ef-ipt" type="digit" value="{{item.thresholdHeight}}" data-i="{{itemIndex}}" data-f="thresholdHeight" bindinput="editField" placeholder="0-50 cm，无参照物留空" />
+      </view>
+      <view class="ef" wx:if="{{item.key === 'entrance' || item.key === 'step'}}">
+        <text class="ef-lab">坡道情况</text>
+        <input class="ef-ipt" value="{{item.rampCondition}}" data-i="{{itemIndex}}" data-f="rampCondition" bindinput="editField" placeholder="平缓 / 较陡 / 未知" />
+      </view>
       <view class="ef" wx:if="{{item.doorType || item.key === 'entrance' || item.key === 'door'}}">
         <text class="ef-lab">门类型</text>
         <input class="ef-ipt" value="{{item.doorType}}" data-i="{{itemIndex}}" data-f="doorType" bindinput="editField" placeholder="自动门 / 平开门 / 需他人开门" />
+      </view>
+      <view class="ef" wx:if="{{item.key === 'entrance' || item.key === 'door'}}">
+        <text class="ef-lab">门洞净宽</text>
+        <input class="ef-ipt" type="digit" value="{{item.doorWidth}}" data-i="{{itemIndex}}" data-f="doorWidth" bindinput="editField" placeholder="30-200 cm，无测量留空" />
+      </view>
+      <view class="ef" wx:if="{{item.key === 'door'}}">
+        <text class="ef-lab">需协助开门</text>
+        <switch color="#176B70" checked="{{item.needAssistToOpen}}" data-i="{{itemIndex}}" data-f="needAssistToOpen" bindchange="editField" />
+      </view>
+      <view class="ef" wx:if="{{item.key === 'path'}}">
+        <text class="ef-lab">通道最窄处</text>
+        <input class="ef-ipt" type="digit" value="{{item.minPassageWidth}}" data-i="{{itemIndex}}" data-f="minPassageWidth" bindinput="editField" placeholder="30-500 cm，无测量留空" />
       </view>
       <view class="ef" wx:if="{{item.elevatorStatus || item.key === 'elevator'}}">
         <text class="ef-lab">电梯状态</text>

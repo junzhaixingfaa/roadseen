@@ -12,6 +12,13 @@ Page({
   data: {
     placeId: '',
     placeName: '',
+    entranceName: '',
+    entranceDirection: '',
+    hasExistingEntrance: false,
+    needElevatorToTarget: false,
+    needAccessibleToilet: false,
+    sourceOptions: ['实地采集', '演示数据'],
+    sourceIndex: 1,
     items: [],
     aiFailed: false,
     submitting: false
@@ -20,7 +27,23 @@ Page({
   async onLoad(options) {
     const placeId = options.id || '';
     let placeName = '';
-    if (placeId) { const p = await placeService.get(placeId); placeName = p ? p.name : ''; }
+    let entranceName = '';
+    let entranceDirection = '';
+    let hasExistingEntrance = false;
+    let needElevatorToTarget = false;
+    let needAccessibleToilet = false;
+    if (placeId) {
+      const p = await placeService.get(placeId);
+      placeName = p ? p.name : '';
+      needElevatorToTarget = !!(p && p.needElevatorToTarget);
+      needAccessibleToilet = !!(p && p.needAccessibleToilet);
+      const rec = p && ((p.entrances || []).find(e => e.isRecommended) || (p.entrances || [])[0]);
+      if (rec) {
+        hasExistingEntrance = true;
+        entranceName = rec.name || '';
+        entranceDirection = rec.direction || '';
+      }
+    }
     const draft = storage.get('lj_capture_draft', {});
     const photos = draft.placeId === placeId ? (draft.photos || {}) : {};
     const keys = aiSchema.STEP_KEYS.filter(k => photos[k]);
@@ -29,10 +52,12 @@ Page({
       loading: true, error: '', detected: [], flags: aiSchema.flagsFromLabels([]),
       ocrText: '', basis: '', confidence: '', unknownFields: [], suggestRetake: [],
       unknownText: '', retakeText: '',
-      stepCount: '', doorType: '', elevatorStatus: '', toiletStatus: '',
+      stepCount: '', thresholdHeight: '', doorWidth: '', minPassageWidth: '',
+      rampCondition: '', needAssistToOpen: false,
+      doorType: '', elevatorStatus: '', toiletStatus: '',
       choice: 'confirmed' // confirmed / modified / unknown
     }));
-    this.setData({ placeId, placeName, items });
+    this.setData({ placeId, placeName, entranceName, entranceDirection, hasExistingEntrance, needElevatorToTarget, needAccessibleToilet, items });
     items.forEach((it, i) => this.recognize(i, {}));
   },
 
@@ -56,6 +81,11 @@ Page({
       patch['items[' + i + '].unknownText'] = needsManual ? '全部字段（需人工确认）' : (r.unknownFields || []).join('、');
       patch['items[' + i + '].retakeText'] = (r.suggestRetake || []).join('；');
       patch['items[' + i + '].stepCount'] = obs.stepCount != null ? String(obs.stepCount) : '';
+      patch['items[' + i + '].thresholdHeight'] = obs.thresholdHeight != null ? String(obs.thresholdHeight) : '';
+      patch['items[' + i + '].doorWidth'] = obs.doorWidth != null ? String(obs.doorWidth) : '';
+      patch['items[' + i + '].minPassageWidth'] = obs.minPassageWidth != null ? String(obs.minPassageWidth) : '';
+      patch['items[' + i + '].rampCondition'] = obs.rampCondition || '';
+      patch['items[' + i + '].needAssistToOpen'] = obs.needAssistToOpen === true;
       patch['items[' + i + '].doorType'] = obs.doorType || '';
       patch['items[' + i + '].elevatorStatus'] = obs.elevatorStatus || '';
       patch['items[' + i + '].toiletStatus'] = obs.toiletStatus || '';
@@ -85,6 +115,11 @@ Page({
     const i = e.currentTarget.dataset.i;
     this.setData({ ['items[' + i + '].ocrText']: e.detail.value, ['items[' + i + '].choice']: 'modified' });
   },
+  editMeta(e) {
+    const f = e.currentTarget.dataset.f;
+    this.setData({ [f]: e.detail.value });
+  },
+  onSource(e) { this.setData({ sourceIndex: Number(e.detail.value) }); },
   toggleFlag(e) {
     const i = Number(e.currentTarget.dataset.i);
     const key = e.currentTarget.dataset.k;
@@ -117,6 +152,10 @@ Page({
       wx.showToast({ title: '缺少勘察地点，请返回重选', icon: 'none' });
       return;
     }
+    if (!this.data.hasExistingEntrance && !this.data.entranceName.trim()) {
+      wx.showToast({ title: '请填写新入口名称', icon: 'none' });
+      return;
+    }
     const badStep = this.data.items.find(it => {
       if (it.key !== 'step' || it.stepCount === '' || it.stepCount == null) return false;
       const n = Number(it.stepCount);
@@ -126,6 +165,16 @@ Page({
       wx.showToast({ title: '台阶数请填 0-30 的整数', icon: 'none' });
       return;
     }
+    const ranges = [
+      ['thresholdHeight', 0, 50, '门槛高度请填 0-50cm'],
+      ['doorWidth', 30, 200, '门洞宽度请填 30-200cm'],
+      ['minPassageWidth', 30, 500, '通道宽度请填 30-500cm']
+    ];
+    for (let r = 0; r < ranges.length; r += 1) {
+      const rule = ranges[r];
+      const bad = this.data.items.find(it => it[rule[0]] !== '' && (!isFinite(Number(it[rule[0]])) || Number(it[rule[0]]) < rule[1] || Number(it[rule[0]]) > rule[2]));
+      if (bad) { wx.showToast({ title: rule[3], icon: 'none' }); return; }
+    }
     this.setData({ submitting: true });
     try {
       const user = userService.current();
@@ -133,13 +182,25 @@ Page({
         placeId: this.data.placeId,
         placeName: this.data.placeName || '新采集地点',
         submittedBy: user ? user.nickname : '匿名',
+        dataStatus: this.data.sourceIndex === 0 ? 'pending' : 'demo',
+        entranceMeta: {
+          name: this.data.entranceName.trim(),
+          direction: this.data.entranceDirection.trim()
+        },
+        placeMeta: {
+          needElevatorToTarget: this.data.needElevatorToTarget,
+          needAccessibleToilet: this.data.needAccessibleToilet
+        },
         items: this.data.items.map(it => ({
           key: it.key, title: it.title, choice: it.choice,
           photo: it.photo,
           aiDetected: it.detected, ocrText: it.ocrText,
           basis: it.basis, confidence: it.confidence,
           unknownFields: it.unknownFields, suggestRetake: it.suggestRetake,
-          stepCount: it.stepCount, doorType: it.doorType,
+          stepCount: it.stepCount, thresholdHeight: it.thresholdHeight,
+          doorWidth: it.doorWidth, minPassageWidth: it.minPassageWidth,
+          rampCondition: it.rampCondition, needAssistToOpen: it.needAssistToOpen,
+          doorType: it.doorType,
           elevatorStatus: it.elevatorStatus, toiletStatus: it.toiletStatus
         }))
       };

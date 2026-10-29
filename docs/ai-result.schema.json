@@ -47,7 +47,10 @@
         "stepCount": { "type": "integer", "minimum": 0, "maximum": 30 },
         "thresholdHeight": { "type": "number", "minimum": 0, "maximum": 50 },
         "doorWidth": { "type": "number", "minimum": 30, "maximum": 200 },
+        "minPassageWidth": { "type": "number", "minimum": 30, "maximum": 500 },
         "doorType": { "type": "string", "maxLength": 30 },
+        "rampCondition": { "type": "string", "enum": ["平缓", "较陡", "未知"] },
+        "needAssistToOpen": { "type": "boolean" },
         "elevatorStatus": { "type": "string", "enum": ["normal", "fault", "unknown"] },
         "toiletStatus": { "type": "string", "enum": ["open", "closed", "unknown"] },
         "surface": { "type": "string", "maxLength": 80 }

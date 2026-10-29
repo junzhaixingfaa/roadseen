@@ -99,6 +99,16 @@ check('p005 备选入口数量', j5.alternatives.length, 1);
 const j5u2 = ruleEngine.judgeAccess(byId('p005'), u2, []);
 check('备选入口门宽不足标注过不去(电动 78cm)', !!(j5u2.alternatives[0] && j5u2.alternatives[0].blockedByWidth), true);
 check('备选入口门宽足够不标注(手动 70cm)', !!(j5.alternatives[0] && j5.alternatives[0].blockedByWidth), false);
+const multiEntrance = Object.assign({}, byId('p001'), {
+  entrances: [
+    { id: 'main', name: '正门', isRecommended: true, hasSteps: true, hasRamp: false, doorWidth: 100 },
+    { id: 'side', name: '侧门无障碍入口', isRecommended: false, hasSteps: false, hasRamp: true, rampCondition: '平缓', doorWidth: 90 }
+  ]
+});
+const bestEntrance = ruleEngine.judgeAccess(multiEntrance, u1, []);
+check('个性化入口会绕开有台阶的默认正门', bestEntrance.recommendedEntranceId, 'side');
+check('最佳入口重算后地点可通行', bestEntrance.result, 'pass');
+check('未选正门保留不可通行原因', bestEntrance.alternatives[0].result, 'blocked');
 check('p005 证据 id 透传', j5.evidenceIds.join(','), 'ev005');
 check('有档案标记', j5.hasProfile, true);
 check('免责声明存在', !!j5.disclaimer, true);
@@ -184,6 +194,11 @@ console.log('== services：地点 / 事件 ==');
   check('AI 空结果要求人工确认', aiFallback.unknownFields[0], 'all');
   const manualFlags = aiSchema.flagsFromLabels(['坡道', '电梯']);
   check('人工补录标签双向一致', aiSchema.labelsFromFlags(manualFlags).join(','), '坡道,电梯');
+  const fieldAi = aiSchema.normalizeResult('door', { observable: { doorWidth: 88.5, minPassageWidth: 120, rampCondition: '平缓', needAssistToOpen: true } });
+  check('AI 门洞宽度保留一位小数', fieldAi.observable.doorWidth, 88.5);
+  check('AI 通道最窄处进入字段契约', fieldAi.observable.minPassageWidth, 120);
+  check('AI 坡道状态进入字段契约', fieldAi.observable.rampCondition, '平缓');
+  check('AI 协助开门布尔值进入字段契约', fieldAi.observable.needAssistToOpen, true);
   // 采集步骤定义在页面文件里（Page() 无法被 node require），只能读源码取 key；
   // 少了预置结果的步骤在演示时会直接显示「未能识别」，等于 AI 环节当场翻车。
   const captureSrc = fs.readFileSync(path.join(ROOT, 'pages/capture/capture.js'), 'utf8');
@@ -340,12 +355,25 @@ console.log('== services：地点 / 事件 ==');
   check('p002 结论仍为阻断', ruleEngine.judgeAccess(after2, u1, []).result, 'blocked');
 
   const noEnt = inspectionService.submit({
-    placeId: 'p004', placeName: '体育馆', submittedBy: 'selftest',
-    items: [{ key: 'entrance', choice: 'yes', photo: '', aiDetected: ['坡道'] }]
+    placeId: 'p004', placeName: '体育馆', submittedBy: 'selftest', dataStatus: 'pending',
+    entranceMeta: { name: '南侧无障碍入口', direction: '沿运动场南路到达' },
+    items: [
+      { key: 'entrance', choice: 'confirmed', photo: 'entrance.jpg', aiDetected: ['坡道'], doorWidth: '90', rampCondition: '平缓' },
+      { key: 'step', choice: 'modified', photo: 'step.jpg', aiDetected: [], stepCount: '0', thresholdHeight: '0' },
+      { key: 'door', choice: 'modified', photo: 'door.jpg', aiDetected: ['门'], doorType: '自动门', doorWidth: '90', needAssistToOpen: false },
+      { key: 'path', choice: 'modified', photo: 'path.jpg', aiDetected: [], minPassageWidth: '120' }
+    ]
   });
+  check('实地勘察提交不是演示数据', noEnt.isTestData, false);
   const r4 = await inspectionService.publish(inspectionService.getById(noEnt.id));
-  check('无入口地点发布不报错且不伪造入口', r4.entranceUpdated, false);
-  check('无入口地点结论仍为待复核', ruleEngine.judgeAccess(await placeService.get('p004'), u1, []).result, 'unknown');
+  const after4 = await placeService.get('p004');
+  check('无入口地点发布后创建入口', r4.entranceUpdated, true);
+  check('新入口名称来自实地记录', after4.entrances[0].name, '南侧无障碍入口');
+  check('新入口写入门洞净宽', after4.entrances[0].doorWidth, 90);
+  check('新入口写入坡道状态', after4.entrances[0].rampCondition, '平缓');
+  check('地点写入通道最窄处', after4.minPassageWidth, 120);
+  check('审核发布后状态为实地核验', after4.dataStatus, 'verified');
+  check('新增入口后通行结论可计算', ruleEngine.judgeAccess(after4, u1, []).result, 'pass');
 
   let published = false;
   await inspectionService.publish({ placeId: 'p999', items: [] }).catch(() => { published = true; });

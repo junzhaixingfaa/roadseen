@@ -11,6 +11,7 @@ const { getStatus } = require('../../utils/status');
 const TYPE_MAP = { entrance: '入口', ramp: '坡道', step: '台阶/坡道', door: '门', elevator: '电梯', toilet: '厕所', sign: '标识', notice: '通知', path: '通道', other: '其他障碍' };
 const CONFIRM_MAP = { confirmed: '已确认', pending: '待确认', unknown: '未知' };
 const FAC_MAP = { elevator: '电梯', ramp: '坡道', path: '通道', toilet: '厕所', door: '门', openTime: '开放时间', other: '其他' };
+const DATA_STATUS_MAP = { demo: '演示数据', pending: '待审核', verified: '实地核验', expired: '已过期' };
 
 Page({
   data: {
@@ -35,6 +36,7 @@ Page({
     hasProfile: false,
     profileTip: '',
     disclaimer: '仅供出行准备参考',
+    dataStatusText: '',
     loading: true
   },
 
@@ -64,17 +66,23 @@ Page({
       // evidenceIds 是当前采信的证据集；为空时（尚未发布过）退回展示全部，避免证据区凭空变空
       const ids = place.evidenceIds || [];
       const picked = ids.length ? ids.map(eid => evs.filter(e => e.id === eid)[0]).filter(Boolean) : evs;
+      const chosenRec = (place.entrances || []).find(e => e.id === j.recommendedEntranceId) || (place.entrances || [])[0] || null;
+      const defaultRec = (place.entrances || []).find(e => e.isRecommended) || (place.entrances || [])[0] || null;
+      const chosenSteps = chosenRec && chosenRec.steps
+        ? chosenRec.steps
+        : (chosenRec && defaultRec && chosenRec.id === defaultRec.id ? (place.steps || []) : []);
 
       const revisions = inspectionService.listRevisions(id);
       this.setData({
         place,
-        rec: (place.entrances || []).find(e => e.isRecommended) || (place.entrances || [])[0] || null,
+        dataStatusText: DATA_STATUS_MAP[place.dataStatus] || (place.isTestData ? '演示数据' : '来源未标记'),
+        rec: chosenRec,
         status: st,
         summary: j.reasons[0] || '',
         reasons: j.reasons,
         alternatives: j.alternatives || [],
         facilities: this.buildFacilities(place),
-        steps: place.steps || [],
+        steps: chosenSteps,
         evidences: picked.map(e => ({
           imageUrl: e.imageUrl,
           typeText: TYPE_MAP[e.type] || e.type,

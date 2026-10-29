@@ -21,7 +21,7 @@ module.exports = [
       pathCondition: '平整硬质路面，主通道宽约 1.8 米', otherObstacles: ''
     },
     steps: ['到达图书馆南侧广场', '沿右侧通道前进约 30 米', '使用玻璃门旁的无障碍自动门进入', '进入后左转约 10 米可找到电梯'],
-    evidenceIds: ['ev001', 'ev002'], lastVerifiedAt: '2026-09-10', collectedBy: '志愿者-张', isTestData: false
+    evidenceIds: ['ev001', 'ev002'], lastVerifiedAt: '2026-09-10', collectedBy: '志愿者-张', dataStatus: 'demo', isTestData: true
   },
   {
     id: 'p002', name: '老教学楼', category: '教学楼',
@@ -42,7 +42,7 @@ module.exports = [
       pathCondition: '门前为台阶，未见坡道', otherObstacles: '仅有台阶，暂无轮椅可通行入口'
     },
     steps: ['到达老教学楼正门', '门前为连续台阶，暂未发现无障碍入口', '主要教室在二层，楼内未确认有电梯'],
-    evidenceIds: ['ev003'], lastVerifiedAt: '2026-09-08', collectedBy: '志愿者-张', isTestData: false
+    evidenceIds: ['ev003'], lastVerifiedAt: '2026-09-08', collectedBy: '志愿者-张', dataStatus: 'demo', isTestData: true
   },
   {
     id: 'p003', name: '第一食堂', category: '食堂',
@@ -65,7 +65,7 @@ module.exports = [
       pathCondition: '室内平整', otherObstacles: '入口坡道较陡且为沉重平开门，高峰期取餐通道拥挤'
     },
     steps: ['到达食堂西侧门厅', '经较陡无障碍坡道至门前', '门为沉重的平开门，可能需他人协助推开', '室内为单层，取餐通道最窄处约 75 cm'],
-    evidenceIds: ['ev004'], lastVerifiedAt: '2026-09-05', collectedBy: '志愿者-方', isTestData: false
+    evidenceIds: ['ev004'], lastVerifiedAt: '2026-09-05', collectedBy: '志愿者-方', dataStatus: 'demo', isTestData: true
   },
   {
     id: 'p004', name: '体育馆', category: '体育馆',
@@ -78,7 +78,7 @@ module.exports = [
       accessibleToilet: { has: false, location: '', status: 'unknown', note: '未勘察' },
       pathCondition: '', otherObstacles: ''
     },
-    steps: [], evidenceIds: [], lastVerifiedAt: '', collectedBy: '', isTestData: false,
+    steps: [], evidenceIds: [], lastVerifiedAt: '', collectedBy: '', dataStatus: 'demo', isTestData: true,
     pendingInspection: true
   },
   {
@@ -109,6 +109,6 @@ module.exports = [
       pathCondition: '平整', otherObstacles: ''
     },
     steps: ['到达实验楼北侧广场', '平坡进入北门', '进门右手边乘电梯上 3 楼'],
-    evidenceIds: ['ev005'], lastVerifiedAt: '2026-09-12', collectedBy: '志愿者-陈', isTestData: false
+    evidenceIds: ['ev005'], lastVerifiedAt: '2026-09-12', collectedBy: '志愿者-陈', dataStatus: 'demo', isTestData: true
   }
 ];

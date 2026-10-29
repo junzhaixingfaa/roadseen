@@ -32,7 +32,8 @@ const ELEVATOR_STATUS_VALUES = ['normal', 'fault', 'unknown'];
 const MEASUREMENTS = {
   stepCount: { min: 0, max: 30, integer: true },
   thresholdHeight: { min: 0, max: 50, integer: false },
-  doorWidth: { min: 30, max: 200, integer: false }
+  doorWidth: { min: 30, max: 200, integer: false },
+  minPassageWidth: { min: 30, max: 500, integer: false }
 };
 
 function text(value, maxLength) {
@@ -83,6 +84,11 @@ function toiletStatus(value) {
   return '';
 }
 
+function rampCondition(value) {
+  const s = text(value, 20);
+  return ['平缓', '较陡', '未知'].indexOf(s) >= 0 ? s : '';
+}
+
 function normalizeResult(stepKey, raw) {
   const step = STEP_MAP[stepKey] || null;
   const src = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
@@ -100,6 +106,9 @@ function normalizeResult(stepKey, raw) {
   if (status) observable.elevatorStatus = status;
   const doorType = text(observableSrc.doorType, 30);
   if (doorType) observable.doorType = doorType;
+  const ramp = rampCondition(observableSrc.rampCondition);
+  if (ramp) observable.rampCondition = ramp;
+  if (typeof observableSrc.needAssistToOpen === 'boolean') observable.needAssistToOpen = observableSrc.needAssistToOpen;
   const surface = text(observableSrc.surface, 80);
   if (surface) observable.surface = surface;
   const toilet = toiletStatus(observableSrc.toiletStatus);
@@ -177,5 +186,6 @@ module.exports = {
   labelsFromFlags,
   elevatorStatus,
   toiletStatus,
+  rampCondition,
   validateResult
 };

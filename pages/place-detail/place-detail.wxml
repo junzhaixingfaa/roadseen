@@ -7,6 +7,7 @@
     </view>
     <view class="hd-meta">{{place.address}}</view>
     <view class="hd-meta" wx:if="{{place.openTime}}">开放时间：{{place.openTime}}</view>
+    <view class="hd-meta">数据状态：{{dataStatusText}}</view>
   </view>
 
   <!-- 通行结果大卡 -->
@@ -23,7 +24,7 @@
     <reason-list reasons="{{reasons}}" />
     <view class="alts" wx:if="{{alternatives.length}}">
       <text class="muted">备选入口：</text>
-      <text class="alt" wx:for="{{alternatives}}" wx:key="id">{{item.name}}{{item.direction ? '（' + item.direction + '）' : ''}}<text class="alt-blocked" wx:if="{{item.blockedByWidth}}">过不去 · {{item.blockReason}}</text></text>
+      <text class="alt" wx:for="{{alternatives}}" wx:key="id">{{item.name}}{{item.direction ? '（' + item.direction + '）' : ''}} · {{item.resultText}}<text class="alt-blocked" wx:if="{{item.reasons.length}}"> · {{item.reasons[0]}}</text></text>
     </view>
   </view>
 
@@ -79,7 +80,7 @@
     <view class="rec-line"><text class="k">最近核验</text>{{place.lastVerifiedAt || '未知'}}</view>
     <view class="rec-line"><text class="k">采集人</text>{{place.collectedBy || '未知'}}</view>
     <view class="rec-line revision-link" bindtap="toggleRevisions"><text class="k">发布修订</text>{{revisions > 0 ? '共 ' + revisions + ' 次' : '暂无修订'}} <text class="revision-toggle">{{revisions > 0 ? (showRevisions ? '收起 ∧' : '查看记录 ›') : '待首次发布'}}</text></view>
-    <view class="rec-line"><text class="k">来源</text>志愿者现场采集 + AI 辅助识别</view>
+    <view class="rec-line"><text class="k">来源</text>{{dataStatusText === '实地核验' ? '志愿者实地采集并经人工审核' : '比赛原型演示数据'}}</view>
     <view class="revision-list" wx:if="{{showRevisions}}">
       <view class="revision-item" wx:for="{{revisionItems}}" wx:key="id">
         <view class="revision-head"><text class="revision-title">{{item.title}}</text><text class="revision-date">{{item.at}}</text></view>

@@ -23,6 +23,9 @@
 .ef { display: flex; align-items: center; padding: 12rpx 0; border-top: 1rpx solid #f2f3f5; }
 .ef-lab { width: 150rpx; color: #909399; font-size: 24rpx; }
 .ef-ipt { flex: 1; font-size: 26rpx; }
+.ef-picker { flex: 1; font-size: 26rpx; color: #27383F; }
+.source-tip { margin-top: 12rpx; color: #718089; font-size: 22rpx; line-height: 1.6; }
+.meta-card { border-color: #BFD9D6; }
 
 .it-unknown { font-size: 22rpx; color: #a06a10; margin-top: 8rpx; }
 .it-retake { font-size: 22rpx; color: #909399; margin-top: 4rpx; }
