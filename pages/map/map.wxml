@@ -8,7 +8,7 @@
   </view>
 
   <view class="topbar">
-    <view class="searchbox" bindtap="goSearch">搜索教学楼、食堂、图书馆</view>
+    <view class="searchbox" bindtap="goSearch">查看实地调研地点</view>
     <view class="filter-btn {{showFilter ? 'on' : ''}}" bindtap="toggleFilter">筛选</view>
   </view>
 
@@ -37,8 +37,8 @@
   <view class="fallback-map" wx:else>
     <view class="fallback-grid grid-a"></view>
     <view class="fallback-grid grid-b"></view>
-    <view class="fallback-title">校园地点示意</view>
-    <view class="fallback-sub">开发者工具地图服务未响应，真机仍使用真实地图</view>
+    <view class="fallback-title">实地调研点位示意</view>
+    <view class="fallback-sub">地图服务未响应，真机仍使用真实地图</view>
     <view class="fallback-pin pin-{{item.result}}" wx:for="{{filteredRows}}" wx:key="id" style="left:{{item.mapX}}%;top:{{item.mapY}}%;" data-id="{{item.id}}" bindtap="openPlace">
       <view class="pin-dot"></view><text>{{item.name}}</text>
     </view>
@@ -51,7 +51,7 @@
 
   <view class="map-controls">
     <view class="control-btn primary" bindtap="locateMe">◎ 定位到我</view>
-    <view class="control-btn" bindtap="chooseRealPlace">选择地点</view>
+    <view class="control-btn" bindtap="focusSurveyArea">调研点位</view>
     <view class="control-btn" bindtap="toggleList">地点列表</view>
   </view>
 

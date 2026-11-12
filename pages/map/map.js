@@ -1,16 +1,32 @@
-const placeService = require('../../services/placeService');
 const incidentService = require('../../services/incidentService');
 const userService = require('../../services/userService');
-const ruleEngine = require('../../services/ruleEngine');
 const storage = require('../../services/storage');
-const { getStatus } = require('../../utils/status');
-const campus = placeService.getCampusConfig();
+
+// 微信 map 使用 GCJ-02。地点坐标来自高德实地点位，首页优先使用用户当前位置。
+const SURVEY_CENTER = { latitude: 39.8358, longitude: 116.2873 };
+const SURVEY_SITES = [
+  {
+    id: 'survey-xinghuo', name: '星火科技大厦', category: '写字楼',
+    lat: 39.835420, lng: 116.285783, result: 'unknown',
+    summary: '有电梯和部分坡道，适用入口仍需确认', elev: true, toilet: false
+  },
+  {
+    id: 'survey-metro', name: '富丰桥地铁站', category: '地铁站',
+    lat: 39.836228, lng: 116.287023, result: 'pass',
+    summary: '轮椅建议走有电梯和坡道的A口或C口', elev: true, toilet: true
+  },
+  {
+    id: 'survey-rtmart', name: '大润发（科兴店）', category: '商场',
+    lat: 39.835570, lng: 116.289350, result: 'assist',
+    summary: '入口较顺畅，上楼和厕所设施仍需确认', elev: false, toilet: false
+  }
+];
 
 Page({
   data: {
-    lat: campus.center.latitude,
-    lng: campus.center.longitude,
-    scale: campus.defaultZoom,
+    lat: SURVEY_CENTER.latitude,
+    lng: SURVEY_CENTER.longitude,
+    scale: 16,
     mapH: 480,
     markers: [],
     rows: [],
@@ -20,7 +36,7 @@ Page({
     showList: false,
     loading: true,
     hasProfile: false,
-    userHint: '按通用轮椅条件计算',
+    userHint: '2026-11-01 实地采集 · 3个已定位点位',
     stats: { pass: 0, assist: 0, blocked: 0, unknown: 0 },
     locating: false,
     locationText: '定位到我',
@@ -39,6 +55,17 @@ Page({
     } catch (e) { /* ignore */ }
     this.setData({ showGuide: !storage.get('lj_onboarding_done', false) });
     this.startMapTimer();
+    this.tryInitialLocation();
+  },
+
+  tryInitialLocation() {
+    wx.getLocation({
+      type: 'gcj02',
+      success: res => this.setData({
+        lat: res.latitude, lng: res.longitude, scale: 16, locationText: '已定位到我'
+      }),
+      fail: () => { /* 保留富丰桥调研区域作为无权限时的默认视图 */ }
+    });
   },
 
   startMapTimer() {
@@ -68,21 +95,8 @@ Page({
         wx.reLaunch({ url: '/pages/login/login' });
         return;
       }
-      const profile = user && user.profile;
-      const [places, allIncidents] = await Promise.all([placeService.list(), incidentService.listAll()]);
-      const active = incidentService.activeByPlace();
-      const rows = places.map(p => {
-        const j = ruleEngine.judgeAccess(p, profile || null, active[p.id] || []);
-        return {
-          id: p.id, name: p.name, category: p.category,
-          result: j.result, summary: j.reasons[0] || '',
-          lat: p.location.latitude, lng: p.location.longitude,
-          elev: !!(p.facilities && p.facilities.elevator && p.facilities.elevator.has),
-          toilet: !!(p.facilities && p.facilities.accessibleToilet && p.facilities.accessibleToilet.has),
-          rec: p.entrances[0] || null,
-          statusText: getStatus(j.result).text
-        };
-      });
+      const allIncidents = await incidentService.listAll();
+      const rows = SURVEY_SITES.map(site => Object.assign({}, site));
       const latitudes = rows.map(r => r.lat);
       const longitudes = rows.map(r => r.lng);
       const minLat = Math.min.apply(null, latitudes);
@@ -98,8 +112,8 @@ Page({
       this.setData({
         rows,
         stats,
-        hasProfile: !!profile,
-        userHint: profile ? ('已按“' + (profile.device || '个人档案') + '”条件计算') : '按通用轮椅条件计算'
+        hasProfile: !!(user && user.profile),
+        userHint: '2026-11-01 实地采集 · 3个已定位点位'
       }, () => this.applyFilters());
       const messageIds = allIncidents.map(i => (i.status === 'resolved' ? 'r' : (i.status === 'active' ? 'a' : 'p')) + i.id);
       const unread = userService.unreadMessageCount(messageIds);
@@ -148,7 +162,7 @@ Page({
   pickFromList(e) {
     const r = this.data.filteredRows.find(item => item.id === e.currentTarget.dataset.id);
     if (!r) return;
-    wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + r.id });
+    this.openSurveyGallery();
   },
   locateMe() {
     if (this.data.locating) return;
@@ -175,6 +189,14 @@ Page({
           showCancel: false
         });
       }
+    });
+  },
+  focusSurveyArea() {
+    this.setData({
+      lat: SURVEY_CENTER.latitude,
+      lng: SURVEY_CENTER.longitude,
+      scale: 16,
+      locationText: '富丰桥调研区域'
     });
   },
   onMapReady() {
@@ -223,17 +245,18 @@ Page({
       }
     });
   },
-  goSearch() { wx.navigateTo({ url: '/pages/search/search' }); },
+  goSearch() { this.setData({ showList: true }); },
   onMarkerTap(e) {
     const markerId = Number(e.markerId);
     if (markerId === 9999) return;
     const r = this.data.filteredRows[markerId];
-    if (r) wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + r.id });
+    if (r) this.openSurveyGallery();
   },
   openPlace(e) {
     const id = e.currentTarget.dataset.id;
-    if (id) wx.navigateTo({ url: '/pages/place-detail/place-detail?id=' + id });
+    if (id) this.openSurveyGallery();
   },
+  openSurveyGallery() { wx.navigateTo({ url: '/field-survey/gallery' }); },
   dismissGuide() {
     storage.set('lj_onboarding_done', true);
     this.setData({ showGuide: false });

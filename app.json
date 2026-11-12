@@ -19,6 +19,7 @@
     "pages/relay-card/relay-card",
     "pages/admin/admin"
   ],
+  "subPackages": [{ "root": "field-survey", "pages": ["gallery"] }],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
@@ -41,7 +42,7 @@
   },
   "permission": {
     "scope.userLocation": {
-      "desc": "用于显示您附近及校园内的无障碍地点"
+      "desc": "用于显示您附近及实地调研的无障碍地点"
     }
   },
   "requiredPrivateInfos": ["getLocation", "chooseLocation"],

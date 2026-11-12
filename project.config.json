@@ -4,7 +4,7 @@
   "compileType": "miniprogram",
   "libVersion": "3.5.5",
   "miniprogramRoot": "./",
-  "description": "路见·校园无障碍信息平台（雏形）",
+  "description": "路见·无障碍出行信息共建平台",
   "setting": {
     "urlCheck": false,
     "es6": true,
