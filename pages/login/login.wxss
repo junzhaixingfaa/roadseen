@@ -1,4 +1,4 @@
-.login-page { min-height: 100vh; padding-bottom: 50rpx; background: #f2f6fa; }
+.login-page { min-height: 100vh; padding-bottom: 50rpx; background: #F7F4EE; }
 .login-hero { padding: 54rpx 42rpx 70rpx; color: #fff; }
 .brand { font-size: 54rpx; font-weight: 800; letter-spacing: 10rpx; }
 .slogan { margin-top: 18rpx; font-size: 34rpx; font-weight: 600; }
@@ -31,23 +31,23 @@
 .row-between { display: flex; align-items: center; justify-content: space-between; }
 
 /* 统一视觉升级 */
-.login-page { background: #F3F6F6; }
-.login-hero { padding: 46rpx 38rpx 76rpx; background: #103F4A; border-radius: 0 0 44rpx 44rpx; }
+.login-page { background: #F7F4EE; }
+.login-hero { padding: 46rpx 38rpx 76rpx; background: #13233D; border-radius: 0 0 44rpx 44rpx; }
 .brand-row { display: flex; align-items: center; gap: 16rpx; }
-.logo-mark { width: 64rpx; height: 64rpx; border-radius: 18rpx; color: #103F4A; background: #D9EEEA; font-size: 34rpx; font-weight: 800; line-height: 64rpx; text-align: center; }
+.logo-mark { width: 64rpx; height: 64rpx; border-radius: 18rpx; color: #13233D; background: #F6DAD0; font-size: 34rpx; font-weight: 800; line-height: 64rpx; text-align: center; }
 .brand { font-size: 44rpx; letter-spacing: 5rpx; }
-.eyebrow { margin-top: 16rpx; color: #A9D1CC; font-size: 18rpx; letter-spacing: 4rpx; }
+.eyebrow { margin-top: 16rpx; color: #D4DCE8; font-size: 18rpx; letter-spacing: 4rpx; }
 .slogan { margin-top: 20rpx; font-size: 36rpx; line-height: 1.35; }
-.hero-copy { color: #D4E5E3; }
-.login-card, .session-card { margin: 16rpx 28rpx 0; padding: 34rpx 30rpx; border: 1rpx solid #E0E8E8; border-radius: 28rpx; box-shadow: 0 18rpx 48rpx rgba(16, 63, 74, 0.12); }
-.mode-tabs { padding: 6rpx; border: none; border-radius: 14rpx; background: #F0F4F4; }
+.hero-copy { color: #D4DCE8; }
+.login-card, .session-card { margin: 16rpx 28rpx 0; padding: 34rpx 30rpx; border: 1rpx solid #E7E2DA; border-radius: 28rpx; box-shadow: 0 18rpx 48rpx rgba(16, 63, 74, 0.12); }
+.mode-tabs { padding: 6rpx; border: none; border-radius: 14rpx; background: #EEE9E0; }
 .mode { padding: 15rpx 0; border-radius: 11rpx; font-size: 27rpx; }
-.mode.on { color: #176B70; border: none; background: #FFFFFF; box-shadow: 0 4rpx 12rpx rgba(16,63,74,.08); }
+.mode.on { color: #1D3557; border: none; background: #FFFFFF; box-shadow: 0 4rpx 12rpx rgba(16,63,74,.08); }
 .label { color: #33454C; }
-.input { padding: 20rpx 22rpx; border-color: #DCE5E5; border-radius: 14rpx; background: #F8FAFA; }
-.show-pass, .demo-actions { color: #176B70; }
-.submit, .primary-small { min-height: 88rpx; border-radius: 16rpx; background: #176B70; box-shadow: 0 10rpx 22rpx rgba(23,107,112,.2); }
-.demo-box { border: 1rpx solid #D8E8E6; border-radius: 16rpx; background: #F0F7F6; }
-.demo-title { color: #176B70; }
-.feature-icon { color: #176B70; background: #E2F0EE; }
-.text-small { color: #176B70; background: #E7F2F2; }
+.input { padding: 20rpx 22rpx; border-color: #E7E2DA; border-radius: 14rpx; background: #FCFAF6; }
+.show-pass, .demo-actions { color: #1D3557; }
+.submit, .primary-small { min-height: 88rpx; border-radius: 16rpx; background: #1D3557; box-shadow: 0 10rpx 22rpx rgba(23,107,112,.2); }
+.demo-box { border: 1rpx solid #E7E2DA; border-radius: 16rpx; background: #F4F0E8; }
+.demo-title { color: #1D3557; }
+.feature-icon { color: #1D3557; background: #E9EEF5; }
+.text-small { color: #1D3557; background: #E9EEF5; }

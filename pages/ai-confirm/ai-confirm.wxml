@@ -26,11 +26,11 @@
     </view>
     <view class="ef">
       <text class="ef-lab">到目标需电梯</text>
-      <switch color="#176B70" checked="{{needElevatorToTarget}}" data-f="needElevatorToTarget" bindchange="editMeta" />
+      <switch color="#1D3557" checked="{{needElevatorToTarget}}" data-f="needElevatorToTarget" bindchange="editMeta" />
     </view>
     <view class="ef">
       <text class="ef-lab">厕所为必要条件</text>
-      <switch color="#176B70" checked="{{needAccessibleToilet}}" data-f="needAccessibleToilet" bindchange="editMeta" />
+      <switch color="#1D3557" checked="{{needAccessibleToilet}}" data-f="needAccessibleToilet" bindchange="editMeta" />
     </view>
     <view class="source-tip">实地采集审核通过后标记为“已核验”；调试流程请选择“演示数据”。</view>
   </view>
@@ -79,7 +79,7 @@
       </view>
       <view class="ef" wx:if="{{item.key === 'door'}}">
         <text class="ef-lab">需协助开门</text>
-        <switch color="#176B70" checked="{{item.needAssistToOpen}}" data-i="{{itemIndex}}" data-f="needAssistToOpen" bindchange="editField" />
+        <switch color="#1D3557" checked="{{item.needAssistToOpen}}" data-i="{{itemIndex}}" data-f="needAssistToOpen" bindchange="editField" />
       </view>
       <view class="ef" wx:if="{{item.key === 'path'}}">
         <text class="ef-lab">通道最窄处</text>

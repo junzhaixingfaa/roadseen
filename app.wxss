@@ -3,15 +3,16 @@ page {
   --c-assist: #D88921;
   --c-blocked: #C84B4B;
   --c-unknown: #77838F;
-  --brand: #176B70;
-  --brand-deep: #103F4A;
-  --brand-soft: #E7F2F2;
-  --ink: #1D2B32;
-  --muted: #718089;
-  --line: #E3EAEC;
+  --brand: #1D3557;
+  --brand-deep: #13233D;
+  --brand-soft: #E9EEF5;
+  --accent: #F16B4F;
+  --ink: #17243A;
+  --muted: #727887;
+  --line: #E7E2DA;
   --surface: #FFFFFF;
-  background: #F3F6F6;
-  color: #1D2B32;
+  background: #F7F4EE;
+  color: #17243A;
   font-size: 28rpx;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -26,7 +27,7 @@ button::after { border: none; }
 /* 通用卡片 */
 .card {
   background: #ffffff;
-  border: 1rpx solid #E3EAEC;
+  border: 1rpx solid #E7E2DA;
   border-radius: 22rpx;
   padding: 26rpx;
   margin: 20rpx;
@@ -34,7 +35,7 @@ button::after { border: none; }
 }
 
 .muted {
-  color: #718089;
+  color: #727887;
   font-size: 24rpx;
 }
 
@@ -79,14 +80,14 @@ button::after { border: none; }
   font-weight: 600;
   padding: 20rpx 0;
   text-align: center;
-  background: #176B70;
+  background: #1D3557;
   color: #ffffff;
-  box-shadow: 0 8rpx 18rpx rgba(23, 107, 112, 0.16);
+  box-shadow: 0 8rpx 18rpx rgba(29, 53, 87, 0.16);
 }
 .btn-ghost {
   background: #ffffff;
-  color: #176B70;
-  border: 1rpx solid #B7D3D4;
+  color: #1D3557;
+  border: 1rpx solid #BBC6D5;
   box-shadow: none;
 }
 .btn-block {

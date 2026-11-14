@@ -1,4 +1,4 @@
-.fav { min-height: 100vh; background: #f5f6f8; padding: 20rpx 0 40rpx; }
+.fav { min-height: 100vh; background: #F7F4EE; padding: 20rpx 0 40rpx; }
 .fav .card { margin: 0 24rpx 20rpx; }
 .name { font-size: 32rpx; color: #303133; font-weight: 600; }
 .addr { margin-top: 10rpx; font-size: 26rpx; }

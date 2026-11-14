@@ -1,4 +1,4 @@
-.admin { min-height: 100vh; background: #f5f6f8; padding-bottom: 40rpx; }
+.admin { min-height: 100vh; background: #F7F4EE; padding-bottom: 40rpx; }
 .tabs { display: flex; background: #ffffff; border-bottom: 1rpx solid #ebedf0; position: sticky; top: 0; z-index: 5; }
 .tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 24rpx; color: #606266; }
 .tab.on { color: var(--brand); font-weight: 600; border-bottom: 4rpx solid var(--brand); }
@@ -7,7 +7,7 @@
 .item:active { background: #f0f2f5; }
 .it-name { font-size: 30rpx; color: #303133; font-weight: 600; }
 .it-sub { margin-top: 10rpx; font-size: 25rpx; line-height: 1.5; }
-.review-note { margin-top: 12rpx; padding: 10rpx 14rpx; border-radius: 8rpx; background: #f5f6f8; color: #606266; font-size: 23rpx; }
+.review-note { margin-top: 12rpx; padding: 10rpx 14rpx; border-radius: 8rpx; background: #F7F4EE; color: #606266; font-size: 23rpx; }
 .review-kind { margin-top: 14rpx; color: #303133; font-size: 26rpx; }
 .inspection-scroll { width: 100%; margin-top: 16rpx; }
 .inspection-fields { display: flex; gap: 14rpx; padding-bottom: 6rpx; }
@@ -34,27 +34,27 @@
 .denied-title { font-size: 34rpx; color: #303133; font-weight: 600; margin-bottom: 20rpx; }
 .denied .btn { margin-top: 40rpx; }
 
-.admin { background: #F3F6F6; }
-.tabs { margin: 14rpx 16rpx 0; padding: 6rpx; border: 1rpx solid #E1E8E8; border-radius: 18rpx; box-shadow: 0 6rpx 18rpx rgba(27,61,68,.05); }
-.tab { padding: 18rpx 4rpx; border-radius: 12rpx; color: #718089; font-size: 21rpx; }
-.tab.on { color: #FFFFFF; border: none; background: #176B70; }
+.admin { background: #F7F4EE; }
+.tabs { margin: 14rpx 16rpx 0; padding: 6rpx; border: 1rpx solid #E7E2DA; border-radius: 18rpx; box-shadow: 0 6rpx 18rpx rgba(27,61,68,.05); }
+.tab { padding: 18rpx 4rpx; border-radius: 12rpx; color: #727887; font-size: 21rpx; }
+.tab.on { color: #FFFFFF; border: none; background: #1D3557; }
 .admin .card { margin: 14rpx 20rpx 0; padding: 26rpx; }
-.item:active { background: #F7FAFA; }
-.it-name { color: #1D2B32; }
-.review-note { border: 1rpx solid #E1E8E8; border-radius: 12rpx; background: #F7FAFA; }
-.inspection-field { border-color: #DDE6E6; border-radius: 16rpx; background: #F7FAFA; }
+.item:active { background: #FCFAF6; }
+.it-name { color: #17243A; }
+.review-note { border: 1rpx solid #E7E2DA; border-radius: 12rpx; background: #FCFAF6; }
+.inspection-field { border-color: #E7E2DA; border-radius: 16rpx; background: #FCFAF6; }
 .mini { border-radius: 14rpx; }
-.mini-ok { background: #176B70; }
+.mini-ok { background: #1D3557; }
 .mini-no { color: #617078; background: #EDF1F1; }
 .pill-pending { background: #D88921; }
 .pill-approved { background: #248A5A; }
 .pill-rejected { background: #77838F; }
 
-.dashboard { margin: 16rpx 20rpx 14rpx; padding: 26rpx 24rpx 22rpx; border-radius: 24rpx; color: #FFFFFF; background: linear-gradient(135deg, #103F4A, #176B70); box-shadow: 0 12rpx 28rpx rgba(16,63,74,.16); }
+.dashboard { margin: 16rpx 20rpx 14rpx; padding: 26rpx 24rpx 22rpx; border-radius: 24rpx; color: #FFFFFF; background: linear-gradient(135deg, #13233D, #1D3557); box-shadow: 0 12rpx 28rpx rgba(16,63,74,.16); }
 .dashboard-head { display: flex; align-items: flex-start; justify-content: space-between; }
-.dashboard-title { font-size: 32rpx; font-weight: 700; }.dashboard-copy { margin-top: 5rpx; color: #CDE2DF; font-size: 21rpx; }
-.live-dot { padding: 5rpx 12rpx; border-radius: 16rpx; color: #D9EEEA; background: rgba(255,255,255,.12); font-size: 19rpx; }
+.dashboard-title { font-size: 32rpx; font-weight: 700; }.dashboard-copy { margin-top: 5rpx; color: #D4DCE8; font-size: 21rpx; }
+.live-dot { padding: 5rpx 12rpx; border-radius: 16rpx; color: #F6DAD0; background: rgba(255,255,255,.12); font-size: 19rpx; }
 .dashboard-grid { display: flex; margin-top: 22rpx; padding-top: 20rpx; border-top: 1rpx solid rgba(255,255,255,.14); }
-.metric { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5rpx; color: #CDE2DF; font-size: 18rpx; }
+.metric { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5rpx; color: #D4DCE8; font-size: 18rpx; }
 .metric + .metric::before { content: ''; position: absolute; left: 0; top: 5rpx; bottom: 5rpx; width: 1rpx; background: rgba(255,255,255,.16); }
 .metric text:first-child { color: #FFFFFF; font-size: 34rpx; font-weight: 800; }

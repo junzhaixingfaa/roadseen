@@ -1,13 +1,13 @@
 .ec {
   width: 240rpx;
   flex-shrink: 0;
-  background: #F7FAFA;
-  border: 1rpx solid #E1E8E8;
+  background: #FCFAF6;
+  border: 1rpx solid #E7E2DA;
   border-radius: 18rpx;
   overflow: hidden;
   margin-right: 16rpx;
 }
-.ec-img { width: 240rpx; height: 180rpx; background: #E8EEEE; display: block; }
+.ec-img { width: 240rpx; height: 180rpx; background: #E7E2DA; display: block; }
 .ec-type { font-size: 24rpx; font-weight: 600; padding: 8rpx 12rpx 0; }
-.ec-tags { font-size: 22rpx; color: #176B70; padding: 2rpx 12rpx; }
-.ec-meta { font-size: 20rpx; color: #718089; padding: 2rpx 12rpx 10rpx; }
+.ec-tags { font-size: 22rpx; color: #1D3557; padding: 2rpx 12rpx; }
+.ec-meta { font-size: 20rpx; color: #727887; padding: 2rpx 12rpx 10rpx; }

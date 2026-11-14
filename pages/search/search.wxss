@@ -1,4 +1,4 @@
-.search-page { min-height: 100vh; background: #f5f6f8; }
+.search-page { min-height: 100vh; background: #F7F4EE; }
 
 .search-bar { padding: 20rpx; background: #ffffff; }
 .ipt {
@@ -34,13 +34,13 @@
 .r-name { font-size: 32rpx; font-weight: 600; }
 .r-sum { margin-top: 8rpx; font-size: 24rpx; color: #909399; }
 
-.search-page { background: #F3F6F6; padding-bottom: 30rpx; }
-.search-bar { padding: 22rpx 20rpx 14rpx; background: #F3F6F6; }
-.ipt { padding: 19rpx 24rpx; border: 1rpx solid #DDE6E6; border-radius: 18rpx; background: #FFFFFF; box-shadow: 0 6rpx 18rpx rgba(27,61,68,.05); }
-.filters { padding: 8rpx 20rpx 16rpx; background: #F3F6F6; overflow-x: auto; }
-.chip { flex: none; border-radius: 22rpx; color: #55666C; background: #E8EEEE; }
-.chip.on { color: #fff; background: #176B70; }
-.result-meta { padding: 8rpx 24rpx; color: #718089; font-size: 23rpx; }
-.result-item { margin: 14rpx 20rpx; padding: 26rpx; border: 1rpx solid #E1E8E8; border-radius: 22rpx; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.05); }
-.r-name { color: #1D2B32; }
-.r-sum { color: #718089; }
+.search-page { background: #F7F4EE; padding-bottom: 30rpx; }
+.search-bar { padding: 22rpx 20rpx 14rpx; background: #F7F4EE; }
+.ipt { padding: 19rpx 24rpx; border: 1rpx solid #E7E2DA; border-radius: 18rpx; background: #FFFFFF; box-shadow: 0 6rpx 18rpx rgba(27,61,68,.05); }
+.filters { padding: 8rpx 20rpx 16rpx; background: #F7F4EE; overflow-x: auto; }
+.chip { flex: none; border-radius: 22rpx; color: #55666C; background: #E7E2DA; }
+.chip.on { color: #fff; background: #1D3557; }
+.result-meta { padding: 8rpx 24rpx; color: #727887; font-size: 23rpx; }
+.result-item { margin: 14rpx 20rpx; padding: 26rpx; border: 1rpx solid #E7E2DA; border-radius: 22rpx; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.05); }
+.r-name { color: #17243A; }
+.r-sum { color: #727887; }

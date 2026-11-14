@@ -1,5 +1,5 @@
-.ps { min-height: 100vh; background: #f5f6f8; padding: 20rpx 0; }
-.onboard { margin: -20rpx 0 20rpx; padding: 30rpx 26rpx; color: #fff; background: linear-gradient(135deg, #103F4A, #176B70); }
+.ps { min-height: 100vh; background: #F7F4EE; padding: 20rpx 0; }
+.onboard { margin: -20rpx 0 20rpx; padding: 30rpx 26rpx; color: #fff; background: linear-gradient(135deg, #13233D, #1D3557); }
 .onboard-step { font-size: 22rpx; opacity: 0.82; }
 .onboard-title { margin-top: 8rpx; font-size: 36rpx; font-weight: 700; }
 .onboard-copy { margin-top: 10rpx; font-size: 23rpx; line-height: 1.55; opacity: 0.9; }
@@ -19,14 +19,14 @@
 .save { margin: 32rpx 24rpx; }
 .link { text-align: center; color: #909399; font-size: 26rpx; padding: 24rpx; }
 
-.ps { background: #F3F6F6; }
-.onboard { margin: -20rpx 0 24rpx; padding: 34rpx 28rpx; background: #103F4A; }
-.onboard-step { color: #9ECBC5; letter-spacing: 2rpx; }
-.onboard-copy { color: #D5E7E4; opacity: 1; }
-.intro { margin: 12rpx 20rpx; padding: 20rpx 22rpx; border: 1rpx solid #D4E6E4; border-radius: 16rpx; color: #315F61; background: #EAF4F3; }
+.ps { background: #F7F4EE; }
+.onboard { margin: -20rpx 0 24rpx; padding: 34rpx 28rpx; background: #13233D; }
+.onboard-step { color: #F8C9B9; letter-spacing: 2rpx; }
+.onboard-copy { color: #D4DCE8; opacity: 1; }
+.intro { margin: 12rpx 20rpx; padding: 20rpx 22rpx; border: 1rpx solid #D4E6E4; border-radius: 16rpx; color: #1D3557; background: #EAF4F3; }
 .ps .card { margin: 14rpx 20rpx; padding: 4rpx 26rpx; }
-.field { padding: 26rpx 0; border-color: #E7ECEC; }
+.field { padding: 26rpx 0; border-color: #E7E2DA; }
 .lab { color: #283940; }
-.pk { color: #176B70; font-weight: 600; }
-.ipt { color: #176B70; }
+.pk { color: #1D3557; font-weight: 600; }
+.ipt { color: #1D3557; }
 .save { margin: 28rpx 20rpx; }

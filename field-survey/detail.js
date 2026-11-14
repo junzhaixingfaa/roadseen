@@ -29,6 +29,10 @@ Page({
     });
   },
 
+  goAI() {
+    wx.switchTab({ url: '/pages/quick-check/quick-check' });
+  },
+
   preview(event) {
     const site = this.data.site;
     if (!site) return;

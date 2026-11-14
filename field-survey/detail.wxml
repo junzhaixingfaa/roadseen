@@ -1,24 +1,15 @@
 <view class="page" wx:if="{{site}}">
-  <image class="hero" src="{{site.hero}}" mode="aspectFill" bindtap="preview" data-src="{{site.hero}}" />
-
+  <view class="hero-wrap"><image class="hero" src="{{site.hero}}" mode="aspectFill" bindtap="preview" data-src="{{site.hero}}" /><view class="hero-count">点击查看现场大图</view></view>
   <view class="place-card">
-    <view class="meta">{{site.category}} · 2026-11-01 实地采集</view>
-    <view class="title">{{site.name}}</view>
-    <view class="address">{{site.address}}</view>
-    <view class="summary">{{site.summary}}</view>
-    <button class="location-button" bindtap="openLocation">在真实地图中查看与导航</button>
+    <view class="meta-row"><view class="meta">{{site.category}} · 2026-11-01 实地采集</view><status-tag code="{{site.result}}" /></view>
+    <view class="title">{{site.name}}</view><view class="address">{{site.address}}</view><view class="summary">{{site.summary}}</view>
+    <view class="detail-actions"><button class="ai-button" bindtap="goAI">AI 拍照识别</button><button class="location-button" bindtap="openLocation">地图导航</button></view>
   </view>
-
-  <view class="section-title">现场情况 · 点击照片查看大图</view>
+  <view class="ai-tip" bindtap="goAI"><view class="ai-tip-mark">AI</view><view class="ai-tip-copy"><view class="ai-tip-title">现场情况和照片不一致？</view><view class="ai-tip-desc">现在拍一张，识别台阶、坡道、电梯和临时障碍</view></view><view class="ai-tip-arrow">›</view></view>
+  <view class="section-heading"><view class="section-title">现场记录</view><view class="section-sub">按区域整理，点击任意照片可查看大图</view></view>
   <view class="group" wx:for="{{site.groups}}" wx:key="title">
-    <view class="group-title">{{item.title}}</view>
-    <view class="note">{{item.note}}</view>
-    <image wx:for="{{item.images}}" wx:for-item="src" wx:key="*this" src="{{src}}" mode="widthFix" lazy-load bindtap="preview" data-src="{{src}}" />
+    <view class="group-title">{{item.title}}</view><view class="note">{{item.note}}</view>
+    <view class="photo-grid {{item.images.length === 1 ? 'single' : ''}}"><image wx:for="{{item.images}}" wx:for-item="src" wx:key="*this" src="{{src}}" mode="aspectFill" lazy-load bindtap="preview" data-src="{{src}}" /></view>
   </view>
-
-  <view class="advice-card">
-    <view class="group-title">通行建议</view>
-    <view class="note">{{site.advice}}</view>
-    <view class="disclaimer">信息反映采集当日现场情况，设施状态变化时请以现场为准。</view>
-  </view>
+  <view class="advice-card"><view class="advice-label">出行前建议</view><view class="advice-text">{{site.advice}}</view><view class="disclaimer">现场情况可能变化，请以实际设施状态为准。</view></view>
 </view>

@@ -1,10 +1,10 @@
-.page { min-height: 100vh; box-sizing: border-box; padding: 32rpx 28rpx 70rpx; background: #F3F6F6; color: #243536; }
+.page { min-height: 100vh; box-sizing: border-box; padding: 32rpx 28rpx 70rpx; background: #F7F4EE; color: #243536; }
 .title { font-size: 40rpx; font-weight: 750; }
 .intro { margin: 16rpx 0 28rpx; color: #617273; font-size: 25rpx; line-height: 1.65; }
 .site-card { overflow: hidden; margin-top: 24rpx; border: 1rpx solid #DEE7E7; border-radius: 26rpx; background: #FFFFFF; box-shadow: 0 8rpx 24rpx rgba(20,55,62,.06); }
 .site-cover { display: block; width: 100%; height: 300rpx; background: #E4ECEC; }
 .site-copy { padding: 25rpx; }
-.site-meta { color: #176B70; font-size: 20rpx; font-weight: 650; }
+.site-meta { color: #1D3557; font-size: 20rpx; font-weight: 650; }
 .heading { margin-top: 7rpx; color: #263B41; font-size: 32rpx; font-weight: 700; }
 .note { margin-top: 12rpx; color: #617273; font-size: 24rpx; line-height: 1.65; }
-.more { margin-top: 20rpx; color: #176B70; font-size: 23rpx; font-weight: 650; }
+.more { margin-top: 20rpx; color: #1D3557; font-size: 23rpx; font-weight: 650; }

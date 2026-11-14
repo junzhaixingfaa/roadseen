@@ -1,13 +1,13 @@
-.subs-page { min-height: 100vh; padding: 20rpx 0 50rpx; background: #F3F6F6; }
-.subs-hero { margin: 0 20rpx 20rpx; padding: 28rpx; border-radius: 24rpx; color: #FFFFFF; background: #103F4A; }
+.subs-page { min-height: 100vh; padding: 20rpx 0 50rpx; background: #F7F4EE; }
+.subs-hero { margin: 0 20rpx 20rpx; padding: 28rpx; border-radius: 24rpx; color: #FFFFFF; background: #13233D; }
 .hero-title { font-size: 34rpx; font-weight: 700; }
-.hero-copy { margin-top: 8rpx; color: #CDE2DF; font-size: 23rpx; line-height: 1.55; }
-.hero-count { margin-top: 22rpx; padding-top: 18rpx; border-top: 1rpx solid rgba(255,255,255,.14); color: #CDE2DF; font-size: 22rpx; }
+.hero-copy { margin-top: 8rpx; color: #D4DCE8; font-size: 23rpx; line-height: 1.55; }
+.hero-count { margin-top: 22rpx; padding-top: 18rpx; border-top: 1rpx solid rgba(255,255,255,.14); color: #D4DCE8; font-size: 22rpx; }
 .hero-count text { margin: 0 6rpx; color: #FFFFFF; font-size: 34rpx; font-weight: 700; }
-.sub-card { margin: 0 20rpx 16rpx; padding: 26rpx; border: 1rpx solid #E1E8E8; border-radius: 22rpx; background: #FFFFFF; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.04); }
-.sub-card:active { background: #F7FAFA; }
+.sub-card { margin: 0 20rpx 16rpx; padding: 26rpx; border: 1rpx solid #E7E2DA; border-radius: 22rpx; background: #FFFFFF; box-shadow: 0 8rpx 22rpx rgba(27,61,68,.04); }
+.sub-card:active { background: #FCFAF6; }
 .sub-top, .sub-bottom { display: flex; align-items: center; justify-content: space-between; }
-.sub-name { color: #1D2B32; font-size: 31rpx; font-weight: 700; }
+.sub-name { color: #17243A; font-size: 31rpx; font-weight: 700; }
 .sub-cat { margin-top: 5rpx; color: #819096; font-size: 22rpx; }
 .sub-summary { margin-top: 18rpx; color: #53646B; font-size: 24rpx; line-height: 1.55; }
 .sub-bottom { margin-top: 20rpx; padding-top: 16rpx; border-top: 1rpx solid #EDF1F1; }
@@ -15,6 +15,6 @@
 .alert.has { color: #C84B4B; font-weight: 600; }
 .unsubscribe { padding: 8rpx 0 8rpx 18rpx; color: #819096; font-size: 22rpx; }
 .empty { padding: 130rpx 60rpx; text-align: center; }
-.empty-icon { width: 90rpx; height: 90rpx; margin: 0 auto 24rpx; border-radius: 50%; color: #176B70; background: #D9EEEA; font-size: 42rpx; line-height: 90rpx; }
-.empty-title { color: #1D2B32; font-size: 32rpx; font-weight: 700; }
-.empty-desc { margin: 18rpx 0 40rpx; color: #718089; font-size: 25rpx; line-height: 1.65; }
+.empty-icon { width: 90rpx; height: 90rpx; margin: 0 auto 24rpx; border-radius: 50%; color: #1D3557; background: #F6DAD0; font-size: 42rpx; line-height: 90rpx; }
+.empty-title { color: #17243A; font-size: 32rpx; font-weight: 700; }
+.empty-desc { margin: 18rpx 0 40rpx; color: #727887; font-size: 25rpx; line-height: 1.65; }

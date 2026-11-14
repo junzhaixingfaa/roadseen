@@ -22,14 +22,14 @@
   "subPackages": [{ "root": "field-survey", "pages": ["gallery", "detail"] }],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "#F7F4EE",
     "navigationBarTitleText": "路见",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f5f6f8"
+    "backgroundColor": "#F7F4EE"
   },
   "tabBar": {
     "color": "#9aa0a6",
-    "selectedColor": "#176B70",
+    "selectedColor": "#1D3557",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
