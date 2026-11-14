@@ -15,11 +15,38 @@
   </view>
 
   <view class="section-head">
-    <view class="section-title-main">地图</view>
+    <view><view class="section-title-main">富丰桥实地地图</view><view class="section-desc">星火科技大厦、富丰桥地铁站、大润发科兴店</view></view>
   </view>
 
-  <!-- 预留真实地图区域，接入地图时替换此容器。 -->
-  <view class="map"></view>
+  <map
+    wx:if="{{!mapError}}"
+    id="m"
+    class="map"
+    longitude="{{lng}}"
+    latitude="{{lat}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    include-points="{{surveyPoints}}"
+    show-location="{{true}}"
+    enable-poi="{{true}}"
+    enable-building="{{true}}"
+    bindupdated="onMapReady"
+    binderror="onMapError"
+    bindmarkertap="onMarkerTap"
+    bindcallouttap="onMarkerTap"
+  ></map>
+  <view class="map-toolbar" wx:if="{{!mapError}}">
+    <view class="map-button primary" bindtap="locateMe">定位到我</view>
+    <view class="map-button" bindtap="focusSurveyArea">查看三个点位</view>
+  </view>
+  <view class="map-pending" wx:else>
+    <view class="pending-icon">⌖</view>
+    <view>
+      <view class="pending-title">地图暂时没有加载出来</view>
+      <view class="pending-desc">请检查网络后重新加载</view>
+      <view class="pending-retry" bindtap="retryMap">重新加载地图</view>
+    </view>
+  </view>
 
   <view class="place-list" id="placeList">
     <view class="place-row" wx:for="{{rows}}" wx:key="id" data-id="{{item.id}}" bindtap="pickFromList">
