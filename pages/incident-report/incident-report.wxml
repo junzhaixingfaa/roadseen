@@ -6,13 +6,16 @@
   </view>
   <view class="card">
     <view class="section-title">上报地点</view>
-    <picker mode="selector" range="{{places}}" range-key="name" value="{{placeIndex}}" bindchange="onPlace">
-      <view class="picker-row">
-        <text class="label">地点</text>
-        <text class="value">{{places[placeIndex].name || '请选择'}}</text>
-        <text class="arrow">›</text>
+    <view class="place-input-row">
+      <text class="place-pin">⌖</text>
+      <input class="place-input" value="{{placeName}}" placeholder="填写商场、地铁站、写字楼等地点" bindinput="onPlaceInput" bindblur="onPlaceBlur" confirm-type="done" />
+    </view>
+    <view class="place-help">可自由填写，也可选择已实地调研的地点</view>
+    <view class="quick-places">
+      <view class="quick-place {{placeId === item.id ? 'active' : ''}}" wx:for="{{quickPlaces}}" wx:key="id" data-id="{{item.id}}" bindtap="chooseQuickPlace">
+        <text>{{item.name}}</text><text class="quick-category">{{item.category}}</text>
       </view>
-    </picker>
+    </view>
   </view>
 
   <view class="card">
@@ -28,7 +31,7 @@
 
   <view class="card">
     <view class="section-title">补充说明</view>
-    <textarea class="desc" placeholder="请描述现场情况，例如电梯停运、通道被占用等" value="{{description}}" bindinput="onDesc" maxlength="200"></textarea>
+    <textarea class="desc" placeholder="请描述现场情况，例如电梯停运、通道被占用等" value="{{description}}" bindinput="onDescInput" bindblur="onDescBlur" maxlength="200"></textarea>
   </view>
 
   <view class="card">

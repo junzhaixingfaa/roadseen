@@ -14,6 +14,7 @@ const SURVEY_SITES = surveyData.sites.map((site, markerId) => ({
   lng: site.longitude,
   result: site.result,
   summary: site.shortSummary,
+  hero: site.hero,
   elev: site.elev,
   toilet: site.toilet
 }));
@@ -24,12 +25,13 @@ Page({
     lng: SURVEY_CENTER.longitude,
     scale: 16,
     mapH: 480,
+    surveyPoints: SURVEY_SITES.map(site => ({ latitude: site.lat, longitude: site.lng })),
     markers: [],
     rows: [],
     filteredRows: [],
     f: { hasElevator: false, hasToilet: false, onlyPass: false },
     showFilter: false,
-    showList: false,
+    showList: true,
     loading: true,
     hasProfile: false,
     userHint: '2026-11-01 实地采集 · 3个已定位点位',
@@ -131,11 +133,17 @@ Page({
     const f = Object.assign({}, this.data.f, { [k]: !this.data.f[k] });
     this.setData({ f }, () => this.applyFilters());
   },
-  toggleList() { this.setData({ showList: !this.data.showList }); },
+  toggleList() {
+    if (this.data.showList) {
+      this.setData({ showList: false });
+      return;
+    }
+    this.showSiteList();
+  },
   goQuickCheck() { wx.switchTab({ url: '/pages/quick-check/quick-check' }); },
   reportIncident() { wx.switchTab({ url: '/pages/incident-report/incident-report' }); },
   pickFromList(e) {
-    const r = this.data.filteredRows.find(item => item.id === e.currentTarget.dataset.id);
+    const r = this.data.rows.find(item => item.id === e.currentTarget.dataset.id);
     if (!r) return;
     this.openSurveyDetail(r.id);
   },
@@ -172,7 +180,15 @@ Page({
       lng: SURVEY_CENTER.longitude,
       scale: 16,
       locationText: '富丰桥调研区域'
+    }, () => {
+      if (this.mapCtx && typeof this.mapCtx.includePoints === 'function') {
+        this.mapCtx.includePoints({
+          points: this.data.rows.map(item => ({ latitude: item.lat, longitude: item.lng })),
+          padding: [46, 46, 46, 46]
+        });
+      }
     });
+    wx.showToast({ title: '已显示3个调研点位', icon: 'none' });
   },
   onMapReady() {
     if (this.mapLoadTimer) clearTimeout(this.mapLoadTimer);
@@ -220,7 +236,12 @@ Page({
       }
     });
   },
-  goSearch() { this.setData({ showList: true }); },
+  goSearch() { this.showSiteList(); },
+  showSiteList() {
+    this.setData({ showList: true }, () => {
+      wx.pageScrollTo({ selector: '#placeList', duration: 260 });
+    });
+  },
   onMarkerTap(e) {
     const markerId = Number(e.markerId);
     if (markerId === 9999) return;

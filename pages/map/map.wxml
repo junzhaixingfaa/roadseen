@@ -1,100 +1,48 @@
 <view class="map-page">
-  <view class="map-head">
-    <view>
-      <view class="map-title">无障碍地图</view>
-      <view class="map-sub">{{userHint}}</view>
-    </view>
+  <view class="page-head">
+    <view><view class="page-title">路见·无障碍通行</view><view class="page-sub">实地信息，让每一次出门更有把握</view></view>
     <view class="report-link" bindtap="reportIncident">上报障碍</view>
   </view>
 
-  <view class="topbar">
-    <view class="searchbox" bindtap="goSearch">查看实地调研地点</view>
-    <view class="filter-btn {{showFilter ? 'on' : ''}}" bindtap="toggleFilter">筛选</view>
-  </view>
-
-  <view class="filters" wx:if="{{showFilter}}">
-    <view class="chip {{f.hasElevator ? 'on' : ''}}" data-k="hasElevator" bindtap="onChip">有电梯</view>
-    <view class="chip {{f.hasToilet ? 'on' : ''}}" data-k="hasToilet" bindtap="onChip">有无障碍厕所</view>
-    <view class="chip {{f.onlyPass ? 'on' : ''}}" data-k="onlyPass" bindtap="onChip">仅可独立通过</view>
-  </view>
-
-  <map
-      wx:if="{{!mapError}}"
-      id="m"
-      class="map"
-      style="height: {{mapH}}px;"
-      longitude="{{lng}}"
-      latitude="{{lat}}"
-      scale="{{scale}}"
-      markers="{{markers}}"
-      show-location="{{true}}"
-      bindupdated="onMapReady"
-      binderror="onMapError"
-      bindmarkertap="onMarkerTap"
-      bindcallouttap="onMarkerTap"
-  ></map>
-
-  <view class="map-error" style="height: {{mapH}}px;" wx:else>
-    <view class="map-error-title">真实地图暂时无法加载</view>
-    <view class="map-error-copy">请检查网络后重试，地点列表和现场资料仍可正常查看。</view>
-    <view class="retry-map" bindtap="retryMap">重新加载地图</view>
-  </view>
-
-  <view class="map-load-note" wx:if="{{!mapLoaded && !mapError}}">
-    {{mapSlow ? '真实地图加载较慢，请稍候…' : '正在加载真实地图…'}}
-  </view>
-
-  <view class="map-controls">
-    <view class="control-btn primary" bindtap="locateMe">◎ 定位到我</view>
-    <view class="control-btn" bindtap="focusSurveyArea">调研点位</view>
-    <view class="control-btn" bindtap="toggleList">地点列表</view>
-  </view>
-
-  <view class="legend-row">
-    <view class="lg"><view class="dot pass"></view>可通过</view>
-    <view class="lg"><view class="dot assist"></view>需协助</view>
-    <view class="lg"><view class="dot blocked"></view>不可通过</view>
-    <view class="lg"><view class="dot unknown"></view>信息不足</view>
-  </view>
-
-  <view class="status-card">
-    <view class="status-head">
-      <view><view class="status-title">当前地点状态</view><view class="status-note">点击地图标记查看通行卡和现场依据</view></view>
-      <view class="all-list" bindtap="toggleList">全部地点 ›</view>
+  <view class="ai-hero" bindtap="goQuickCheck">
+    <view class="ai-mark">AI</view>
+    <view class="ai-copy">
+      <view class="ai-title">拍照识别通行障碍</view>
+      <view class="ai-desc">对准入口、坡道或电梯拍一张，快速获得通行分析和建议</view>
+      <view class="ai-action">立即拍照识别 <text>›</text></view>
     </view>
-    <view class="stat-row">
-      <view class="stat pass-text"><text class="stat-num">{{stats.pass}}</text><text>可通过</text></view>
-      <view class="stat assist-text"><text class="stat-num">{{stats.assist}}</text><text>需协助</text></view>
-      <view class="stat blocked-text"><text class="stat-num">{{stats.blocked}}</text><text>不可通过</text></view>
-      <view class="stat unknown-text"><text class="stat-num">{{stats.unknown}}</text><text>待勘察</text></view>
-    </view>
+    <view class="camera-shape"><view class="camera-lens"></view></view>
   </view>
 
-  <view class="map-actions">
-    <view class="map-action" bindtap="goQuickCheck"><view class="action-icon ai">AI</view><view><view class="action-title">现场拍照检查</view><view class="action-sub">不确定时拍一张快速判断</view></view></view>
-    <view class="map-action" bindtap="reportIncident"><view class="action-icon warn">!</view><view><view class="action-title">发现临时障碍</view><view class="action-sub">上报施工、停运或占用</view></view></view>
+  <view class="section-head">
+    <view class="section-title-main">地图</view>
   </view>
 
-  <view class="place-list" wx:if="{{showList}}">
-    <view class="list-head row-between"><text class="list-title">地点通行状态</text><text class="muted" bindtap="toggleList">关闭</text></view>
-    <view class="list-scroll">
-      <view class="place-row" wx:for="{{filteredRows}}" wx:key="id" data-id="{{item.id}}" bindtap="pickFromList">
-        <view class="place-copy"><view class="place-name">{{item.name}}</view><view class="muted one-line">{{item.category}} · {{item.summary}}</view></view>
-        <status-tag code="{{item.result}}" />
+  <!-- 预留真实地图区域，接入地图时替换此容器。 -->
+  <view class="map"></view>
+
+  <view class="place-list" id="placeList">
+    <view class="place-row" wx:for="{{rows}}" wx:key="id" data-id="{{item.id}}" bindtap="pickFromList">
+      <image class="place-thumb" src="{{item.hero}}" mode="aspectFill" />
+      <view class="place-copy">
+        <view class="place-topline"><view class="place-name">{{item.name}}</view><status-tag code="{{item.result}}" /></view>
+        <view class="place-category">{{item.category}}</view>
+        <view class="place-summary">{{item.summary}}</view>
+        <view class="place-more">查看现场照片与通行建议 <text>›</text></view>
       </view>
-      <view class="empty-list" wx:if="{{filteredRows.length === 0}}">当前筛选下没有地点</view>
     </view>
   </view>
 
-  <view class="guide-mask" wx:if="{{showGuide}}">
-    <view class="guide-card">
-      <view class="guide-badge">第一次使用</view>
-      <view class="guide-title">三步找到适合你的通行路线</view>
-      <view class="guide-step"><text>1</text><view><view class="guide-step-title">先建立通行档案</view><view class="guide-step-copy">填写轮椅宽度、是否陪同和可接受协助。</view></view></view>
-      <view class="guide-step"><text>2</text><view><view class="guide-step-title">查看地图四色状态</view><view class="guide-step-copy">绿色可通过，橙色需协助，红色暂不可通过。</view></view></view>
-      <view class="guide-step"><text>3</text><view><view class="guide-step-title">订阅常去地点</view><view class="guide-step-copy">地点发生停运、施工或恢复时，在消息页集中查看。</view></view></view>
-      <button class="guide-primary" bindtap="guideProfile">建立我的档案</button>
-      <view class="guide-skip" bindtap="dismissGuide">先看看地图</view>
-    </view>
+  <view class="evidence-note"><view class="evidence-title">信息从哪里来？</view><view class="evidence-copy">所有地点均由团队实地拍摄并记录。绿色表示可通过，橙色表示可能需要协助，灰色表示仍有信息待确认。</view></view>
+  <view class="secondary-actions">
+    <view class="secondary-action" bindtap="reportIncident"><view class="secondary-icon warn">!</view><view><view class="secondary-title">发现临时障碍</view><view class="secondary-desc">上报施工、占用或停运</view></view></view>
+    <view class="secondary-action" bindtap="goQuickCheck"><view class="secondary-icon scan">AI</view><view><view class="secondary-title">现场快速识别</view><view class="secondary-desc">不确定时再拍一张判断</view></view></view>
   </view>
+
+  <view class="guide-mask" wx:if="{{showGuide}}"><view class="guide-card">
+    <view class="guide-title">先看看这里能做什么</view>
+    <view class="guide-step"><text>1</text><view><view class="guide-step-title">查看实地调研地点</view><view class="guide-step-copy">照片、设施情况和通行建议都来自现场记录。</view></view></view>
+    <view class="guide-step"><text>2</text><view><view class="guide-step-title">遇到新地点就拍照</view><view class="guide-step-copy">AI 帮你识别台阶、坡道、电梯和潜在障碍。</view></view></view>
+    <button class="guide-primary" bindtap="dismissGuide">开始使用</button>
+  </view></view>
 </view>

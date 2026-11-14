@@ -23,7 +23,7 @@ Page({
       if (i.status === 'active') stats.active++;
       else if (i.status === 'resolved') stats.resolved++;
       else stats.review++;
-      return Object.assign({}, i, { placeName: names[i.placeId] || '未知地点', statusText: status.text, statusCls: status.cls, progressText: status.step });
+      return Object.assign({}, i, { placeName: i.placeName || names[i.placeId] || '未知地点', statusText: status.text, statusCls: status.cls, progressText: status.step });
     });
     this.setData({ items, stats, empty: items.length === 0 });
   },

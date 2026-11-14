@@ -20,7 +20,7 @@ Page({
 
     const list = [];
     all.forEach(inc => {
-      const pname = nameOf[inc.placeId] || '某地点';
+      const pname = inc.placeName || nameOf[inc.placeId] || '某地点';
       const fac = FAC_TEXT[inc.facility] || '设施';
       if (inc.status === 'resolved') {
         list.push({
