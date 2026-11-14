@@ -1,0 +1,16 @@
+.page { min-height: 100vh; padding-bottom: 70rpx; background: #F3F6F6; color: #243536; }
+.hero { display: block; width: 100%; height: 430rpx; background: #DDE6E6; }
+.place-card { margin: -42rpx 24rpx 0; padding: 30rpx; border-radius: 28rpx; background: #FFFFFF; position: relative; box-shadow: 0 12rpx 35rpx rgba(20,55,62,.12); }
+.meta { color: #176B70; font-size: 21rpx; font-weight: 650; }
+.title { margin-top: 10rpx; color: #1C3035; font-size: 39rpx; font-weight: 760; }
+.address { margin-top: 8rpx; color: #7A898E; font-size: 22rpx; line-height: 1.5; }
+.summary { margin-top: 22rpx; padding-top: 20rpx; border-top: 1rpx solid #E8EEEE; color: #3D5156; font-size: 27rpx; line-height: 1.7; }
+.location-button { margin-top: 24rpx; border: 0; border-radius: 17rpx; color: #FFFFFF; background: #176B70; font-size: 25rpx; font-weight: 650; }
+.location-button::after { border: 0; }
+.section-title { margin: 42rpx 28rpx 12rpx; color: #263B41; font-size: 29rpx; font-weight: 700; }
+.group, .advice-card { margin: 20rpx 24rpx 0; padding: 26rpx; border: 1rpx solid #E0E8E8; border-radius: 24rpx; background: #FFFFFF; }
+.group-title { color: #263B41; font-size: 30rpx; font-weight: 700; }
+.note { margin-top: 12rpx; color: #617273; font-size: 25rpx; line-height: 1.65; }
+.group image { display: block; width: 100%; margin-top: 18rpx; border-radius: 16rpx; background: #E9EEEE; }
+.advice-card { margin-top: 28rpx; border-color: #CBE1DF; background: #EDF6F5; }
+.disclaimer { margin-top: 20rpx; padding-top: 18rpx; border-top: 1rpx solid #CFE1DF; color: #7A898E; font-size: 21rpx; line-height: 1.55; }

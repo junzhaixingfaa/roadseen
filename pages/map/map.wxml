@@ -19,7 +19,7 @@
   </view>
 
   <map
-      wx:if="{{!mapSlow && !mapError}}"
+      wx:if="{{!mapError}}"
       id="m"
       class="map"
       style="height: {{mapH}}px;"
@@ -34,19 +34,14 @@
       bindcallouttap="onMarkerTap"
   ></map>
 
-  <view class="fallback-map" wx:else>
-    <view class="fallback-grid grid-a"></view>
-    <view class="fallback-grid grid-b"></view>
-    <view class="fallback-title">实地调研点位示意</view>
-    <view class="fallback-sub">地图服务未响应，真机仍使用真实地图</view>
-    <view class="fallback-pin pin-{{item.result}}" wx:for="{{filteredRows}}" wx:key="id" style="left:{{item.mapX}}%;top:{{item.mapY}}%;" data-id="{{item.id}}" bindtap="openPlace">
-      <view class="pin-dot"></view><text>{{item.name}}</text>
-    </view>
-    <view class="retry-map" bindtap="retryMap">重试真实地图</view>
+  <view class="map-error" style="height: {{mapH}}px;" wx:else>
+    <view class="map-error-title">真实地图暂时无法加载</view>
+    <view class="map-error-copy">请检查网络后重试，地点列表和现场资料仍可正常查看。</view>
+    <view class="retry-map" bindtap="retryMap">重新加载地图</view>
   </view>
 
-  <view class="map-load-note" wx:if="{{!mapLoaded && !mapSlow && !mapError}}">
-    正在加载真实地图…
+  <view class="map-load-note" wx:if="{{!mapLoaded && !mapError}}">
+    {{mapSlow ? '真实地图加载较慢，请稍候…' : '正在加载真实地图…'}}
   </view>
 
   <view class="map-controls">

@@ -1,0 +1,24 @@
+<view class="page" wx:if="{{site}}">
+  <image class="hero" src="{{site.hero}}" mode="aspectFill" bindtap="preview" data-src="{{site.hero}}" />
+
+  <view class="place-card">
+    <view class="meta">{{site.category}} · 2026-11-01 实地采集</view>
+    <view class="title">{{site.name}}</view>
+    <view class="address">{{site.address}}</view>
+    <view class="summary">{{site.summary}}</view>
+    <button class="location-button" bindtap="openLocation">在真实地图中查看与导航</button>
+  </view>
+
+  <view class="section-title">现场情况 · 点击照片查看大图</view>
+  <view class="group" wx:for="{{site.groups}}" wx:key="title">
+    <view class="group-title">{{item.title}}</view>
+    <view class="note">{{item.note}}</view>
+    <image wx:for="{{item.images}}" wx:for-item="src" wx:key="*this" src="{{src}}" mode="widthFix" lazy-load bindtap="preview" data-src="{{src}}" />
+  </view>
+
+  <view class="advice-card">
+    <view class="group-title">通行建议</view>
+    <view class="note">{{site.advice}}</view>
+    <view class="disclaimer">信息反映采集当日现场情况，设施状态变化时请以现场为准。</view>
+  </view>
+</view>

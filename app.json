@@ -19,7 +19,7 @@
     "pages/relay-card/relay-card",
     "pages/admin/admin"
   ],
-  "subPackages": [{ "root": "field-survey", "pages": ["gallery"] }],
+  "subPackages": [{ "root": "field-survey", "pages": ["gallery", "detail"] }],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
