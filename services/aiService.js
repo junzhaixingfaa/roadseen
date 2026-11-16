@@ -31,32 +31,39 @@ function recognize(stepKey, opts) {
   });
 }
 
-// 普通用户的单图快速检查。当前为明确标注的本地演示适配器；
-// 正式版应由云函数上传图片并返回相同结构，密钥不得放在小程序端。
+// 普通用户单图快速检查：图片读取为 Base64 后发送给本机服务端。
+// API Key 始终只保存在服务端，不能放入小程序包。
 function quickAssess(imagePath, opts) {
   opts = opts || {};
-  const delay = opts.delay == null ? 900 : opts.delay;
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (opts.forceFail) {
-        log({ stepKey: '快速检查', scene: 'quick-check', ok: false, msg: '快速识别失败' });
-        reject(new Error('识别服务暂时不可用'));
-        return;
-      }
-      const result = {
-        mode: 'demo',
-        result: 'assist',
-        title: '可能需要协助',
-        summary: '画面演示结果：入口通道基本连续，但门体与坡度仍需现场确认。',
-        confidence: 'medium',
-        observations: ['检测到入口及连续通道', '未发现明显连续台阶', '门体开启方式无法可靠判断'],
-        risks: ['仅凭单张照片无法测量实际坡度与通道宽度'],
-        actions: ['建议从正面补拍入口全景', '如现场无坡道，请选择“上报问题”'],
-        disclaimer: '当前使用本地演示识别，接入服务端视觉模型后才会分析你拍摄的真实画面。'
-      };
-      log({ stepKey: '快速检查', scene: 'quick-check', imagePath: !!imagePath, ok: true, msg: '完成本地演示识别' });
-      resolve(result);
-    }, delay);
+    if (opts.forceFail || !imagePath) { reject(new Error('请先选择现场照片')); return; }
+    wx.getFileSystemManager().readFile({
+      filePath: imagePath,
+      encoding: 'base64',
+      success: file => {
+        const imageBase64 = file.data || '';
+        const mimeType = imageBase64.indexOf('iVBOR') === 0 ? 'image/png' : 'image/jpeg';
+        wx.request({
+          url: require('../config/vision').endpoint,
+          method: 'POST',
+          timeout: 35000,
+          header: { 'Content-Type': 'application/json' },
+          data: { imageBase64, mimeType },
+          success: response => {
+            const result = response.data;
+            if (response.statusCode !== 200 || !result || result.mode !== 'live' || !Array.isArray(result.observations) || !Array.isArray(result.actions)) {
+              log({ stepKey: '快速检查', mode: 'live', ok: false, msg: '服务端识别失败' });
+              reject(new Error('识别服务未完成，请检查服务配置'));
+              return;
+            }
+            log({ stepKey: '快速检查', mode: 'live', ok: true, msg: '真实图片识别完成' });
+            resolve(result);
+          },
+          fail: () => reject(new Error('无法连接识别服务，请确认服务已启动'))
+        });
+      },
+      fail: () => reject(new Error('读取照片失败，请重新选择'))
+    });
   });
 }
 

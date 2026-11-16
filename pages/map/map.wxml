@@ -15,37 +15,17 @@
   </view>
 
   <view class="section-head">
-    <view><view class="section-title-main">富丰桥实地地图</view><view class="section-desc">星火科技大厦、富丰桥地铁站、大润发科兴店</view></view>
+    <view class="section-title-main">地图</view>
   </view>
 
-  <map
-    wx:if="{{!mapError}}"
-    id="m"
-    class="map"
-    longitude="{{lng}}"
-    latitude="{{lat}}"
-    scale="{{scale}}"
-    markers="{{markers}}"
-    include-points="{{surveyPoints}}"
-    show-location="{{true}}"
-    enable-poi="{{true}}"
-    enable-building="{{true}}"
-    bindupdated="onMapReady"
-    binderror="onMapError"
-    bindmarkertap="onMarkerTap"
-    bindcallouttap="onMarkerTap"
-  ></map>
-  <view class="map-toolbar" wx:if="{{!mapError}}">
-    <view class="map-button primary" bindtap="locateMe">定位到我</view>
-    <view class="map-button" bindtap="focusSurveyArea">查看三个点位</view>
-  </view>
-  <view class="map-pending" wx:else>
-    <view class="pending-icon">⌖</view>
-    <view>
-      <view class="pending-title">地图暂时没有加载出来</view>
-      <view class="pending-desc">请检查网络后重新加载</view>
-      <view class="pending-retry" bindtap="retryMap">重新加载地图</view>
-    </view>
+  <view class="survey-map">
+    <view class="map-caption">模拟示意图 · 不用于导航</view>
+    <view class="road-horizontal">富丰路 / 科兴路</view>
+    <view class="road-vertical">西四环南路</view>
+    <view class="survey-pin pin-xinghuo" data-id="xinghuo" bindtap="openPlace"><text>●</text>星火科技大厦</view>
+    <view class="survey-pin pin-metro" data-id="metro" bindtap="openPlace"><text>●</text>富丰桥地铁站</view>
+    <view class="survey-pin pin-rtmart" data-id="rtmart" bindtap="openPlace"><text>●</text>大润发（科兴店）</view>
+    <view class="map-caption map-bottom">点击点位查看现场照片和情况</view>
   </view>
 
   <view class="place-list" id="placeList">

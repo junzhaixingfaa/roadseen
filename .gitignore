@@ -10,6 +10,9 @@ project.private.config.json
 *.log
 Thumbs.db
 
+# 服务端私密配置（API Key 禁止提交）
+server/.env.local
+
 # 本地保留，不入库
 初始思考/
 雏形开发规划.md

@@ -243,7 +243,7 @@ Page({
     });
   },
   onMarkerTap(e) {
-    const markerId = Number(e.markerId);
+    const markerId = Number(e.markerId != null ? e.markerId : e.detail && e.detail.markerId);
     if (markerId === 9999) return;
     const r = this.data.rows.find(item => item.markerId === markerId);
     if (r) this.openSurveyDetail(r.id);

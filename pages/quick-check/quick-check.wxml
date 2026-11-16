@@ -2,8 +2,8 @@
   <view class="intro">
     <view class="eyebrow">QUICK ACCESS CHECK</view>
     <view class="title">拍一张，先判断这里能不能过</view>
-    <view class="copy">面向普通用户的现场快速检查。照片只用于本次体验，正式版将由服务端安全分析。</view>
-    <view class="demo-tag">当前：演示识别 · 尚未接入真实视觉 API</view>
+    <view class="copy">面向普通用户的现场快速检查。照片发送至服务端，由豆包视觉模型分析。</view>
+    <view class="demo-tag">AI 图片评估 · 结果需结合现场确认</view>
   </view>
 
   <view class="flow-card">
@@ -41,12 +41,14 @@
 
   <view class="result-card" wx:if="{{state === 'done' && result}}">
     <view class="result-top">
-      <view><view class="result-kicker">演示检查结果</view><view class="result-title">{{result.title}}</view></view>
+      <view><view class="result-kicker">AI 检查结果</view><view class="result-title">{{result.title}}</view></view>
       <view class="confidence">置信提示：{{result.confidence}}</view>
     </view>
     <view class="summary">{{result.summary}}</view>
     <view class="result-section"><view class="section-title">画面观察</view><view class="bullet" wx:for="{{result.observations}}" wx:key="*this"><text>✓</text>{{item}}</view></view>
     <view class="result-section warning"><view class="section-title">仍需注意</view><view class="bullet" wx:for="{{result.risks}}" wx:key="*this"><text>!</text>{{item}}</view></view>
+    <view class="result-section" wx:if="{{result.routeAdvice}}"><view class="section-title">怎么进入</view><view class="summary">{{result.routeAdvice}}</view></view>
+    <view class="result-section"><view class="section-title">建议</view><view class="bullet" wx:for="{{result.actions}}" wx:key="*this"><text>→</text>{{item}}</view></view>
     <view class="disclaimer">{{result.disclaimer}}</view>
     <view class="result-actions">
       <view class="secondary" bindtap="report">上报现场问题</view>
